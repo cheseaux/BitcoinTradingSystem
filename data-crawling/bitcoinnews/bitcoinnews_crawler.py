@@ -16,7 +16,10 @@
 import urllib2
 from bs4 import BeautifulSoup
 
-for i in range(200,50000) :
+for i in range(2000,50000) :
+
+	if (i % 100 == 0):
+		print "Scanning progress ("+str(i) + "/" + "50000) : " + str(round(i /(50000.0 - 200.0)*100.0)) + "%"
 
 	site= "http://www.cryptocoinsnews.com/?p=" + str(i)
 	hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
