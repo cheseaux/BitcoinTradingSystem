@@ -3,16 +3,12 @@ import urllib2
 
 from datetime import date, timedelta
 
-
-apiUrl='http://content.guardianapis.com/search?q=bitcoin' 
-apiPage='page=1'  
-section = 'section=technology/bitcoin'
-apiPageSize=''.join(['page-size=50'])
-fields='format=json&show-fields=all&use-date=newspaper-edition'
-key='api-key=vxzd3fyykqsqg5s9vdnj9j23'
-
-#'body', trailText' u'newspaperEditionDate', u'headline', u'wordcount', u'shortUrl', u'score'
-
+apiUrl='http://api.nytimes.com/svc/search/v1/article?format=json'
+query='query=bitcoin'                           
+apiDate='begin_date=20110901&end_date=20120214' 
+fields='fields=body%2Curl%2Ctitle%2Cdate%2Cdes_facet%2Cdesk_facet%2Cbyline'
+offset='offset=0'
+key='api-key=397ab939332fd29f69dab0e83e66987c:4:69065069'  # input you
 
 def remove_html_tags(data):
     p = re.compile(r'<.*?>')
