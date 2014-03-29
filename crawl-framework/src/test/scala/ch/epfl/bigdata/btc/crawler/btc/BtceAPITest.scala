@@ -19,8 +19,12 @@ class BtceAPITest extends AssertionsForJUnit {
   }
 
   @Test def verifyEasy() { // Uses JUnit-style assertions
-    var inst = new BtceAPI(Currency.BTC, Currency.USD);
-    println(inst.getTrade(3));
+    var inst0 = new BtceAPI(Currency.BTC, Currency.USD)
+    println("BtceAPI: \t" + inst0.getTrade(4).slice(0, 3))
+    var inst1 = new BitfinexAPI(Currency.BTC, Currency.USD)
+    println("BitfinexAPI: \t" + inst1.getTrade(3).slice(0, 3))
+    var inst2 = new BitstampAPI(Currency.BTC, Currency.USD)
+    println("BitstampAPI: \t" + inst2.getTrade(3).slice(0, 3))
   }
 
   
