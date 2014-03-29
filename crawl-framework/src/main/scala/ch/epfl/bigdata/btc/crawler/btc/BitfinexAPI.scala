@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 
 
 
-class BitfinexAPI(from: Currency, to: Currency) {
+class BitfinexAPI(from: Currency, to: Currency){
   implicit val formats = net.liftweb.json.DefaultFormats
   
   val serverBase = "https://api.bitfinex.com/v1/"
@@ -24,19 +24,16 @@ class BitfinexAPI(from: Currency, to: Currency) {
 	  
 	}
 	
-	def getTrade(count: Int) {
+	def getTrade(count: Int) : List[Transaction] = {
 	  var path = serverBase + "/trades/" + pair
-	  var json = Request.Get(path)
-	    .execute().returnContent().asString()
+	  var json = Request.Get(path).execute().returnContent().asString()
 	  
-	  var t = parse(json)
-	  //.extract[List[BTCeCaseTransaction]]
+	  var t = parse(json).extract[List[BitfinexCaseTransaction]]
 	  
-	  /*return t.map(f => new Transaction(
-	      Currency.withName(f.price_currency.toLowerCase()),
-	      Currency.withName(f.item.toLowerCase()), f.price, f.amount, 
-	      new DateTime(f.date), OfferType.withName(f.trade_type)))*/
+	  return t.map(f => new Transaction( from, to, f.price.toDouble, 
+	      f.amount.toDouble, f.tid, new DateTime(f.timestamp), OfferType.BID))
 	}
+	
 	
 	def getDepth() {
 	  

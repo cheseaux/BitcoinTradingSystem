@@ -26,14 +26,13 @@ class BtceAPI(from: Currency, to: Currency) {
 	
 	def getTrade(count: Int) : List[Transaction] = {
 	  var path = serverBase + pair + "/trades/" + count
-	  var json = Request.Get(path)
-	    .execute().returnContent().asString()
+	  var json = Request.Get(path).execute().returnContent().asString()
 	  
 	  var t = parse(json).extract[List[BTCeCaseTransaction]]
 	  
 	  return t.map(f => new Transaction(
 	      Currency.withName(f.price_currency.toLowerCase()),
-	      Currency.withName(f.item.toLowerCase()), f.price, f.amount, 
+	      Currency.withName(f.item.toLowerCase()), f.price, f.amount, f.tid,
 	      new DateTime(f.date), OfferType.withName(f.trade_type)))
 	}
 	
