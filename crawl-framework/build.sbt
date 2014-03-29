@@ -16,4 +16,6 @@ libraryDependencies ++= Seq(
 "net.liftweb" %% "lift-json" % "2.5"
 )
 
+libraryDependencies += "com.twitter" % "scalding_2.9.2" % "0.7.3"
+
 libraryDependencies += "org.twitter4j" % "twitter4j-stream" % "3.0.3"
