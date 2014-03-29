@@ -10,7 +10,7 @@ echo "Unzipping individual json files..."
 bzip2 -d unzipped/*/*/*.bz2 >/dev/null 2>&1
 echo "Done!"
 echo "Filtering tweets with keyword $keyword..."
-cat unzipped/*/*/*.json | grep $keyword > aggregate.json
+cat unzipped/*/*/*.json | grep $keyword | ./json.py
 echo "Done!"
 echo "Deleting temporary files..."
 rm -rf unzipped
