@@ -6,7 +6,11 @@ import scala.collection.mutable.ListBuffer
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.Before
-import ch.epfl.bigdata.btc.crawler.btc._
+import ch.epfl.bigdata.btc.crawler.coins._
+import ch.epfl.bigdata.btc.crawler.coins.markets.BitstampAPI
+import ch.epfl.bigdata.btc.crawler.coins.markets.BitfinexAPI
+import ch.epfl.bigdata.btc.crawler.coins.markets.BtceAPI
+import ch.epfl.bigdata.btc.crawler.coins.types.Currency
 
 class BtceAPITest extends AssertionsForJUnit {
 

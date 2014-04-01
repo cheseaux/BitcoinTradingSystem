@@ -1,6 +1,4 @@
-package ch.epfl.bigdata.btc.crawler.btc
-
-import scala.Enumeration
+package ch.epfl.bigdata.btc.crawler.coins.types
 
 object Currency extends Enumeration {
 	type Currency = Value

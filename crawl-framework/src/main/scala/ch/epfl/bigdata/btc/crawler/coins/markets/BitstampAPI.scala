@@ -1,10 +1,12 @@
-package ch.epfl.bigdata.btc.crawler.btc
+package ch.epfl.bigdata.btc.crawler.coins.markets
 
-import Currency._
-import BTCeCaseTransaction._
 import org.apache.http.client.fluent._
 import net.liftweb.json._
 import org.joda.time.DateTime
+
+import ch.epfl.bigdata.btc.crawler.coins.types._
+import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
+
 
 
 

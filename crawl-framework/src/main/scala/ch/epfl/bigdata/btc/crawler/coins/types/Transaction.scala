@@ -1,8 +1,7 @@
-package ch.epfl.bigdata.btc.crawler.btc
+package ch.epfl.bigdata.btc.crawler.coins.types
 
 import Currency._
 import OfferType._
-
 import com.github.nscala_time.time.Imports._
 
 abstract class AbstractOffer(	from: Currency,			// The currency you want to use to buy what
