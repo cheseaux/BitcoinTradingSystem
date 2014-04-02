@@ -8,3 +8,4 @@ case object CommandStop extends Command
 case object CommandFetch extends Command
 
 case class MarketPairRegistration(market: Market, c1: Currency, c2: Currency)
+case class MarketPair(market: Market, c1: Currency, c2: Currency, tickSize: Int, tickCount: Int)

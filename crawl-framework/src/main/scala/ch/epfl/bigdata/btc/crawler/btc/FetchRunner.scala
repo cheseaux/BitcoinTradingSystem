@@ -7,7 +7,11 @@ import akka.actor.{ActorSystem, Props}
 
 object FetchRunner extends App {
 	val system = ActorSystem("mySystem")
-	val myActor = system.actorOf(Props[MarketFetchPool], "myactor2")
 	
-	myActor ! new MarketPairRegistration(Market.BTCe, Currency.USD, Currency.BTC)
+	ActorPool.marketFetchPool ! new MarketPairRegistration(Market.BTCe, Currency.USD, Currency.BTC)
 }
+
+object ActorPool {
+  val marketFetchPool = FetchRunner.system.actorOf(Props[MarketFetchPool], "MarketFetchPool")
+}
+

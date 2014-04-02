@@ -8,6 +8,7 @@ import ch.epfl.bigdata.btc.crawler.coins.types._
 import scala.concurrent.duration._
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
+
 class MarketFetchPool extends Actor {
   import context._
   var fetchers: Map[Market, Map[Tuple2[Currency, Currency], ActorRef]] 
