@@ -15,5 +15,6 @@ libraryDependencies ++= Seq(
 "org.mockito" % "mockito-core" % "1.9.5",
 "org.specs2" % "specs2_2.10" % "2.3.10" % "test",
 "net.liftweb" %% "lift-json" % "2.5",
+"com.typesafe.akka" %% "akka-actor" % "2.3.1",
 "org.twitter4j" % "twitter4j-stream" % "3.0.3"
 )
