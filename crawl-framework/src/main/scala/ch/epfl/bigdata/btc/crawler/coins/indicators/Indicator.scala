@@ -3,16 +3,17 @@ package ch.epfl.bigdata.btc.crawler.coins.indicators
 import akka.actor.{ActorSystem, ActorLogging, Actor, Props}
 
 import ch.epfl.bigdata.btc.crawler.coins.types.OHLC
+import ch.epfl.bigdata.btc.crawler.coins.types.Market._
 import scala.collection.mutable.MutableList
 import ch.epfl.bigdata.btc.crawler.coins.DataSourceFactory
 
-abstract class Indicator(tickSize: Int, tickCount: Int) extends Actor {
+abstract class Indicator(tickSize: Int, tickCount: Int, market: Market) extends Actor {
   
 	var ticks: MutableList[OHLC] = new MutableList[OHLC]()
-	DataSourceFactory.getDataSource.register(this, tickSize, tickCount)
+	//DataSourceFactory.getDataSource.register(tickSize, tickCount)
 	
 	def receive = {
-	  case OHLC => println("received")
+	  case t: OHLC => updateTicks(t)
   	}
 	
 	

@@ -13,7 +13,7 @@ abstract class AbstractOffer(	from: Currency,			// The currency you want to use 
   
 }
 
-class Transaction(	from: Currency,			// The currency you want to use to buy what
+case class Transaction(	from: Currency,			// The currency you want to use to buy what
 					to: Currency,			// The currency you want to buy (BTC, LTC,...)
 					unitPrice: Double,		// The unit price of what currency in with currency 
 					amount: Double,		// The amount of the what currency you want to buy
@@ -22,10 +22,7 @@ class Transaction(	from: Currency,			// The currency you want to use to buy what
 					direction: OfferType) 
 					extends AbstractOffer(from, to, unitPrice, amount, timestamp, direction) {
   
-  
-  override def toString() : String = {
-    return "(" + from.toString + "," + to.toString + ") : " + amount.toString + "@" + unitPrice.toString
-  }
+
   
   
 }
