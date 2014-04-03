@@ -1,16 +1,21 @@
 package ch.epfl.bigdata.btc.crawler.coins
 
 import ch.epfl.bigdata.btc.crawler.coins.indicators.Indicator
-
+import ch.epfl.bigdata.btc.crawler.coins.types.Transaction
 import scala.collection.mutable.MutableList
 
+import akka.actor.{Actor, ActorRef, Props}
 
-object DataSource {
+
+class DataSource extends Actor {
+  import context._
   
-  var observers: MutableList[Tuple3[Indicator, Int, Int]] 
-    = new MutableList[Tuple3[Indicator, Int, Int]]();
+  var lastReceive = System.currentTimeMillis()
   
-	def register(indicator: Indicator, tickSize: Int, tickCount: Int) {
-	  observers += new Tuple3(indicator, tickSize, tickCount);
-	}
+  def receive() = {
+    case t: Transaction => if (System.currentTimeMillis()-lastReceive > 10000) {
+      println("DataSource received")
+      lastReceive = System.currentTimeMillis()
+    }
+  }
 }

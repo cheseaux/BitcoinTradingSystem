@@ -6,12 +6,11 @@ import ch.epfl.bigdata.btc.crawler.coins.types.OHLC
 import ch.epfl.bigdata.btc.crawler.coins.types.Market._
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import scala.collection.mutable.MutableList
-import ch.epfl.bigdata.btc.crawler.coins.DataSourceFactory
 
 abstract class Indicator(marketPool: ActorRef, watched: List[MarketPair]) extends Actor {
   
 	var ticks: MutableList[OHLC] = new MutableList[OHLC]()
-	watched.map(f => marketPool ! MarketPairRegistration(f.market, f.c1, f.c2))
+	watched.map(f => marketPool ! MarketPairRegistration(f.market, f.c))
 	
 	def receive = {
 	  case t: OHLC => updateTicks(t)
