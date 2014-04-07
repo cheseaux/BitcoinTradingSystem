@@ -17,4 +17,5 @@ libraryDependencies ++= Seq(
 "net.liftweb" %% "lift-json" % "2.5",
 "com.typesafe.akka" %% "akka-actor" % "2.3.1",
 "org.twitter4j" % "twitter4j-stream" % "3.0.3"
+"edu.stanford.nlp" % "stanford-corenlp" % "1.2.0"            
 )
