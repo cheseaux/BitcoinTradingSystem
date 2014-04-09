@@ -21,25 +21,19 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPair) extends Acto
 	  if (ticks.isEmpty) {
 	    ticks += tick
 	  } else {
-	    /*ActorPool
+	    
 	    val last  = ticks.last
 	    val length = ticks.length
 	    if (last.date equals tick.date) {
 	      ticks.update(length, tick)
 	    } else {
 	      ticks += tick
-	      if (length > tickCount) {
+	      if (length > watched.tickCount) {
 	        ticks = ticks.drop(1)
 	      }
-	    }*/
+	    }
 	  }
 	}
 	
 	def recompute()
-	
-	def getValues()
-	
-	
-
-
 }

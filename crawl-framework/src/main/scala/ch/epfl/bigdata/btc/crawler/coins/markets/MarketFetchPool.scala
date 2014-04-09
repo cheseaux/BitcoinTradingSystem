@@ -59,6 +59,7 @@ class MarketFetchPool(dataSource: ActorRef) extends Actor {
   }
   
   private def sendToDataSource(t: Transaction) {
+    println(t)
     dataSource ! t
   }
   

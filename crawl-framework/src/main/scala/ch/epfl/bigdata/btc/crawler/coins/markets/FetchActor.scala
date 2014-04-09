@@ -17,6 +17,7 @@ abstract class PublicFetchActor extends Actor with PublicFetcher  {
   }
   
   protected def sendResults(t: List[Transaction]) {
+    //println(t)
     t.map(e => sender ! e)
   }
 }
@@ -28,6 +29,7 @@ final class BtcePublicFetcher(c1: Currency, c2: Currency) extends PublicFetchAct
   var latest = new Transaction(c1, c2, 0.0, 0.0, 0, new DateTime, OfferType.BID)
   
   def fetch() {
+    println("fetch called");
     val trades = btce.getTrade(count)
     val idx = trades.indexOf(latest)
     count = if (idx < 0)  2000 else Math.min(10*idx, 2000)
