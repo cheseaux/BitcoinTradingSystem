@@ -1,0 +1,7 @@
+
+apiUrl='http://api.nytimes.com/svc/search/v1/article?format=json'
+query='query=occupy+wall+street'                            # set the query word here
+apiDate='begin_date=20110901&end_date=20120214'             # set the date here
+fields='fields=body%2Curl%2Ctitle%2Cdate%2Cdes_facet%2Cdesk_facet%2Cbyline'
+offset='offset=0'
+key='api-key=c2c5b91680.......2811165'  # input you
