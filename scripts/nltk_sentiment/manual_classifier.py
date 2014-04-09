@@ -1,6 +1,7 @@
 import nltk
 from nltk.corpus import stopwords
- 
+import pickle
+
 #Adapted from :
 #http://www.sjwhitworth.com/sentiment-analysis-in-python-using-nltk/
  
@@ -11,6 +12,7 @@ postxt = pos.readlines()
 #Load negative tweets into a list
 neg = open('corpus/movie_reviews/neg_movies.txt', 'r')
 negtxt = neg.readlines()
+
 
 neglist = []
 poslist = []
@@ -31,6 +33,7 @@ negtagged = zip(negtxt, neglist)
 taggedtweets = postagged + negtagged
 
 tweets = []
+
  
 #Create a list of words in the tweet, within a tuple.
 for (word, sentiment) in taggedtweets:
@@ -61,12 +64,21 @@ def feature_extractor(doc):
 		features['contains(%s)' % i] = (i in docwords)
 	return features
  
+print "filtering text"
 #Creates a training set - classifier learns distribution of true/falses in the input.
-wordlist = [i for i in wordlist if not i in stopwords.words('english') and not i in extra_stop_words]
+wordlist = [i for i in wordlist if not i in stopwords.words('english')]
+print "learning..."
+
 training_set = nltk.classify.apply_features(feature_extractor, tweets)
 classifier = nltk.NaiveBayesClassifier.train(training_set)
 print classifier.show_most_informative_features(n=200)
 
-text = "I hate you fucking bitch"
-print "Sentiment of : " + text + " is \n\tt" + classifier.classify(feature_extractor(text))
+#Save the trained model
+f = open('my_classifier.pickle', 'wb')
+pickle.dump(classifier, f)
+f.close()
 
+#Save wordlist
+f = open('my_classifier_wordlist.pickle','wb')
+pickle.dump(wordlist,f)
+f.close()
