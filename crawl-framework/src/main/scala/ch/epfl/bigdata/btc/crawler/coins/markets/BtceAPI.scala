@@ -6,6 +6,7 @@ import org.joda.time.DateTime
 
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
+import ch.epfl.bigdata.btc.crawler.coins.types.Market._
 
 
 
@@ -35,7 +36,7 @@ class BtceAPI(from: Currency, to: Currency) {
 	  return t.map(f => new Transaction(
 	      Currency.withName(f.price_currency.toLowerCase()),
 	      Currency.withName(f.item.toLowerCase()), f.price, f.amount, f.tid,
-	      new DateTime(f.date*1000), OfferType.withName(f.trade_type)))
+	      new DateTime(f.date*1000), OfferType.withName(f.trade_type), Market.BTCe))
 	}
 	
 	def getDepth() {

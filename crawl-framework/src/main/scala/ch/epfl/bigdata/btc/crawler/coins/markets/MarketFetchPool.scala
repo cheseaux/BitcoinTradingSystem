@@ -3,7 +3,6 @@ package ch.epfl.bigdata.btc.crawler.coins.markets
 import ch.epfl.bigdata.btc.crawler.coins.types.Market._
 import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
 import ch.epfl.bigdata.btc.crawler.coins.types._
-import ch.epfl.bigdata.btc.crawler.coins.DataSource
 
 
 import scala.concurrent.duration._
@@ -13,14 +12,18 @@ import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.event.Logging
 
 
-class MarketFetchPool(dataSource: ActorRef) extends Actor {
+class MarketFetchPool() extends Actor {
   import context._
   var fetchers: HashMap[Market, HashMap[CurrencyPair, ActorRef]] = new HashMap;
+  var dataSource: ActorRef = context.parent;
   
   
   def receive() = {
     case t : Transaction => sendToDataSource(t)
-    case r : MarketPairRegistration => register(r.market, r.c)
+    case r : MarketPairRegistration => { 
+      //dataSource = sender
+      register(r.market, r.c)
+    }
   }
   
 
@@ -34,6 +37,7 @@ class MarketFetchPool(dataSource: ActorRef) extends Actor {
       case None => addMarket(market, c)
       case Some(m) => addPair(m, market, c)
     }
+    println("Added fetcher: " + market + " for " + c)
   }
   
   private def addMarket(market: Market, c: CurrencyPair) {
@@ -59,7 +63,6 @@ class MarketFetchPool(dataSource: ActorRef) extends Actor {
   }
   
   private def sendToDataSource(t: Transaction) {
-    println(t)
     dataSource ! t
   }
   

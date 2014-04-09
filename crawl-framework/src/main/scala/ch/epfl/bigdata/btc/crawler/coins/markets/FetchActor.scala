@@ -5,6 +5,8 @@ import akka.actor.{Actor, ActorRef}
 import com.github.nscala_time.time.Imports._
 import ch.epfl.bigdata.btc.crawler.coins.types.{CommandFetch, CommandStop, Transaction, OfferType}
 import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
+import ch.epfl.bigdata.btc.crawler.coins.types.Market._
+import ch.epfl.bigdata.btc.crawler.coins.types.Market
 
 abstract class PublicFetchActor extends Actor with PublicFetcher  {
   
@@ -26,7 +28,7 @@ abstract class PublicFetchActor extends Actor with PublicFetcher  {
 final class BtcePublicFetcher(c1: Currency, c2: Currency) extends PublicFetchActor {
   val btce = new BtceAPI(c1, c2)
   var count = 2000
-  var latest = new Transaction(c1, c2, 0.0, 0.0, 0, new DateTime, OfferType.BID)
+  var latest = new Transaction(c1, c2, 0.0, 0.0, 0, new DateTime, OfferType.BID, Market.BTCe)
   
   def fetch() {
     println("fetch called");
