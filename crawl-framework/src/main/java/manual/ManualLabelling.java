@@ -26,7 +26,7 @@ public class ManualLabelling {
 	}
 	
 	public static void main(String[] args) {
-		File toClassify = new File("tweet_<name>");
+		File toClassify = new File("tweets_marzell");
 		Scanner scanner = new Scanner(System.in);
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(toClassify));
