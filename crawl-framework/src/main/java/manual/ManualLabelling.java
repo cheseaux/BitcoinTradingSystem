@@ -26,7 +26,7 @@ public class ManualLabelling {
 	}
 	
 	public static void main(String[] args) {
-		File toClassify = new File("tweets_marzell");
+		File toClassify = new File("tweets_<name>");
 		Scanner scanner = new Scanner(System.in);
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(toClassify));
@@ -39,7 +39,7 @@ public class ManualLabelling {
 					cont = true;
 					System.out.println("#### Tweet " + count++ + " out of " + total + ". ####");
 					System.out.println(line);
-					System.out.println("POSITIVE (1) ? NEUTRAL/IRRELEVANT (2) ? POSITIVE (3) ?");
+					System.out.println("POSITIVE (1) ? NEUTRAL/IRRELEVANT (2) ? NEGATIVE (3) ?");
 					int choice = scanner.nextInt();
 					scanner.nextLine();
 					switch (choice) {
