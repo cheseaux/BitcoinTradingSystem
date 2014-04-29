@@ -23,6 +23,12 @@ object Twitter {
 	}
 
 	def main(args: Array[String]) {
+	  // get ref on GUI actor
+//	  val myRemoteActor = akka.actor(Node("myMachine", 8000), 'anActor)
+//	  127.0.0.1
+//	  akka.actor.ActorSelection("akka://application/user/$b/BTC")
+//	  akka.context.select()
+	  
 		val twitterStream = new TwitterStreamFactory(config).getInstance
 				twitterStream.addListener(simpleStatusListener)
 				twitterStream.filter(new FilterQuery().track(Array("bitcoin")))

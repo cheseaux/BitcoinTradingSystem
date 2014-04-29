@@ -6,6 +6,7 @@ import ch.epfl.bigdata.btc.crawler.coins.types.Transaction
 import ch.epfl.bigdata.btc.crawler.coins.types.OHLC
 import ch.epfl.bigdata.btc.crawler.coins.types.MarketPair
 import ch.epfl.bigdata.btc.crawler.coins.types.MarketPairRegistration
+import ch.epfl.bigdata.btc.crawler.coins.types.MarketPairTransaction
 import scala.collection.mutable.MutableList
 import scala.collection.mutable.HashMap
 import akka.event.Logging
@@ -29,7 +30,18 @@ class DataSource() extends Actor {
   def receive() = {
     case t: Transaction => updateCache(t)
     case r: MarketPair => acceptRegistration(r) // register in fetcher pool, setup mapper,
-    case mpr: MarketPairRegistration => pool ! mpr
+    case mpr: MarketPairRegistration => pool ! mpr // send this to register
+    case mpt: MarketPairTransaction => println("ilia");
+    
+    case "connectionGUI" => 
+      println("received connection msg from GUI")
+      sender ! self
+      
+    case "BTCval" => 
+      println("new BTC value request received")
+      // TODO: valeur arbitraire, envoyer autre message depuis GUI
+      sender ! 678.88 
+      
   }
   
   def acceptRegistration(mp: MarketPair){

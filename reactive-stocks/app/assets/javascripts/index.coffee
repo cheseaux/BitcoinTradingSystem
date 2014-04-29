@@ -41,7 +41,7 @@ getAxisMax = (data) ->
 populateStockHistory = (message) ->
   chart = $("<div>").addClass("chart").prop("id", message.symbol)
   chartHolder = $("<div>").addClass("chart-holder").append(chart)
-  chartHolder.append($("<p>").text("values are simulated"))
+  chartHolder.append($("<p>").text("simulated values"))
   detailsHolder = $("<div>").addClass("details-holder")
   flipper = $("<div>").addClass("flipper").append(chartHolder).append(detailsHolder).attr("data-content", message.symbol)
   flipContainer = $("<div>").addClass("flip-container").append(flipper).click (event) ->

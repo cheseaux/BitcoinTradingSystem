@@ -28,6 +28,7 @@ public class Application extends Controller {
                 // create a new UserActor and give it the default stocks to watch
                 final ActorRef userActor = Akka.system().actorOf(Props.create(UserActor.class, out));
                 
+                
                 // run when message is received
                 // send all WebSocket message to the UserActor
                 in.onMessage(new F.Callback<JsonNode>() {

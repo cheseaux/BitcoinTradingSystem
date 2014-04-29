@@ -8,3 +8,4 @@ case object CommandFetch extends Command
 
 case class MarketPairRegistration(market: Market, c: CurrencyPair)
 case class MarketPair(market: Market, c: CurrencyPair, tickSize: Int, tickCount: Int)
+case class MarketPairTransaction(market: Market, c: CurrencyPair)

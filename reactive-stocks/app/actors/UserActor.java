@@ -1,14 +1,15 @@
 package actors;
 
-import akka.actor.UntypedActor;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.List;
+
 import play.Play;
 import play.libs.Json;
 import play.mvc.WebSocket;
+import akka.actor.UntypedActor;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * The broker between the WebSocket and the StockActor(s).  The UserActor holds the connection and sends serialized
@@ -20,14 +21,18 @@ public class UserActor extends UntypedActor {
     private final WebSocket.Out<JsonNode> out;
     
     public UserActor(WebSocket.Out<JsonNode> out) {
+    	// get outputstream to websocket
         this.out = out;
         
         // watch the default stocks
+        // get the list of stock names from config file
         List<String> defaultStocks = Play.application().configuration().getStringList("default.stocks");
 
+        // send message to StocksActor to create StockActor(s)
         for (String stockSymbol : defaultStocks) {
             StocksActor.stocksActor().tell(new WatchStock(stockSymbol), getSelf());
         }
+        
     }
     
     public void onReceive(Object message) {
