@@ -22,7 +22,6 @@ class StockActor(symbol: String) extends Actor {
 
   // remote dataSource address
   val dataSourceSelection = context.actorSelection("akka.tcp://DataSourceSystem@127.0.0.1:2553/user/DataSource")
-
   // variable used to store ref
   var dataSourceActor: ActorRef = null
 

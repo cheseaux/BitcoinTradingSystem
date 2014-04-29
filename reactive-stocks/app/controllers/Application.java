@@ -28,6 +28,8 @@ public class Application extends Controller {
                 // create a new UserActor and give it the default stocks to watch
                 final ActorRef userActor = Akka.system().actorOf(Props.create(UserActor.class, out));
                 
+                final ActorRef twitterActor = Akka.system().actorOf(Props.create(TwitterActor.class, out));
+                
                 
                 // run when message is received
                 // send all WebSocket message to the UserActor
