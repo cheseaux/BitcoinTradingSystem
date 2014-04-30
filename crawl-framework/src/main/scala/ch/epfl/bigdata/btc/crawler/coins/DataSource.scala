@@ -25,6 +25,9 @@ class DataSource() extends Actor {
   def receive() = {
     // DataSource receives a transaction from its fetchers.
     case t: Transaction => updateCacheAndNotify(t)
+    case t: Tweet => 
+      //println("dataSource a recu les cadeaux: " + t.content)
+      
         
     // Accepts registration for OHLC, Transaction, Twitters
     case mpro: MarketPairRegistrationOHLC => acceptRegistrationOHLC(mpro)
