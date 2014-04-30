@@ -23,6 +23,9 @@ class DataSource() extends Actor {
   def receive() = {
     // DataSource receives a transaction from its fetchers.
     case t: Transaction => updateCacheAndNotify(t)
+    case t: Tweet => updateAndSendTweet(t)
+      //println("dataSource a recu les cadeaux: " + t.content)
+      
         
     // Accepts registration for OHLC, Transaction, Twitters
     case mpro: MarketPairRegistrationOHLC => acceptRegistrationOHLC(mpro)
@@ -66,12 +69,13 @@ class DataSource() extends Actor {
     cache.addTransaction(mprt, t)
     cache.updateOHLC(mp, t)
     
-    // distriution
+    // distribution
     registrations.getTransRegByMarketPair(mp) match {
+      case None => 
       case Some(l) => {
         l.map(a => a ! t)
       }
-      case None => 
+      
     }
     
     
@@ -91,5 +95,11 @@ class DataSource() extends Actor {
       }
       
     }
+  }
+  
+  
+  def updateAndSendTweet(t: Tweet) {
+    cache.addTweet(t)
+    registrations.getTwitterRegistrations.map(f => f ! t)
   }
 }
