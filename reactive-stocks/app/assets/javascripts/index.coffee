@@ -7,6 +7,7 @@ $ ->
         populateStockHistory(message)
       when "stockupdate"
         updateStockChart(message)
+        updatePrice(message)
       when "tweet"
         showtweet(message)
       else
@@ -67,12 +68,12 @@ updateStockChart = (message) ->
 root = exports ? this
 root.cleartweets = () -> document.getElementById('twit').innerHTML = 'prout'
  
-cleartweets = ->
-	tweets = ['<font color="000000", font size=2>Tweets</font><br>', '<br>']  
 	
  #tweet array
 tweets = ['<font color="000000", font size=2>Tweets</font><br>', '<br><hr>']  
 #max tweets
+updatePrice = (message) ->
+	document.getElementById('price').innerHTML =  '<font color="FFFF33", font size=2>Price :  </font>' + message.price
     
 showtweet = (message) ->
 	randomnumber = Math.random()
