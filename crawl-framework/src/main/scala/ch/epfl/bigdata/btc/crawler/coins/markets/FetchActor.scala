@@ -3,10 +3,12 @@ package ch.epfl.bigdata.btc.crawler.coins.markets
 
 import akka.actor.{Actor, ActorRef}
 import com.github.nscala_time.time.Imports._
-import ch.epfl.bigdata.btc.crawler.coins.types.{CommandFetch, CommandStop, Transaction, OfferType}
-import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
-import ch.epfl.bigdata.btc.crawler.coins.types.Market._
-import ch.epfl.bigdata.btc.crawler.coins.types.Market
+import ch.epfl.bigdata.btc.crawler.coins.types.{CommandFetch, CommandStop}
+import ch.epfl.bigdata.btc.types._
+import ch.epfl.bigdata.btc.types.Transfer._
+import ch.epfl.bigdata.btc.types.Currency._
+import ch.epfl.bigdata.btc.types.Market._
+import ch.epfl.bigdata.btc.types.OfferType._
 
 abstract class PublicFetchActor extends Actor with PublicFetcher  {
   
