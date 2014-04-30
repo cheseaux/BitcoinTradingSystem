@@ -26,9 +26,10 @@ public class TwitterActor extends UntypedActor {
 	}
 
 	@Override
-	public void onReceive(Object arg0) throws Exception {
+	public void onReceive(Object newTweet) throws Exception {
 		// TODO Auto-generated method stub
-
+		String text = (String) newTweet;
+		
 	}
 
 }

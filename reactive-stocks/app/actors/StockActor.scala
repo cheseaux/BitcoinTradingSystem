@@ -1,15 +1,20 @@
 package actors
 
-import akka.actor.{ Props, ActorRef, Actor, Identify, ActorIdentity }
-import utils.{ StockQuote, FakeStockQuote }
 import java.util.Random
-import scala.collection.immutable.{ HashSet, Queue }
 import scala.collection.JavaConverters._
-import scala.concurrent.duration._
+import scala.collection.immutable.HashSet
+import scala.collection.immutable.Queue
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import akka.actor.Actor
+import akka.actor.ActorRef
+import akka.actor.Props
 import play.libs.Akka
-//import ch.epfl.bigdata.btc.crawler.coins.types.MarketPairTransaction
-//import ch.epfl.bigdata.btc.crawler.coins.types.Market
+import utils.FakeStockQuote
+import utils.StockQuote
+import ch.epfl.bigdata.btc.types._
+import ch.epfl.bigdata.btc.types.Registration._
+import ch.epfl.bigdata.btc.types.Transfer._
 
 /**
  * There is one StockActor per stock symbol.  The StockActor maintains a list of users watching the stock and the stock
@@ -45,48 +50,43 @@ class StockActor(symbol: String) extends Actor {
     // send History back to UserActor 
     // initiate connection with dataSource
     case WatchStock(_) =>
-      // send the stock history to the user
-      println("my name is \'" + self.path.name + "\'")
-      println("my path is \'" + self.path + "\'")
-      println("my parent is \'" + self.path.parent + "\'")
-      println("my adress is \'" + self.path.address + "\'")
+      // send the stock history to the user)
 
+      // TODO: keep for beauty, remove if nice
       sender ! StockHistory(symbol, stockHistory.asJava)
 
       println("initiating connection to DataSource: " + dataSourceSelection)
-      dataSourceSelection.tell("connectionGUI", self);
+
+      // register with DataSource actor
+      dataSourceSelection ! MarketPairRegistrationTransaction(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
+      //      dataSourceSelection ! MarketPairRegistrationOHLC(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 1, 1)
+      //      dataSourceSelection ! TwitterRegistrationFull()
 
       // add the watcher to the list
       watchers = watchers + sender
 
-    // Response to connection to dataSource
-    // store ref
-    // start pull looper
-    case dataSourceRef: ActorRef =>
-      dataSourceActor = dataSourceRef
-      println("remote actor ref obtained - YOUPI")
-
-      launchScheduler;
-
-    // called by scheduler
-    // request value to dataSource
-    case UpdateBitcoinValue =>
-      dataSourceActor ! "BTCval"
-      //            dataSourceActor ! MarketPairTransaction(Market.BTCe,null)
-      println("new BTC value requested to " + dataSourceActor)
-
-    // Response new value from dataSource
-    // notify UserActor
-    case valeur: Double =>
-      println("new value received from space: " + valeur)
-      val cinquante = stockQuote.newPrice(valeur)
-      stockHistory = stockHistory.drop(1) :+ cinquante
+    case ohlc: OHLC =>
+      //
+      //      println("new value received from space: " + 700)
+      //      val cinquante = stockQuote.newPrice(700)
+      //      stockHistory = stockHistory.drop(1) :+ cinquante
       // notify watchers
-      watchers.foreach(_ ! StockUpdate(symbol, cinquante))
+      watchers.foreach(_ ! ohlc)
 
-    case "connection established - LOLcats on orbit" =>
-      println("LoLcats acquired")
+    case transaction: Transaction =>
+      val price: Double = transaction.unitPrice;
+      val min = transaction.timestamp.minuteOfHour().getAsShortText()
+      val hour = transaction.timestamp.hourOfDay().getAsShortText()
+      println("received new stock value: " + price + " at " + hour + ":" + min)
+      //      val time : java.lang.
+      watchers.foreach(_ ! StockUpdate(symbol, price, hour, min))
 
+    // TODO: do stuff
+
+    case tweet: Tweet =>
+      watchers.foreach(_ ! tweet)
+
+    // called when killing app
     case UnwatchStock(_) =>
       watchers = watchers - sender
       if (watchers.size == 0) {
@@ -101,14 +101,20 @@ class StockActor(symbol: String) extends Actor {
       val newPrice = stockQuote.newPrice(stockHistory.last.doubleValue())
       stockHistory = stockHistory.drop(1) :+ newPrice
       // notify watchers
-      watchers.foreach(_ ! StockUpdate(symbol, newPrice))
+      watchers.foreach(_ ! StockUpdate(symbol, newPrice, "", ""))
   }
 
+  // TODO: remove
   // A random data set which uses stockQuote.newPrice to get each data point
+  //  var stockHistory: Queue[java.lang.Double] = {
+  //    lazy val initialPrices: Stream[java.lang.Double] = (new Random().nextDouble * 800) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
+  //    initialPrices.take(50).to[Queue]
+  //  }
   var stockHistory: Queue[java.lang.Double] = {
-    lazy val initialPrices: Stream[java.lang.Double] = (new Random().nextDouble * 800) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
+    lazy val initialPrices: Stream[java.lang.Double] = (0) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
     initialPrices.take(50).to[Queue]
   }
+
 }
 
 class StocksActor extends Actor {
@@ -136,11 +142,16 @@ case object UpdateBitcoinValue
 
 case object FetchLatest
 
-case class StockUpdate(symbol: String, price: Number)
+case class StockUpdate(symbol: String, price: Number, hour: String, minute: String)
 
 case class StockHistory(symbol: String, history: java.util.List[java.lang.Double])
 
 case class WatchStock(symbol: String)
 
 case class UnwatchStock(symbol: Option[String])
+
+//// TODO: remove when Marzell's is here
+//case class OHLC
+//case class Transaction
+//case class Tweet
 

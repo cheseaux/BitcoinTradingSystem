@@ -38,19 +38,20 @@ public class UserActor extends UntypedActor {
     public void onReceive(Object message) {
         if (message instanceof StockUpdate) {
         	
-        	System.out.println("user actor - stock update");
             // push the stock to the client
             StockUpdate stockUpdate = (StockUpdate)message;
             ObjectNode stockUpdateMessage = Json.newObject();
             stockUpdateMessage.put("type", "stockupdate");
             stockUpdateMessage.put("symbol", stockUpdate.symbol());
             stockUpdateMessage.put("price", stockUpdate.price().doubleValue());
+            stockUpdateMessage.put("hour", stockUpdate.hour());
+            stockUpdateMessage.put("minute", stockUpdate.minute());
+            
             out.write(stockUpdateMessage);
         }
         else if (message instanceof StockHistory) {
             // push the history to the client
             StockHistory stockHistory = (StockHistory)message;
-            System.out.println("user actor - history fetched");
 
             ObjectNode stockUpdateMessage = Json.newObject();
             stockUpdateMessage.put("type", "stockhistory");
@@ -63,5 +64,6 @@ public class UserActor extends UntypedActor {
             
             out.write(stockUpdateMessage);
         }
+        
     }
 }
