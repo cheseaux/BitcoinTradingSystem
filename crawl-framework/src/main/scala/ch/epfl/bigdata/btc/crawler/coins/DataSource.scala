@@ -33,13 +33,13 @@ class DataSource() extends Actor {
     case mpr: MarketPairRegistration => pool ! mpr // send this to register
     case mpt: MarketPairTransaction => println("ilia");
     
+    // TODO: cases used to test connection to GUI
     case "connectionGUI" => 
       println("received connection msg from GUI")
       sender ! self
-      
     case "BTCval" => 
       println("new BTC value request received")
-      // TODO: valeur arbitraire, envoyer autre message depuis GUI
+      // valeur arbitraire, envoyer autre message depuis GUI
       sender ! 678.88 
       
   }
