@@ -6,6 +6,7 @@ import play.Play;
 import play.libs.Json;
 import play.mvc.WebSocket;
 import akka.actor.UntypedActor;
+import ch.epfl.bigdata.btc.types.Transfer.Tweet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -63,6 +64,15 @@ public class UserActor extends UntypedActor {
             }
             
             out.write(stockUpdateMessage);
+        } else if (message instanceof Tweet) {
+        	Tweet tweet = (Tweet) message;
+        	ObjectNode messageForGUI = Json.newObject();
+        	messageForGUI.put("type", "tweet");
+        	messageForGUI.put("symbol", tweet.content());
+        	messageForGUI.put("sentiment", tweet.sentiment());
+        	messageForGUI.put("hour", tweet.date().hourOfDay().getAsShortText());
+        	messageForGUI.put("minutes", tweet.date().minuteOfHour().getAsShortText());
+            out.write(messageForGUI);
         }
         
     }
