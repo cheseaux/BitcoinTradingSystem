@@ -20,7 +20,7 @@ class MarketFetchPool() extends Actor {
   
   def receive() = {
     case t : Transaction => sendToDataSource(t)
-    case r : MarketPairRegistration => { 
+    case r : MarketPair => { 
       //dataSource = sender
       register(r.market, r.c)
     }

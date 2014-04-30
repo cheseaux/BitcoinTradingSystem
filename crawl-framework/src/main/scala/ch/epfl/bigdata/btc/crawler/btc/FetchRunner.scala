@@ -1,6 +1,7 @@
 package ch.epfl.bigdata.btc.crawler.btc
 
 import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
+import ch.epfl.bigdata.btc.crawler.coins.types.MarketPair
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import ch.epfl.bigdata.btc.crawler.coins.DataSource
 import akka.actor.{ActorSystem, Props}
@@ -12,12 +13,12 @@ object FetchRunner extends App {
 	
 	println(system.name)
 	
-	ActorPool.dataSource ! new MarketPairRegistration(
+	ActorPool.dataSource ! new MarketPair(
 	    Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
 	
 	println("FetchRunner | dataSource")
 	
-	ActorPool.dataSource ! new MarketPairRegistration(
+	ActorPool.dataSource ! new MarketPair(
 	    Market.BTCe, CurrencyPair(Currency.BTC, Currency.USD))
 	
 	println("FetchRunner | dataSource")

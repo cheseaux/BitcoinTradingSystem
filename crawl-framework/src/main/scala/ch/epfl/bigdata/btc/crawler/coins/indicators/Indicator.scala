@@ -7,7 +7,7 @@ import ch.epfl.bigdata.btc.crawler.coins.types.Market._
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import scala.collection.mutable.MutableList
 
-abstract class Indicator(dataSource: ActorRef, watched: MarketPair) extends Actor {
+abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOHLC) extends Actor {
   
 	var ticks: MutableList[OHLC] = new MutableList[OHLC]()
 	dataSource ! watched
