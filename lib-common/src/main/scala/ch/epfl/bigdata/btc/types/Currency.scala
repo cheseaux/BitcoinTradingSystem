@@ -1,4 +1,4 @@
-package ch.epfl.bigdata.btc.crawler.coins.types
+package ch.epfl.bigdata.btc.types
 
 object Currency extends Enumeration {
 	type Currency = Value

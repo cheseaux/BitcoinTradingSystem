@@ -4,12 +4,14 @@ import org.apache.http.client.fluent._
 import net.liftweb.json._
 import org.joda.time.DateTime
 
+import ch.epfl.bigdata.btc.types._
+import ch.epfl.bigdata.btc.types.Currency._
+import ch.epfl.bigdata.btc.types.Market
+
+import ch.epfl.bigdata.btc.types.Transfer._
+
 import ch.epfl.bigdata.btc.crawler.coins.types._
-import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
-import ch.epfl.bigdata.btc.crawler.coins.types.Market._
-
-
-
+import ch.epfl.bigdata.btc.types.OfferType
 
 
 

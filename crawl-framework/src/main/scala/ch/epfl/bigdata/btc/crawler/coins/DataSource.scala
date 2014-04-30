@@ -2,18 +2,12 @@ package ch.epfl.bigdata.btc.crawler.coins
 
 import ch.epfl.bigdata.btc.crawler.coins.indicators.Indicator
 import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
-import ch.epfl.bigdata.btc.crawler.coins.types.Transaction
-import ch.epfl.bigdata.btc.crawler.coins.types.OHLC
-import ch.epfl.bigdata.btc.crawler.coins.types.MarketPair
-import ch.epfl.bigdata.btc.crawler.coins.types.MarketPairRegistrationOHLC
-import ch.epfl.bigdata.btc.crawler.coins.types.MarketPairRegistrationTransaction
-import ch.epfl.bigdata.btc.crawler.coins.types.TwitterRegistrationFull
+import ch.epfl.bigdata.btc.types.Transfer._
+import ch.epfl.bigdata.btc.types.Registration._
 import scala.collection.mutable.MutableList
 import scala.collection.mutable.HashMap
 import akka.event.Logging
 import akka.actor.{Actor, ActorRef, Props}
-import ch.epfl.bigdata.btc.crawler.coins.types.Transaction
-import ch.epfl.bigdata.btc.crawler.coins.types.CurrencyPair
 
 
 class DataSource() extends Actor {

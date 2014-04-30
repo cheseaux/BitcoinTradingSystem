@@ -1,6 +1,6 @@
-package ch.epfl.bigdata.btc.crawler.coins.types
+package ch.epfl.bigdata.btc.types
 
-import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
+import ch.epfl.bigdata.btc.types.Currency._
 
 case class CurrencyPair(c1: Currency, c2: Currency) {
   override def equals(o: Any) = o match {

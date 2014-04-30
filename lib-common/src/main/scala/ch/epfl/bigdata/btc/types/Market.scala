@@ -1,4 +1,4 @@
-package ch.epfl.bigdata.btc.crawler.coins.types
+package ch.epfl.bigdata.btc.types
 
 object Market extends Enumeration {
 	type Market = Value

@@ -1,9 +1,12 @@
 package ch.epfl.bigdata.btc.crawler.coins.markets
 
-import ch.epfl.bigdata.btc.crawler.coins.types.Market._
-import ch.epfl.bigdata.btc.crawler.coins.types.Currency._
-import ch.epfl.bigdata.btc.crawler.coins.types._
+import ch.epfl.bigdata.btc.types.Market._
+import ch.epfl.bigdata.btc.types.Currency._
+import ch.epfl.bigdata.btc.types.CurrencyPair
+import ch.epfl.bigdata.btc.types.Transfer._
+import ch.epfl.bigdata.btc.types.Registration._
 
+import ch.epfl.bigdata.btc.crawler.coins.types._
 
 import scala.concurrent.duration._
 import collection.mutable.HashMap

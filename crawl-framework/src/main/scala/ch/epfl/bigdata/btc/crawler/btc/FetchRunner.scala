@@ -1,7 +1,10 @@
 package ch.epfl.bigdata.btc.crawler.btc
 
 import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
-import ch.epfl.bigdata.btc.crawler.coins.types.MarketPair
+import ch.epfl.bigdata.btc.types.Registration._
+import ch.epfl.bigdata.btc.types.CurrencyPair
+import ch.epfl.bigdata.btc.types.Market
+import ch.epfl.bigdata.btc.types.Currency
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import ch.epfl.bigdata.btc.crawler.coins.DataSource
 import akka.actor.{ActorSystem, Props}

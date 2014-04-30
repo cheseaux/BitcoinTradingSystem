@@ -2,8 +2,9 @@ package ch.epfl.bigdata.btc.crawler.coins.indicators
 
 import akka.actor.{ActorSystem, ActorLogging, Actor, Props, ActorRef}
 
-import ch.epfl.bigdata.btc.crawler.coins.types.OHLC
-import ch.epfl.bigdata.btc.crawler.coins.types.Market._
+import ch.epfl.bigdata.btc.types.Transfer._
+import ch.epfl.bigdata.btc.types.Registration._
+import ch.epfl.bigdata.btc.types.Market._
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import scala.collection.mutable.MutableList
 
