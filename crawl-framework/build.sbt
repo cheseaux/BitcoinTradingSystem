@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
 "com.typesafe.akka" %% "akka-remote" % "2.3.1",
 "org.twitter4j" % "twitter4j-stream" % "3.0.3",
 "edu.stanford.nlp" % "stanford-corenlp" % "1.2.0",
-"ch.epfl" %% "bts-lib-common" % "0.1"
+"ch.epfl" %% "bts-lib-common" % "0.1",
+"org.python" % "jython" % "2.5.3"
 )
 
 resolvers += (
