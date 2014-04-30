@@ -62,6 +62,14 @@ public class UserActor extends UntypedActor {
             }
             
             out.write(stockUpdateMessage);
+        } else if (message instanceof java.lang.Double) {
+        	ObjectNode stockUpdateMessage = Json.newObject();
+            stockUpdateMessage.put("type", "stockupdate");
+            stockUpdateMessage.put("symbol", "BTC");
+            stockUpdateMessage.put("price", (double) message);
+//            stockUpdateMessage.put("price", message);
+            out.write(stockUpdateMessage);
         }
+        
     }
 }

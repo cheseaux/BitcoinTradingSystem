@@ -30,6 +30,8 @@ public class Application extends Controller {
                 
                 final ActorRef twitterActor = Akka.system().actorOf(Props.create(TwitterActor.class, out));
                 
+                System.out.println("application system name: \'" + Akka.system().name() + "\'");
+                
                 
                 // run when message is received
                 // send all WebSocket message to the UserActor

@@ -3,46 +3,49 @@
   -moz-perspective: @value;
   perspective: @value;
 }
-
 .transform (@value) {
   -webkit-transform: rotateY(@value);
   -moz-transform: rotateY(@value);
   transform: rotateY(@value);
 }
-
 .border-radius (@value) {
   -webkit-border-radius: @value;
   -moz-border-radius: @value;
   border-radius: @value;
 }
-
-
 body {
   margin-top: 50px;
 }
-
 .flip-container {
   .perspective(1000);
   margin-bottom: 20px;
   &:hover .flipper {
-    .transform(10deg);
+    .transform(0deg);
   }
   &.flipped .flipper {
   .transform(180deg);
   }
 }
-
+#twit {
+    border: 1px solid black;
+    border-radius: 3px;
+    color: black;
+    font-size: large;
+    padding-left:20px; 
+    padding-right:20px; 
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 20px 20% 20px 20%;
+}
 .flipper {
   height: 250px;
-
-  background-color: #fafafa;
+  background-color: #000000;
   border: 1px solid #ddd;
   
   .border-radius(4px);
   
   cursor: hand;
   cursor: pointer;
-
   -webkit-transition: 0.6s;
   -moz-transition: 0.6s;
   transition: 0.6s;
@@ -59,26 +62,22 @@ body {
     padding: 3px 7px;
     font-size: 12px;
     font-weight: bold;
-    background-color: #ffffff;
+    background-color: #000000;
     border: 1px solid #ddd;
     color: #9da0a4;
-
     .border-radius(4px 0 4px 0);
   }
 }
-
 .chart-holder, .details-holder {
   position: absolute;
   width: 100%;
   height: 250px;
   top: 0px;
   left: 0px;
-
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-
 .chart-holder {
   z-index: 2;
   & p {
@@ -86,11 +85,10 @@ body {
     bottom: 7px;
     right: 20px;
     font-size: 10px;
-    color: #aaaaaa;
+    color: #ffa500;
     font-style: italic;
   }
 }
-
 .details-holder {
   .transform(180deg);
   text-align: center;
@@ -101,7 +99,6 @@ body {
     padding: 20px;
     background: none;
     border: none;
-
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
@@ -111,7 +108,6 @@ body {
     width: 128px;
   }
 }
-
 .chart {
   position: relative;
   width: 920px;
