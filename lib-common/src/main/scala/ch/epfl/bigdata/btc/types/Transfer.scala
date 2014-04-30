@@ -23,5 +23,5 @@ case class Transaction( from: Currency,			// The currency you want to use to buy
 case class OHLC (open: Double, high: Double, low: Double, close: Double, 
     volume: Double, date: DateTime, duration: Duration)
     
-case class Tweet()
+case class Tweet(date: DateTime, content: String, sentiment: Int)
 }
