@@ -16,12 +16,12 @@ object FetchRunner extends App {
 	
 	println(system.name)
 	
-	ActorPool.dataSource ! new MarketPair(
+	ActorPool.dataSource ! new MarketPairRegistrationTransaction(
 	    Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
 	
 	println("FetchRunner | dataSource")
 	
-	ActorPool.dataSource ! new MarketPair(
+	ActorPool.dataSource ! new MarketPairRegistrationTransaction(
 	    Market.BTCe, CurrencyPair(Currency.BTC, Currency.USD))
 	
 	println("FetchRunner | dataSource")

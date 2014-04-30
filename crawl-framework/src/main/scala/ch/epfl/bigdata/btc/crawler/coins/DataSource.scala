@@ -144,10 +144,14 @@ class DataSource() extends Actor {
   def acceptRegistrationOHLC(r: MarketPairRegistrationOHLC) {
     registrations.addOhlcRegistration(r, sender)
     cache.addOhlcType(r)
+    val registration = new MarketPair(r.market, r.c)
+    pool ! registration
   }
     
   def acceptRegistrationTrans(r: MarketPairRegistrationTransaction) {
     registrations.addTransRegistration(new MarketPair(r.market, r.c), sender);
+    val registration = new MarketPair(r.market, r.c)
+    pool ! registration
   }
      
   def acceptRegistrationTwitter(r: TwitterRegistrationFull) {
@@ -159,6 +163,9 @@ class DataSource() extends Actor {
    * update the cache and the distribute
    */
   def updateCacheAndNotify(t: Transaction) {
+    
+   
+    
     val mprt = MarketPairRegistrationTransaction(t.market, new CurrencyPair(t.from, t.to))
     val mp = MarketPair(t.market, new CurrencyPair(t.from, t.to))
     
@@ -171,8 +178,9 @@ class DataSource() extends Actor {
       case Some(l) => {
         l.map(a => a ! t)
       }
+      case None => 
     }
-    
+    /*
     registrations.getOhlcRegByMarketPair(mp) match {
       case Some(l) => {
         l.map(a => {
@@ -180,14 +188,19 @@ class DataSource() extends Actor {
             case Some(k) => {
               k.map(mpro => println(mpro))
             }
+            case None => 
           }
           
          } 
         )
       }
+      case None => 
     }
+    */
+    
     
   }
+  
   
   
   
