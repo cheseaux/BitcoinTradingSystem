@@ -56,11 +56,11 @@ class StockActor(symbol: String) extends Actor {
       sender ! StockHistory(symbol, stockHistory.asJava)
 
       println("initiating connection to DataSource: " + dataSourceSelection)
-      
+
       // register with DataSource actor
       dataSourceSelection ! MarketPairRegistrationTransaction(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
-//      dataSourceSelection ! MarketPairRegistrationOHLC(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 1, 1)
-//      dataSourceSelection ! TwitterRegistrationFull()
+      //      dataSourceSelection ! MarketPairRegistrationOHLC(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 1, 1)
+      //      dataSourceSelection ! TwitterRegistrationFull()
 
       // add the watcher to the list
       watchers = watchers + sender
@@ -75,26 +75,18 @@ class StockActor(symbol: String) extends Actor {
 
     case transaction: Transaction =>
       val price: Double = transaction.unitPrice;
-      println("received new stock value: " + price)
-//      val time : java.lang.
-      watchers.foreach(_ ! StockUpdate(symbol, price))
-
+      val min = transaction.timestamp.minuteOfHour().getAsShortText()
+      val hour = transaction.timestamp.hourOfDay().getAsShortText()
+      println("received new stock value: " + price + " at " + hour + ":" + min)
+      //      val time : java.lang.
+      watchers.foreach(_ ! StockUpdate(symbol, price, hour, min))
 
     // TODO: do stuff
 
     case tweet: Tweet =>
       watchers.foreach(_ ! tweet)
 
-    // TODO: remove
-    // Response new value from dataSource
-    // notify UserActor
-    case valeur: Double =>
-      println("new value received from space: " + valeur)
-      val cinquante = stockQuote.newPrice(valeur)
-      stockHistory = stockHistory.drop(1) :+ cinquante
-      // notify watchers
-      watchers.foreach(_ ! StockUpdate(symbol, cinquante))
-
+    // called when killing app
     case UnwatchStock(_) =>
       watchers = watchers - sender
       if (watchers.size == 0) {
@@ -109,16 +101,16 @@ class StockActor(symbol: String) extends Actor {
       val newPrice = stockQuote.newPrice(stockHistory.last.doubleValue())
       stockHistory = stockHistory.drop(1) :+ newPrice
       // notify watchers
-      watchers.foreach(_ ! StockUpdate(symbol, newPrice))
+      watchers.foreach(_ ! StockUpdate(symbol, newPrice, "", ""))
   }
 
   // TODO: remove
   // A random data set which uses stockQuote.newPrice to get each data point
-//  var stockHistory: Queue[java.lang.Double] = {
-//    lazy val initialPrices: Stream[java.lang.Double] = (new Random().nextDouble * 800) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
-//    initialPrices.take(50).to[Queue]
-//  }
-    var stockHistory: Queue[java.lang.Double] = {
+  //  var stockHistory: Queue[java.lang.Double] = {
+  //    lazy val initialPrices: Stream[java.lang.Double] = (new Random().nextDouble * 800) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
+  //    initialPrices.take(50).to[Queue]
+  //  }
+  var stockHistory: Queue[java.lang.Double] = {
     lazy val initialPrices: Stream[java.lang.Double] = (0) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
     initialPrices.take(50).to[Queue]
   }
@@ -150,7 +142,7 @@ case object UpdateBitcoinValue
 
 case object FetchLatest
 
-case class StockUpdate(symbol: String, price: Number)
+case class StockUpdate(symbol: String, price: Number, hour: String, minute: String)
 
 case class StockHistory(symbol: String, history: java.util.List[java.lang.Double])
 
