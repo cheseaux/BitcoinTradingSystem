@@ -4,6 +4,7 @@ import ch.epfl.bigdata.btc.crawler.coins.indicators.Indicator
 import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
 import ch.epfl.bigdata.btc.types.Transfer._
 import ch.epfl.bigdata.btc.types.Registration._
+import ch.epfl.bigdata.btc.types.CurrencyPair
 import scala.collection.mutable.MutableList
 import scala.collection.mutable.HashMap
 import akka.event.Logging
@@ -22,22 +23,90 @@ class DataSource() extends Actor {
   log.debug("DataSource: initialized")
   
   
+  /**
+   * This is the internal cache
+   */
+  class Cache {
+    private val twitter = new MutableList[Tweet]()
+    private val ohlcByMp = new HashMap[MarketPair, MutableList[MarketPairRegistrationOHLC]]()
+    private val ohlc = new HashMap[MarketPairRegistrationOHLC, MutableList[OHLC]]()
+    private val trans = new HashMap[MarketPairRegistrationTransaction, MutableList[Transaction]]()
+    
+    
+    def addTwitter(t : Tweet) {
+      twitter += t
+    }
+    
+    def addTransaction(mp : MarketPairRegistrationTransaction, t : Transaction) {
+      trans.get(mp) match {
+        case None => trans += (mp -> ((new MutableList[Transaction])+= t))
+        case Some(m) => m += t
+      }
+    }
+    
+    def addOhlcType(mpro: MarketPairRegistrationOHLC) {
+      val mp = new MarketPair(mpro.market, mpro.c)
+      ohlc.get(mpro) match {
+        case None => ohlc += (mpro -> new MutableList[OHLC])
+      }
+      ohlcByMp.get(mp) match {
+        case None => ohlcByMp += (mp -> ((new MutableList[MarketPairRegistrationOHLC]) += mpro))
+        case Some(l) => { 
+          if(!l.contains(mpro)) {
+            l += mpro
+          }
+        }
+      }
+    }
+    
+    def updateOHLC(mp: MarketPair, t: Transaction) {
+      
+    }
+    
+    def getLatestOhlc(mpro: MarketPairRegistrationOHLC) {
+      return 
+    }
+    
+    private def updateOhlcOfMpro(mp : MarketPairRegistrationOHLC, t : OHLC) {
+      ohlc.get(mp) match {
+        case None => ohlc += (mp -> ((new MutableList[OHLC])+= t))
+        case Some(m) => m += t
+      }
+    }    
+  }
+  
+  
+  
+  /**
+   * This is the internal observer store
+   */
   class Registrations {
-	  var twitter = new MutableList[ActorRef]()
-	  var ohlc = new HashMap[MarketPair, MutableList[ActorRef]]()
-	  var trans = new HashMap[MarketPair, MutableList[ActorRef]]()
+	  val twitter = new MutableList[ActorRef]()
+	  val ohlc = new HashMap[MarketPair, MutableList[ActorRef]]()
+	  val trans = new HashMap[MarketPair, MutableList[ActorRef]]()
 	  
-	  def getTwitterRegistrations () = twitter
-	  def getOhlcRegistration(mp : MarketPair) = ohlc.get(mp)
-	  def getTransRegistration(mp : MarketPair) = trans.get(mp)
+	  val actorsOhlc = new HashMap[ActorRef, MutableList[MarketPairRegistrationOHLC]]()
+	  val actorsTrans = new HashMap[ActorRef, MutableList[MarketPair]]()
+	  
+	  def getTwitterRegistrations() = twitter
+	  def getOhlcRegByMarketPair(mp : MarketPair) = ohlc.get(mp)
+	  def getTransRegByMarketPair(mp : MarketPair) = trans.get(mp)
+	  
+	  def getOhlcRegByActor(a : ActorRef) = actorsOhlc.get(a)
+	  def getTransRegByActor(a : ActorRef) = actorsTrans.get(a)
 	  
 	  def addTwitterRegistration(a: ActorRef) {
 	    twitter += a
 	  }
-	  def addOhlcRegistration(mp : MarketPair, a: ActorRef) {
+	  def addOhlcRegistration(mpro : MarketPairRegistrationOHLC, a: ActorRef) {
+	    val mp = new MarketPair(mpro.market, mpro.c)
 	    ohlc.get(mp) match {
 	     case None => ohlc += (mp -> ((new MutableList[ActorRef]()) += a))
 	     case Some(m) => m += a
+	    }
+	    actorsOhlc.get(a) match {
+	     case None => actorsOhlc += (a -> ((new MutableList[MarketPairRegistrationOHLC]()) += mpro))
+	     case Some(m) => m += mpro
 	    }
 	  }
 	  def addTransRegistration(mp : MarketPair, a: ActorRef) {
@@ -45,10 +114,15 @@ class DataSource() extends Actor {
 	     case None => trans += (mp -> ((new MutableList[ActorRef]()) += a))
 	     case Some(m) => m += a
 	    }
+	    actorsTrans.get(a) match {
+	     case None => actorsTrans += (a -> ((new MutableList[MarketPair]()) += mp))
+	     case Some(m) => m += mp
+	    }
 	  }
   }
   
   var registrations = new Registrations()
+  var cache = new Cache()
   
   
   
@@ -58,7 +132,7 @@ class DataSource() extends Actor {
     
 
     // DataSource receives a transaction from its fetchers.
-    //case t: Transaction => updateCache(t)
+    case t: Transaction => updateCacheAndNotify(t)
         
     // Accepts registration for OHLC, Transaction, Twitters
     case mpro: MarketPairRegistrationOHLC => acceptRegistrationOHLC(mpro)
@@ -68,21 +142,52 @@ class DataSource() extends Actor {
   
   
   def acceptRegistrationOHLC(r: MarketPairRegistrationOHLC) {
-    
+    registrations.addOhlcRegistration(r, sender)
+    cache.addOhlcType(r)
   }
-  
-  
+    
   def acceptRegistrationTrans(r: MarketPairRegistrationTransaction) {
-    
+    registrations.addTransRegistration(new MarketPair(r.market, r.c), sender);
   }
-   
-   
+     
   def acceptRegistrationTwitter(r: TwitterRegistrationFull) {
-    
+    registrations.addTwitterRegistration(sender)
   }
   
   
-  
+  /**
+   * update the cache and the distribute
+   */
+  def updateCacheAndNotify(t: Transaction) {
+    val mprt = MarketPairRegistrationTransaction(t.market, new CurrencyPair(t.from, t.to))
+    val mp = MarketPair(t.market, new CurrencyPair(t.from, t.to))
+    
+    // update cache
+    cache.addTransaction(mprt, t)
+    cache.updateOHLC(mp, t)
+    
+    // distriution
+    registrations.getTransRegByMarketPair(mp) match {
+      case Some(l) => {
+        l.map(a => a ! t)
+      }
+    }
+    
+    registrations.getOhlcRegByMarketPair(mp) match {
+      case Some(l) => {
+        l.map(a => {
+          registrations.getOhlcRegByActor(a) match {
+            case Some(k) => {
+              k.map(mpro => println(mpro))
+            }
+          }
+          
+         } 
+        )
+      }
+    }
+    
+  }
   
   
   
