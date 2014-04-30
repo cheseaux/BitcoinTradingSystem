@@ -92,7 +92,6 @@ showtweet = (message) ->
 	#}
 	#`
 	#tweetlist = 'bambi';
-	
 	#for tweet in tweets tweetstring = tweetstring + '\n' + tweet
 	
 	document.getElementById('twit').innerHTML = tweets.join(' ').toString()
