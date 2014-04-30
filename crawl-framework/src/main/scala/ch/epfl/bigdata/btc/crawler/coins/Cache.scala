@@ -24,7 +24,7 @@ import org.joda.time.DateTime
     /**
      * Add a new Tweet to the cache
      */
-    def addTwitter(t : Tweet) {
+    def addTweet(t : Tweet) {
       twitter.+=:(t)
     }
     
