@@ -26,7 +26,7 @@ public class ManualLabelling {
 	}
 	
 	public static void main(String[] args) {
-		File toClassify = new File("tweets_<name>");
+		File toClassify = new File("neutral_tweets_to_split.txt");
 		Scanner scanner = new Scanner(System.in);
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(toClassify));
@@ -44,7 +44,7 @@ public class ManualLabelling {
 					scanner.nextLine();
 					switch (choice) {
 					case 1:
-						printLabel("postive_tweets.txt", line);
+						printLabel("positive_tweets.txt", line);
 						break;
 					case 2:
 						printLabel("neutral_tweets.txt", line);
@@ -59,10 +59,8 @@ public class ManualLabelling {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -13,7 +13,7 @@ object Twitter {
 
 	def simpleStatusListener = new StatusListener() {
 		def onStatus(status: Status) { 
-		  println("["+status.getCreatedAt()+"]" + status.getText())
+		  println("["+status.getCreatedAt()+"]" + status.getText().replace('\n', ' '))
 		}
 		def onDeletionNotice(statusDeletionNotice: StatusDeletionNotice) {}
 		def onTrackLimitationNotice(numberOfLimitedStatuses: Int) {}
@@ -31,7 +31,7 @@ object Twitter {
 	  
 		val twitterStream = new TwitterStreamFactory(config).getInstance
 				twitterStream.addListener(simpleStatusListener)
-				twitterStream.filter(new FilterQuery().track(Array("bitcoin")))
+				twitterStream.filter(new FilterQuery().track(Array("bitcoin","btc","bitcoins", "BTC", "cryptocurrency")))
 	}
 
 }
