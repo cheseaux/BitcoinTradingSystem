@@ -60,7 +60,7 @@ class StockActor(symbol: String) extends Actor {
       // register with DataSource actor
       dataSourceSelection ! MarketPairRegistrationTransaction(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
       //      dataSourceSelection ! MarketPairRegistrationOHLC(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 1, 1)
-      //      dataSourceSelection ! TwitterRegistrationFull()
+      dataSourceSelection ! TwitterRegistrationFull()
 
       // add the watcher to the list
       watchers = watchers + sender
@@ -81,9 +81,9 @@ class StockActor(symbol: String) extends Actor {
       //      val time : java.lang.
       watchers.foreach(_ ! StockUpdate(symbol, price, hour, min))
 
-    // TODO: do stuff
 
     case tweet: Tweet =>
+      println("got a new tweet: " + tweet.content)
       watchers.foreach(_ ! tweet)
 
     // called when killing app
