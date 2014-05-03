@@ -1,6 +1,5 @@
 import csv, random
 import nltk
-import tweet_features, tweet_pca
 import re
 import pickle
 import sys
@@ -63,7 +62,6 @@ class TwitterSentimentClassifier:
 		post = re.sub('(http(s?)://)([a-zA-Z0-9\/\.])*', ' ', post)
 		# Remove everything that is not a word
 		post = re.sub('[^(\w&\s)]|\(|\)|\d', ' ', post)
- 
 		return post
 		
 	def extract_features(self,tweet):
@@ -80,7 +78,6 @@ class TwitterSentimentClassifier:
 		return self.classifier.classify(self.extract_features(featureVec))
 		
 	def train(self, filePath, classificationModel, crossValidation=False):
-
 		tweetsRaw = list(csv.reader(open(filePath, 'rb'), delimiter=',', quotechar='"'))
 		random.shuffle(tweetsRaw)
 		stopWords = SentimentUtils.getStopWordList('stopwords.txt')
@@ -132,16 +129,12 @@ class TwitterSentimentClassifier:
 			print 'Iteration\tAccuracy'
 			for (train_set, test_set) in SentimentUtils.getFoldPartition(fvecs, kfold):
 				current += 1
-
-				# train classifier
 				self.classifier = classificationModel.train(train_set);
-			
-				# classify and dump results for interpretation
-				#self.classifier.show_most_informative_features(10)
 				accuracy = nltk.classify.accuracy(self.classifier, test_set)
 				print '%d\t\t%.2f%%' % (current, round(accuracy*100.0,2))
 
 if __name__=='__main__':
 	classificationModel = nltk.NaiveBayesClassifier
-	sentimentClassifier = TwitterSentimentClassifier(load=False)
-	sentimentClassifier.train('mergedWithApple.csv', classificationModel, crossValidation=False)
+	sentimentClassifier = TwitterSentimentClassifier(load=True)
+	print sentimentClassifier.classify_tweet(sys.argv[1])
+	#sentimentClassifier.train('mergedWithApple.csv', classificationModel, crossValidation=False)
