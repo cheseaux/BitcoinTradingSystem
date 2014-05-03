@@ -25,8 +25,9 @@ class TwitterActor(dataSource: ActorRef) extends Actor {
     def onStatus(status: Status) {
       println("[" + status.getCreatedAt() + "]" + status.getText())
       // send stuff to datasource
-      dataSource ! Tweet(new DateTime(status.getCreatedAt()), status.getText(),0)
       
+      dataSource ! new Tweet(new DateTime(status.getCreatedAt().getTime()), status.getText(), 0)
+
     }
     def onDeletionNotice(statusDeletionNotice: StatusDeletionNotice) {}
     def onTrackLimitationNotice(numberOfLimitedStatuses: Int) {}

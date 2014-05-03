@@ -1,8 +1,12 @@
-name := "BTS-lib-common"
+import sbt._
+import Process._
+import Keys._
 
-version := "0.1"
+name := "BTS-commons"
 
-organization := "ch.epfl"
+version := "0.1-SNAPSHOT"
+
+organization := "ch.epfl.bigdata.coin"
 
 scalaVersion := "2.10.3"
 

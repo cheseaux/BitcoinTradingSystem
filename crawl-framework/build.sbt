@@ -1,6 +1,12 @@
-name := "Bitcoin Trading System"
+import sbt._
+import Process._
+import Keys._
+
+name := "BTS-crawler"
 
 version := "0.1"
+
+organization := "ch.epfl.bigdata.coin"
 
 scalaVersion := "2.10.3"
 
@@ -19,8 +25,8 @@ libraryDependencies ++= Seq(
 "com.typesafe.akka" %% "akka-remote" % "2.3.1",
 "org.twitter4j" % "twitter4j-stream" % "3.0.3",
 "edu.stanford.nlp" % "stanford-corenlp" % "1.2.0",
-"ch.epfl" %% "bts-lib-common" % "0.1",
-"org.python" % "jython" % "2.5.3"
+"org.python" % "jython" % "2.5.3",
+"ch.epfl.bigdata.coin" %% "bts-commons" % "0.1-SNAPSHOT" changing()
 )
 
 resolvers += (
