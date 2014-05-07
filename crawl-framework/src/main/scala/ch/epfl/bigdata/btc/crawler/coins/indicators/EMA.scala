@@ -5,10 +5,9 @@ import scala.collection.mutable.MutableList
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
 import ch.epfl.bigdata.btc.crawler.coins.types._
-import ch.epfl.bigdata.btc.crawler.coins.types.Market._
-import ch.epfl.bigdata.btc.crawler.coins.types.Market._
+import ch.epfl.bigdata.btc.types.Registration._
 
-class EMA(dataSource: ActorRef, watched: MarketPair, period: Int, alpha : Double) extends Indicator(dataSource, watched) {
+class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int, alpha : Double) extends Indicator(dataSource, watched) {
 
 	var values: List[Double] = Nil
 
