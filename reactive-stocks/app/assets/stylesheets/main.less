@@ -36,7 +36,7 @@ body {
     color: white;
     height: 200px;
     font-size: large;
-    width: 940px;
+
 	margin-right: auto;
 	margin-left: auto;
 }
@@ -60,7 +60,7 @@ body {
     padding-bottom: 5px;
 }
 
-#price, #tweetHeader{
+#tweetHeader{
 	position: relative
     border: 1px solid grey;
     border-radius: 3px;
@@ -72,81 +72,11 @@ body {
     padding-top: 15px;
     padding-bottom: 15px;
     margin-top: 5px;
-    width: 900px;
+
 	margin-right: auto;
 	margin-left: auto;
 }
-.flipper {
-  height: 250px;
-  background-color: #000000;
-  border: 1px solid #ddd;
-  
-  .border-radius(4px);
-  
-  cursor: hand;
-  cursor: pointer;
-  -webkit-transition: 0.6s;
-  -moz-transition: 0.6s;
-  transition: 0.6s;
-  
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  
-  &:after {
-    content: attr(data-content);
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    padding: 3px 7px;
-    font-size: 12px;
-    font-weight: bold;
-    background-color: #000000;
-    border: 1px solid #ddd;
-    color: #9da0a4;
-    .border-radius(4px 0 4px 0);
-  }
-}
-.chart-holder, .details-holder {
-  position: absolute;
-  width: 100%;
-  height: 250px;
-  top: 0px;
-  left: 0px;
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-.chart-holder {
-  z-index: 2;
-  & p {
-    position: absolute;
-    bottom: 7px;
-    right: 20px;
-    font-size: 10px;
-    color: #ffa500;
-    font-style: italic;
-  }
-}
-.details-holder {
-  .transform(180deg);
-  text-align: center;
-  & h4 {
-    padding: 20px;
-  }
-  & .progress {
-    padding: 20px;
-    background: none;
-    border: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-  }
-  & img {
-    height: 128px;
-    width: 128px;
-  }
-}
+
 .chart {
   position: relative;
   width: 920px;

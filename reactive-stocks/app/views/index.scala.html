@@ -9,9 +9,7 @@
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.flot.js"))'></script>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))'></script>
-
     <script type='text/javascript' src='@routes.Assets.at("javascripts/index.min.js")'></script>
-	
 	<script type='text/javascript'>
 	$('.row .btn').on('click', function(e) {
     e.preventDefault();
@@ -23,60 +21,47 @@
 
 </head>
 <body data-ws-url="@routes.Application.ws.webSocketURL(request)">
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="brand" href="#">Bitcoin Trading</a>
-                
-                
-                <form id="addsymbolform" class="navbar-form pull-right">
-                    
-                </form>
-                
-                
-				
-                
-            </div>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="#">Bitcoin Trading</a>
+
+            <form id="addsymbolform" class="navbar-form pull-right"></form>
         </div>
     </div>
-    
-    <div id="stocks" class="container">
-        
-    </div>
-    
-    <div id="price">
-		
-	</div>
-    
-    <div id="tweetHeader">
-		Live Tweets
-	</div>
-	
-	<div id = "tweetList">
-		
-	</div>		
-
-<div class="navbar navbar-fixed-top">
-    </div>
-
-    <div class="container">
-      <div class="hero-unit">
-        <h1>Hello, world!</h1>
-        <p>Blah, blah.</p>
-        <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-      </div>
-
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="span4 collapse-group">
-          <h2>Heading</h2>
-           <p class="collapse">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-      </div>
-
 </div>
 
-    
+<div class="jumbotron">
+    <div class="container">
+
+        <div id="chart" style="width:920px; height:250px;"></div>
+
+        <div class="row">
+            <div id="price" class="col-md-4">PRICE HERE</div>
+            <div class="col-md-4">SENTIMENT HERE</div>
+            <div class="col-md-4">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-lg btn-block dropdown-toggle"
+                            data-toggle="dropdown">
+                        Select Market <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">BTC-e</a></li>
+                        <li><a href="#">Bitstamp</a></li>
+                        <li><a href="#">Bitfix</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="tweetHeader">Live Tweets</div>
+
+        <div id="tweetList"></div>
+
+    </div>
+</div>
+
+
 </body>
 </html>
