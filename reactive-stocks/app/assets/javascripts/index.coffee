@@ -25,10 +25,16 @@ $ ->
     ws.send(JSON.stringify({symbol: $("#addsymboltext").val()}))
     # reset the form
     $("#addsymboltext").val("")
+    
+    
 getPricesFromArray = (data) ->
   (v[1] for v in data)
+  
+  
 getChartArray = (data) ->
   ([i, v] for v, i in data)
+  
+  
 getChartOptions = (data) ->
   series:
     shadowSize: 0
@@ -36,11 +42,18 @@ getChartOptions = (data) ->
     min: getAxisMin(data)
     max: getAxisMax(data)
   xaxis:
-    show: false
+    show: true
+
+
 getAxisMin = (data) ->
   Math.min.apply(Math, data) * 0.9
+
+
 getAxisMax = (data) ->
   Math.max.apply(Math, data) * 1.1
+  
+  
+  
 populateStockHistory = (message) ->
   chart = $("<div>").addClass("chart").prop("id", message.symbol)
   chartHolder = $("<div>").addClass("chart-holder").append(chart)
@@ -51,6 +64,10 @@ populateStockHistory = (message) ->
     handleFlip($(this))
   $("#stocks").prepend(flipContainer)
   plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
+  console.log("mesage history", message.history)
+  console.log("data", plot.getData()[0].data)
+  
+  
   
 updateStockChart = (message) ->
   if ($("#" + message.symbol).size() > 0)
@@ -58,7 +75,17 @@ updateStockChart = (message) ->
     data = getPricesFromArray(plot.getData()[0].data)
     data.shift()
     data.push(message.price)
-    plot.setData([getChartArray(data)])
+    #plot.setData([getChartArray(data)])
+    
+    console.log("timestamp", message.seconds)
+    console.log("price", message.price)
+    
+    data2 = plot.getData()[0].data
+    data2.shift()
+    data2.push([message.seconds, message.price])
+    plot.setData([data2])
+    
+    
     # update the yaxes if either the min or max is now out of the acceptable range
     yaxes = plot.getOptions().yaxes[0]
     if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
@@ -68,6 +95,7 @@ updateStockChart = (message) ->
       plot.setupGrid()
     # redraw the chart
     plot.draw()
+    #console.log("data", data)
     
     
     
@@ -130,3 +158,7 @@ handleFlip = (container) ->
     detailsHolder = container.find(".details-holder")
     detailsHolder.append($("<h4>").text("Determing whether you should buy or sell based on the sentiment of recent tweets..."))
     detailsHolder.append($("<div>").addClass("progress progress-striped active").append($("<div>").addClass("bar").css("width", "100%")))
+
+
+
+
