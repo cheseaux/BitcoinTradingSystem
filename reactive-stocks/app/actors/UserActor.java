@@ -47,6 +47,7 @@ public class UserActor extends UntypedActor {
             stockUpdateMessage.put("price", stockUpdate.price().doubleValue());
             stockUpdateMessage.put("hour", stockUpdate.hour());
             stockUpdateMessage.put("minute", stockUpdate.minute());
+            stockUpdateMessage.put("seconds", stockUpdate.seconds());
             
             out.write(stockUpdateMessage);
         }
