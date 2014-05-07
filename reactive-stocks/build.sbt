@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "flot" % "0.8.0",
   "com.typesafe.akka" %% "akka-testkit" % "2.2.1" % "test",
   "com.github.nscala-time" %% "nscala-time" % "0.8.0",
-  "ch.epfl.bigdata.coin" %% "bts-commons" % "0.1-SNAPSHOT" changing()
+  "ch.epfl.bigdata.coin" %% "bts-commons" % "0.1-SNAPSHOT"
 )
 
 resolvers += (
