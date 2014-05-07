@@ -51,11 +51,30 @@ getAxisMin = (data) ->
   Math.min.apply(Math, data) * 0.98
 getAxisMax = (data) ->
   Math.max.apply(Math, data) * 1.02
-populateStockHistory = (message) ->
-  chart = $("#chart").addClass("chart")
-  plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
 
   
+  
+getXAxisMin = (fulldata) ->
+  a = (v[0] for v in fulldata)
+  return Math.min.apply(Math, a)
+  
+getXAxisMax = (fulldata) ->
+  a = (v[0] for v in fulldata)
+  return Math.max.apply(Math, a)
+  
+  
+populateStockHistory = (message) ->
+  
+  
+  #populates with history, we do not want
+  #plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
+  chart = $("#chart").addClass("chart")
+  plot = chart.plot([[0, 0]], getChartOptions(message.history)).data("plot")
+  
+  #console.log("mesage history", message.history)
+  #console.log("data", plot.getData()[0].data)
+#compteur de messages recus
+window.kl = 0
   
 updateStockChart = (message) ->
   if ($("#chart").size() > 0)
@@ -68,22 +87,35 @@ updateStockChart = (message) ->
     #console.log("seconds", message.seconds)
     #console.log("price", message.price)
     
-    data2 = plot.getData()[0].data
-    data2.shift()
-    data2.push([message.seconds, message.price])
-    plot.setData([data2])
+    window.data2 = plot.getData()[0].data
     
+  if (window.data2.length == 1) or (window.data2.length >= 100)
+    window.data2.shift()
+	
+  window.kl++
+  window.data2.push([message.time, message.price])
+  
+  data2.sort()
+  
+  plot.setData([window.data2])
+  
+  #setting the x axis
+  
+  xaxes = plot.getOptions().xaxes[0]
+  xaxes.min = getXAxisMin(data2)
+  xaxes.max = getXAxisMax(data2)
+  plot.setupGrid()
     
     # update the yaxes if either the min or max is now out of the acceptable range
-    yaxes = plot.getOptions().yaxes[0]
-    if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
-      # reseting yaxes
-      yaxes.min = getAxisMin(data)
-      yaxes.max = getAxisMax(data)
-      plot.setupGrid()
-    # redraw the chart
-    plot.draw()
-    #console.log("data", data)
+  yaxes = plot.getOptions().yaxes[0]
+  #if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
+    # reseting yaxes
+  yaxes.min = getAxisMin(data)*0.98
+  yaxes.max = getAxisMax(data)*1.02
+  plot.setupGrid()
+  # redraw the chart
+  plot.draw()
+  #console.log("data", data)
     
     
     
