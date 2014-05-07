@@ -19,10 +19,7 @@ public class TwitterActor extends UntypedActor {
 		
 		System.out.println("twitter actor is online weep weep");
 		
-        ObjectNode tweet = Json.newObject();
-        tweet.put("type", "tweet");
-        tweet.put("symbol", "ca marche, yeeeeehaaaaaa *PAN* *PAN* *PAN*");
-        out.write(tweet);
+
 	}
 
 	@Override
