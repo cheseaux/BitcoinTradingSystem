@@ -1,3 +1,5 @@
+tweets = []
+
 $ ->
   ws = new WebSocket $("body").data("ws-url")
   ws.onmessage = (event) ->
@@ -9,9 +11,14 @@ $ ->
         updateStockChart(message)
         updatePrice(message)
       when "tweet"
-        showtweet(message)
+      	if message.sentiment != 0
+       	  tweets.push message
+          showTweets()
       else
         console.log(message)
+
+	
+
   $("#addsymbolform").submit (event) ->
     event.preventDefault()
     # send the message to watch the stock
@@ -66,35 +73,30 @@ updateStockChart = (message) ->
     
   
 root = exports ? this
-root.cleartweets = () -> document.getElementById('twit').innerHTML = 'prout'
  
 	
- #tweet array
-tweets = ['<font color="000000", font size=2>Tweets</font><br>', '<br><hr>']  
+ #tweet array 
 #max tweets
 updatePrice = (message) ->
-	document.getElementById('price').innerHTML =  '<font color="FFFF33", font size=2>Price :  </font>' + message.price
+	document.getElementById('price').innerHTML =  '<font color="FFFF33", font size=2>Price :  </font>' + message.price + '$'
+    
+showTweets = () ->
+	formattedTweets = (showtweet(tweet) for tweet in tweets).reduceRight (x, y) -> x + "\n" + y
+	document.getElementById('tweetList').innerHTML = formattedTweets
     
 showtweet = (message) ->
-	randomnumber = Math.random()
-	if randomnumber >= 0.5
-		tweets.push '<font color="FF0000">'
-	else
-		tweets.push '<font color="00FF00">'
+	sentiment = message.sentiment
+	str = 
+	if sentiment == -1
+		str = '<div class="negtweet">'
+	if sentiment == 1
+		str = '<div class="postweet">'
 	
-	tweets.push message.symbol
-	tweets.push '</font>'
-	tweets.push '<hr>'
-	#tweets.push '<br>'
-	#tweetstring = ' '
-	#for (i = 0; i < tweetlist.length; i++){
-	#	tweetlist = tweetlist + '\n' + tweets(i);
-	#}
-	#`
-	#tweetlist = 'bambi';
-	#for tweet in tweets tweetstring = tweetstring + '\n' + tweet
-	
-	document.getElementById('twit').innerHTML = tweets.join(' ').toString()
+	str += message.symbol
+	#str += '</font>'
+	str += '</div>'
+	return str
+
     
 handleFlip = (container) ->
   if (container.hasClass("flipped"))
