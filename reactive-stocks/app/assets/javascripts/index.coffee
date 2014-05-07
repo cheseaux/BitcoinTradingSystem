@@ -39,19 +39,20 @@ getChartOptions = (data) ->
   series:
     shadowSize: 0
   yaxis:
-    min: getAxisMin(data)
-    max: getAxisMax(data)
+    min: 400
+    max: 410
   xaxis:
     show: true
+    #mode: time
+    #timeformat: "%Y/%m/%d"
 
 
 getAxisMin = (data) ->
-  Math.min.apply(Math, data) * 0.9
+  Math.min.apply(Math, data) * 0.99
 
 
 getAxisMax = (data) ->
-  Math.max.apply(Math, data) * 1.1
-  
+  Math.max.apply(Math, data) * 1.01
   
   
 populateStockHistory = (message) ->
@@ -63,9 +64,14 @@ populateStockHistory = (message) ->
   flipContainer = $("<div>").addClass("flip-container").append(flipper).click (event) ->
     handleFlip($(this))
   $("#stocks").prepend(flipContainer)
+  
+  #populates with history, we do not want
+  #plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
+  
   plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
-  console.log("mesage history", message.history)
-  console.log("data", plot.getData()[0].data)
+  
+  #console.log("mesage history", message.history)
+  #console.log("data", plot.getData()[0].data)
   
   
   
@@ -75,10 +81,10 @@ updateStockChart = (message) ->
     data = getPricesFromArray(plot.getData()[0].data)
     data.shift()
     data.push(message.price)
-    #plot.setData([getChartArray(data)])
+    #plot.setData([getChartArray(data)])   data was used before, without timestamps
     
-    console.log("timestamp", message.seconds)
-    console.log("price", message.price)
+    #console.log("seconds", message.seconds)
+    #console.log("price", message.price)
     
     data2 = plot.getData()[0].data
     data2.shift()
@@ -158,7 +164,3 @@ handleFlip = (container) ->
     detailsHolder = container.find(".details-holder")
     detailsHolder.append($("<h4>").text("Determing whether you should buy or sell based on the sentiment of recent tweets..."))
     detailsHolder.append($("<div>").addClass("progress progress-striped active").append($("<div>").addClass("bar").css("width", "100%")))
-
-
-
-
