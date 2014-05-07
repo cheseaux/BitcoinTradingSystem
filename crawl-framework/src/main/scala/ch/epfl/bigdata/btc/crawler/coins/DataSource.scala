@@ -74,6 +74,7 @@ class DataSource() extends Actor {
       case None => 
       case Some(l) => {
         l.map(a => a ! t)
+println("sent transaction " + t)
       }
       
     }
@@ -87,6 +88,7 @@ class DataSource() extends Actor {
             case None => return
             case Some(k) => {
               k.map(mpro => a ! cache.getLatestOhlc(mpro))
+		println("ohlc ")
             }
           }
           
@@ -101,5 +103,6 @@ class DataSource() extends Actor {
   def updateAndSendTweet(t: Tweet) {
     cache.addTweet(t)
     registrations.getTwitterRegistrations.map(f => f ! t)
+    println("sent tweet" + t)
   }
 }
