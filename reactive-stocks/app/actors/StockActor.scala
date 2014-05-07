@@ -77,9 +77,10 @@ class StockActor(symbol: String) extends Actor {
       val price: Double = transaction.unitPrice;
       val min = transaction.timestamp.minuteOfHour().getAsShortText()
       val hour = transaction.timestamp.hourOfDay().getAsShortText()
-      println("received new stock value: " + price + " at " + hour + ":" + min)
+      val seconds = transaction.timestamp.secondOfDay().getAsShortText()
+      println("received new stock value: " + price + " at " + hour + ":" + min + ":" + seconds)
       //      val time : java.lang.
-      watchers.foreach(_ ! StockUpdate(symbol, price, hour, min))
+      watchers.foreach(_ ! StockUpdate(symbol, price, hour, min, seconds))
 
 
     case tweet: Tweet =>
@@ -101,7 +102,7 @@ class StockActor(symbol: String) extends Actor {
       val newPrice = stockQuote.newPrice(stockHistory.last.doubleValue())
       stockHistory = stockHistory.drop(1) :+ newPrice
       // notify watchers
-      watchers.foreach(_ ! StockUpdate(symbol, newPrice, "", ""))
+      watchers.foreach(_ ! StockUpdate(symbol, newPrice, "", "", ""))
   }
 
   // TODO: remove
@@ -142,7 +143,7 @@ case object UpdateBitcoinValue
 
 case object FetchLatest
 
-case class StockUpdate(symbol: String, price: Number, hour: String, minute: String)
+case class StockUpdate(symbol: String, price: Number, hour: String, minute: String, seconds: String)
 
 case class StockHistory(symbol: String, history: java.util.List[java.lang.Double])
 
