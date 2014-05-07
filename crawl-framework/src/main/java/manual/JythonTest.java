@@ -15,7 +15,7 @@ public class JythonTest {
 		try {
 //			Process p = Runtime.getRuntime().exec("python sentiment.py " + "`" + strNeutral + "`");
 //			Process p = Runtime.getRuntime().exec("python sentiment.py " + "`" + strNegative + "`");
-			String[] commands = {"python","sentiment.py",strPositive};
+			String[] commands = {"python","sentiment.py",strNegative};
 			Process p = Runtime.getRuntime().exec(commands);
 			BufferedReader stdInput = new BufferedReader(new 
 					InputStreamReader(p.getInputStream()));
@@ -23,8 +23,10 @@ public class JythonTest {
 			BufferedReader stdError = new BufferedReader(new 
 					InputStreamReader(p.getErrorStream()));
 
-			stdInput.readLine()
-             
+			String res = stdInput.readLine();
+			System.out.println(res);
+			
+             String s = "";
             //Print stderr for debugging purpose
 			while ((s = stdError.readLine()) != null) {
 				System.err.println(s);
