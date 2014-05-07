@@ -75,12 +75,7 @@ class StockActor(symbol: String) extends Actor {
 
     case transaction: Transaction =>
       val price: Double = transaction.unitPrice;
-      //val min = transaction.timestamp.minuteOfHour().getAsShortText()
-      //val hour = transaction.timestamp.hourOfDay().getAsShortText()
-      //val seconds = transaction.timestamp.secondOfDay().getAsShortText()
       val time = transaction.timestamp.getMillis()/1000;
-      //println("received new stock value: " + price + " at " + hour + ":" + min + ":" + seconds)
-      //      val time : java.lang.
       watchers.foreach(_ ! StockUpdate(symbol, price, time))
 
 
@@ -114,8 +109,9 @@ class StockActor(symbol: String) extends Actor {
   //  }
   var stockHistory: Queue[java.lang.Double] = {
     lazy val initialPrices: Stream[java.lang.Double] = (0) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
-    initialPrices.take(50).to[Queue]
+    initialPrices.take(5).to[Queue]
   }
+  
 
 }
 

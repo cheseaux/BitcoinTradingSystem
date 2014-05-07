@@ -45,11 +45,8 @@ public class UserActor extends UntypedActor {
             stockUpdateMessage.put("type", "stockupdate");
             stockUpdateMessage.put("symbol", stockUpdate.symbol());
             stockUpdateMessage.put("price", stockUpdate.price().doubleValue());
-//            stockUpdateMessage.put("hour", stockUpdate.hour());
-//            stockUpdateMessage.put("minute", stockUpdate.minute());
-//            stockUpdateMessage.put("seconds", stockUpdate.seconds());
+            // time field is number of seconds since 1.1.1970
             stockUpdateMessage.put("time", stockUpdate.time());
-//            System.out.println("userActor got new beef at " + stockUpdate.time());
             
             out.write(stockUpdateMessage);
         }
