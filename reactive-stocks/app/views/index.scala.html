@@ -8,63 +8,91 @@
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.flot.js"))'></script>
-    
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.flot.time.js"))'></script>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))'></script>
     <script type='text/javascript' src='@routes.Assets.at("javascripts/index.min.js")'></script>
-	<script type='text/javascript'>
-	$('.row .btn').on('click', function(e) {
-    e.preventDefault();
-    var $this = $(this);
-    var $collapse = $this.closest('.collapse-group').find('.collapse');
-    $collapse.collapse('toggle');
-	});
-	</script>
+
+
 
 </head>
 <body data-ws-url="@routes.Application.ws.webSocketURL(request)">
 
+	<div class="navbar navbar-inverse navbar-fixed-top">
+	    <div class="navbar-inner">
+	        <div class="container">
+	            <p class="brand" >Bitcoin Trading</p>
+	        </div>
+	    </div>
+	</div>
+	
+	<div class="jumbotron2">
+	    <div class="container">
+	            <div id="chart"></div>
+	        
+				<div class="row">
+					<div class="col-lg-4">
+						<div id="secondary-stat-item1" class="secondary-stat-item big-number-stat clearfix">
+							<div class="data">
+								<span class="col-left big-number">$453.84</span>
+								<span class="col-right">
+									<em>Bitcoin price</em>
+									<em>3% <i class="fa fa-caret-down"></i>
+									</em>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<div id="secondary-stat-item2" class="secondary-stat-item big-number-stat clearfix">
+							<div class="data">
+								<span class="col-left big-number">Positive</span>
+								<span class="col-right">
+									<em>Sentiment</em>
+									<em>3% <i class="fa fa-caret-down"></i>
+									</em>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<div id="secondary-stat-item3" class="secondary-stat-item big-number-stat clearfix">
+							<div class="data">
+								<span class="col-left big-number">$260</span>
+								<span class="col-right">
+									<em>Money gain</em>
+									<em>3% <i class="fa fa-caret-down"></i>
+									</em>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+								
+	
+	        <div class="panel-group" id="accordion">
+				<div class="panel panel-default" id="panel1">
+					<div class="panel-heading">
+						<h4 class="panel-title" id="tweetHeader">
+							<a class="accordion-toggle" data-toggle="collapse" data-target="#collapseOne" href="#collapseOne">
+								Live Tweet Feed <i class="icon-chevron-up"></i>
+							</a>
+						</h4>
+					</div>
+				<div id="collapseOne" class="panel-collapse collapse in">
+					<div class="panel-body" id="tweetList">
+						No tweets at the moment, please wait...
+					</div>
+				</div>
+			</div>
+	  
+		</div>
+	</div>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="brand" href="#">Bitcoin Trading</a>
-
-            <form id="addsymbolform" class="navbar-form pull-right"></form>
-        </div>
+	<div id="footer">
+      <div class="container">
+        <p class="text-muted">Place sticky footer content here.</p>
+      </div>
     </div>
-</div>
-
-<div class="jumbotron">
-    <div class="container">
-
-        <div id="chart" style="width:920px; height:250px;"></div>
-
-        <div class="row">
-            <div id="price" class="col-md-4">PRICE HERE</div>
-            <div class="col-md-4">SENTIMENT HERE</div>
-            <div class="col-md-4">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary btn-lg btn-block dropdown-toggle"
-                            data-toggle="dropdown">
-                        Select Market <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">BTC-e</a></li>
-                        <li><a href="#">Bitstamp</a></li>
-                        <li><a href="#">Bitfix</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="tweetHeader">Live Tweets</div>
-
-        <div id="tweetList"></div>
-
-    </div>
-</div>
-
 
 </body>
 </html>

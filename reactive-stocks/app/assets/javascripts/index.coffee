@@ -7,11 +7,11 @@ $ ->
     switch message.type
       when "stockhistory"
         populateStockHistory(message)
-      when "stockupdate"
-        updateStockChart(message)
-        updatePrice(message)
+      #when "stockupdate"
+        #updateStockChart(message)
+        #updatePrice(message)
       when "tweet"
-      	if message.sentiment != 0
+      	if message.sentiment != 0 
        	  tweets.push message
           showTweets()
       else
@@ -87,17 +87,17 @@ updateStockChart = (message) ->
     #console.log("seconds", message.seconds)
     #console.log("price", message.price)
     
-    window.data2 = plot.getData()[0].data
+    data2 = plot.getData()[0].data
     
-  if (window.data2.length == 1) or (window.data2.length >= 100)
-    window.data2.shift()
+  if (data2.length == 1) or (data2.length >= 100)
+    data2.shift()
 	
   window.kl++
-  window.data2.push([message.time, message.price])
+  data2.push([message.time, message.price])
   
   data2.sort()
   
-  plot.setData([window.data2])
+  plot.setData([data2])
   
   #setting the x axis
   
