@@ -9,11 +9,14 @@ import ch.epfl.bigdata.btc.types.Registration._
 
 class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int) extends Indicator(dataSource, watched) {
 
+  var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
+  
 	var values: List[Double] = Nil
 
 	def recompute() {		
 		values = Nil ::: (movingSum(ticks.map(_.close).toList, period) map (_ / period))
-	}
+	observer.map(a => a ! values)
+  }
 	
 	
 	/* 
@@ -34,6 +37,10 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 			val half = even / 2
 			val partialResult = movingSum(values, half)
 			partialResult zip (partialResult drop half) map Function.tupled(_+_)
+	}
+	
+	def receiveOther(a: Any, ar: ActorRef) {
+	  observer += ar;
 	}
 	
 	

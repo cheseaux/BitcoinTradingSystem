@@ -9,11 +9,15 @@ import ch.epfl.bigdata.btc.types.Registration._
 
 class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int, alpha : Double) extends Indicator(dataSource, watched) {
 
+  var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
+  
 	var values: List[Double] = Nil
 
 	def recompute() {		
 		values = Nil ::: (movingSumExponential(ticks.map(_.close).toList, period, alpha))
-	}
+	observer.map(a => a ! values)
+		
+  }
 	
 
 	
@@ -58,6 +62,10 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	    }
 	    
 	   list  
+	}
+	
+	def receiveOther(a: Any, ar: ActorRef) {
+	  observer += ar;
 	}
 	
 	

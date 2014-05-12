@@ -5,6 +5,7 @@ import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
 import ch.epfl.bigdata.btc.types.Transfer._
 import ch.epfl.bigdata.btc.types.Registration._
 import ch.epfl.bigdata.btc.types.CurrencyPair
+import ch.epfl.bigdata.btc.crawler.coins.indicators.EMA
 import scala.collection.mutable.MutableList
 import scala.collection.mutable.HashMap
 import akka.event.Logging
@@ -31,6 +32,19 @@ class DataSource() extends Actor {
     case mpro: MarketPairRegistrationOHLC => acceptRegistrationOHLC(mpro)
     case mprt: MarketPairRegistrationTransaction => acceptRegistrationTrans(mprt);
     case trf: TwitterRegistrationFull => acceptRegistrationTwitter(trf)
+    case ir: EMARegistration => acceptIndicatorRegistration(ir)
+  }
+  
+  def acceptIndicatorRegistration(a: Any) {
+    if(!registrations.getIndicatorRegistrations().contains(a)) {
+      registrations.addIndicator(a.asInstanceOf[IndicatorRegistration]);
+      a match {
+        case er: EMARegistration => 
+          context.actorOf(Props(classOf[EMA], self, 
+              MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), 100, 0.8), 
+              er.market.toString + "_" + er.c.c1 + "-" +  er.c.c2 + "-" + er.tickSize + "-" +er.tickCount + "100-0.8")
+      }
+    }
   }
   
   

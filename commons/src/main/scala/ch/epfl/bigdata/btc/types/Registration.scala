@@ -8,4 +8,9 @@ object Registration {
 	case class TwitterRegistrationFull()
 	
 	case class MarketPair(market: Market, c: CurrencyPair)
+	
+	trait IndicatorRegistration
+	
+	case class EMARegistration(market: Market, c: CurrencyPair, tickSize: Int, tickCount: Int) extends IndicatorRegistration
+	case class SMARegistration(market: Market, c: CurrencyPair, tickSize: Int, tickCount: Int) extends IndicatorRegistration
 }
