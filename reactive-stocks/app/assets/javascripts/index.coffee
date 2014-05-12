@@ -8,7 +8,8 @@ $ ->
       when "stockhistory"
         populateStockHistory(message)
       when "stockupdate"
-        updateStockChart(message)
+        updateStockData(message)
+        updateStockPlot(message)
         updatePrice(message)
       when "tweet"
       	if message.sentiment != 0
@@ -16,8 +17,6 @@ $ ->
        	  showTweets()
       else
         console.log(message)
-
-	
 
   $("#addsymbolform").submit (event) ->
     event.preventDefault()
@@ -75,8 +74,11 @@ populateStockHistory = (message) ->
   #console.log("data", plot.getData()[0].data)
 #compteur de messages recus
 window.kl = 0
+
+
   
-updateStockChart = (message) ->
+updateStockData = (message) ->
+
   if ($("#chart").size() > 0)
     plot = $("#chart").data("plot")
     data = getPricesFromArray(plot.getData()[0].data)
@@ -92,13 +94,25 @@ updateStockChart = (message) ->
   if (data2.length == 1) or (data2.length >= 100)
     data2.shift()
 	
+  #trying to do something with the time
+  timestamp = message.time
+  timestamp = timestamp % (3600*24)
+  
   window.kl++
-  data2.push([message.time, message.price])
+  data2.push([timestamp, message.price])
   
   data2.sort()
   
   plot.setData([data2])
   
+  
+  
+#method for redrawing the plot and axis
+updateStockPlot = (message) ->
+  if ($("#chart").size() > 0)
+    plot = $("#chart").data("plot")
+    data2 = plot.getData()[0].data
+    data = getPricesFromArray(plot.getData()[0].data)
   #setting the x axis
   
   xaxes = plot.getOptions().xaxes[0]
@@ -110,14 +124,12 @@ updateStockChart = (message) ->
   yaxes = plot.getOptions().yaxes[0]
   #if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
     # reseting yaxes
-  yaxes.min = getAxisMin(data)*0.98
-  yaxes.max = getAxisMax(data)*1.02
+  yaxes.min = getAxisMin(data)*1
+  yaxes.max = getAxisMax(data)*1
   plot.setupGrid()
   # redraw the chart
   plot.draw()
   #console.log("data", data)
-    
-    
     
   
 root = exports ? this
