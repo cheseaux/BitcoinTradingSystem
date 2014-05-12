@@ -148,13 +148,12 @@ showtweet = (message) ->
 	sentiment = message.sentiment
 	str = 
 	if sentiment == -1
-		str = '<div class="negtweet">'
+		str = '<div class="negtweet" id="clickable">'
 	if sentiment == 1
-		str = '<div class="postweet">'
+		str = '<div class="postweet" id="clickable">'
 	
 	str += message.symbol
-	#str += '</font>'
-	str += '</div>'
+	str += '<i class="icon-info-sign" id="info">click</i></div>'
 	return str
 
     
