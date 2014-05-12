@@ -77,22 +77,18 @@ updatePrice = (message) ->
     
 showtweet = (message) ->
 	randomnumber = Math.random()
-	if randomnumber >= 0.5
+	sentiment = message.sentiment
+	if sentiment = -1
 		tweets.push '<font color="FF0000">'
-	else
+	else if sentiment = 1
 		tweets.push '<font color="00FF00">'
+	else 
+		tweets.push '<font color="000000">'
 	
 	tweets.push message.symbol
 	tweets.push '</font>'
 	tweets.push '<hr>'
-	#tweets.push '<br>'
-	#tweetstring = ' '
-	#for (i = 0; i < tweetlist.length; i++){
-	#	tweetlist = tweetlist + '\n' + tweets(i);
-	#}
-	#`
-	#tweetlist = 'bambi';
-	#for tweet in tweets tweetstring = tweetstring + '\n' + tweet
+	
 	
 	document.getElementById('twit').innerHTML = tweets.join(' ').toString()
     
@@ -128,3 +124,90 @@ handleFlip = (container) ->
     detailsHolder = container.find(".details-holder")
     detailsHolder.append($("<h4>").text("Determing whether you should buy or sell based on the sentiment of recent tweets..."))
     detailsHolder.append($("<div>").addClass("progress progress-striped active").append($("<div>").addClass("bar").css("width", "100%")))
+
+`
+$(function() {
+
+		// We use an inline data source in the example, usually data would
+		// be fetched from a server
+
+		var data = [],
+			totalPoints = 300;
+
+		function getRandomData() {
+
+			if (data.length > 0)
+				data = data.slice(1);
+
+			// Do a random walk
+
+			while (data.length < totalPoints) {
+
+				var prev = data.length > 0 ? data[data.length - 1] : 50,
+					y = prev + Math.random() * 10 - 5;
+
+				if (y < 0) {
+					y = 0;
+				} else if (y > 100) {
+					y = 100;
+				}
+
+				data.push(y);
+			}
+
+			// Zip the generated y values with the x values
+
+			var res = [];
+			for (var i = 0; i < data.length; ++i) {
+				res.push([i, data[i]])
+			}
+
+			return res;
+		}
+
+		// Set up the control widget
+
+		var updateInterval = 30;
+		$("#updateInterval").val(updateInterval).change(function () {
+			var v = $(this).val();
+			if (v && !isNaN(+v)) {
+				updateInterval = +v;
+				if (updateInterval < 1) {
+					updateInterval = 1;
+				} else if (updateInterval > 2000) {
+					updateInterval = 2000;
+				}
+				$(this).val("" + updateInterval);
+			}
+		});
+
+		var plot = $.plot("#placeholder", [ getRandomData() ], {
+			series: {
+				shadowSize: 0	// Drawing is faster without shadows
+			},
+			yaxis: {
+				min: 0,
+				max: 100
+			},
+			xaxis: {
+				show: false
+			}
+		});
+
+		function update() {
+
+			plot.setData([getRandomData()]);
+
+			// Since the axes don't change, we don't need to call plot.setupGrid()
+
+			plot.draw();
+			setTimeout(update, updateInterval);
+		}
+
+		update();
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+	});
+`
