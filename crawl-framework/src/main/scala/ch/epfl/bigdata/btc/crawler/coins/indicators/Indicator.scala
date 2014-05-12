@@ -15,6 +15,7 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
 	
 	def receive = {
 	  case t: OHLC => updateTicks(t)
+	  case a: Any => receiveOther(a, sender)
   	}
 	
 	
@@ -37,4 +38,6 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
 	}
 	
 	def recompute()
+	
+	def receiveOther(a: Any, ar: ActorRef)
 }

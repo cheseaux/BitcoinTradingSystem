@@ -13,6 +13,9 @@ import akka.actor.{Actor, ActorRef, Props}
    * This is the internal observer store
    */
   class Registrations {
+	  
+      val indicators = new MutableList[IndicatorRegistration]()
+    
 	  val twitter = new MutableList[ActorRef]()
 	  val ohlc = new HashMap[MarketPair, MutableList[ActorRef]]()
 	  val trans = new HashMap[MarketPair, MutableList[ActorRef]]()
@@ -21,6 +24,7 @@ import akka.actor.{Actor, ActorRef, Props}
 	  val actorsTrans = new HashMap[ActorRef, MutableList[MarketPair]]()
 	  
 	  def getTwitterRegistrations() = twitter
+	  def getIndicatorRegistrations() = indicators
 	  def getOhlcRegByMarketPair(mp : MarketPair) = ohlc.get(mp)
 	  def getTransRegByMarketPair(mp : MarketPair) = trans.get(mp)
 	  
@@ -49,6 +53,12 @@ import akka.actor.{Actor, ActorRef, Props}
 	    actorsTrans.get(a) match {
 	     case None => actorsTrans += (a -> ((new MutableList[MarketPair]()) += mp))
 	     case Some(m) => m += mp
+	    }
+	  }
+	  
+	  def addIndicator(i: IndicatorRegistration) {
+	    if(!indicators.contains(i)) {
+	      indicators += i;
 	    }
 	  }
   }
