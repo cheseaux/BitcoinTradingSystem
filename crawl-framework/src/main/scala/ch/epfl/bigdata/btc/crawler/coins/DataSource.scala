@@ -32,10 +32,11 @@ class DataSource() extends Actor {
     case mpro: MarketPairRegistrationOHLC => acceptRegistrationOHLC(mpro)
     case mprt: MarketPairRegistrationTransaction => acceptRegistrationTrans(mprt);
     case trf: TwitterRegistrationFull => acceptRegistrationTwitter(trf)
-    case ir: EMARegistration => acceptIndicatorRegistration(ir)
+    case ir : IndicatorRegistration => acceptIndicatorRegistration(ir)
   }
   
-  def acceptIndicatorRegistration(a: Any) {
+  def acceptIndicatorRegistration(a: IndicatorRegistration) {
+    println("ici Datasource, qqn s'inscrit aux EMA, Yipeee")
     if(!registrations.getIndicatorRegistrations().contains(a)) {
       registrations.addIndicator(a.asInstanceOf[IndicatorRegistration]);
       a match {
@@ -43,6 +44,7 @@ class DataSource() extends Actor {
           context.actorOf(Props(classOf[EMA], self, 
               MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), 100, 0.8), 
               er.market.toString + "_" + er.c.c1 + "-" +  er.c.c2 + "-" + er.tickSize + "-" +er.tickCount + "100-0.8")
+        case _ => println("Could not register")
       }
     }
   }
@@ -88,7 +90,6 @@ class DataSource() extends Actor {
       case None => 
       case Some(l) => {
         l.map(a => a ! t)
-println("sent transaction " + t)
       }
       
     }

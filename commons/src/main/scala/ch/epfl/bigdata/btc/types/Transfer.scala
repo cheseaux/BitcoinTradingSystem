@@ -1,5 +1,6 @@
 package ch.epfl.bigdata.btc.types
 
+import Indicator._
 import Currency._
 import OfferType._
 import Market._
@@ -24,4 +25,6 @@ case class OHLC (open: Double, high: Double, low: Double, close: Double,
     volume: Double, date: DateTime, duration: Duration)
     
 case class Tweet(date: DateTime, content: String, sentiment: Int)
+
+case class Points(ind: Indicator, values: List[Tuple2[Double,Long]])
 }

@@ -49,8 +49,9 @@ class StockActor(symbol: String) extends Actor {
     // on creation
     // send History back to UserActor 
     // initiate connection with dataSource
+    // send the stock history to the user)
+
     case WatchStock(_) =>
-      // send the stock history to the user)
 
       // TODO: keep for beauty, remove if nice
       sender ! StockHistory(symbol, stockHistory.asJava)
@@ -59,11 +60,22 @@ class StockActor(symbol: String) extends Actor {
 
       // register with DataSource actor
       dataSourceSelection ! MarketPairRegistrationTransaction(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
-      //      dataSourceSelection ! MarketPairRegistrationOHLC(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 1, 1)
       dataSourceSelection ! TwitterRegistrationFull()
-
+      dataSourceSelection ! EMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 30)
+      dataSourceSelection ! SMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 30)
       // add the watcher to the list
       watchers = watchers + sender
+
+    case points: Points =>
+      points.ind match {
+        case Indicator.EMA =>
+          // send as EMA
+          println("received EMA, first val: " + points.values.last._1)
+        case Indicator.SMA =>
+          // send as SMA
+          println("received EMA, first val: " + points.values.last._1)
+
+      }
 
     case ohlc: OHLC =>
       //
@@ -75,9 +87,8 @@ class StockActor(symbol: String) extends Actor {
 
     case transaction: Transaction =>
       val price: Double = transaction.unitPrice;
-      val time = transaction.timestamp.getMillis()/1000;
+      val time = transaction.timestamp.getMillis() / 1000;
       watchers.foreach(_ ! StockUpdate(symbol, price, time))
-
 
     case tweet: Tweet =>
       println("got a new tweet: " + tweet.content)
@@ -111,7 +122,6 @@ class StockActor(symbol: String) extends Actor {
     lazy val initialPrices: Stream[java.lang.Double] = (0) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
     initialPrices.take(5).to[Queue]
   }
-  
 
 }
 
@@ -148,8 +158,9 @@ case class WatchStock(symbol: String)
 
 case class UnwatchStock(symbol: Option[String])
 
+// TODO: 
+case class EMAupdate(symbol: String)
+
 //// TODO: remove when Marzell's is here
 //case class OHLC
-//case class Transaction
-//case class Tweet
 

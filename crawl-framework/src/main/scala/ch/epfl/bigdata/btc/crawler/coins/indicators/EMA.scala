@@ -6,16 +6,22 @@ import akka.actor.ActorLogging
 import akka.actor.ActorRef
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import ch.epfl.bigdata.btc.types.Registration._
+import com.github.nscala_time.time.Imports._
+import ch.epfl.bigdata.btc.types.Transfer._
+import ch.epfl.bigdata.btc.types.Indicator
+
 
 class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int, alpha : Double) extends Indicator(dataSource, watched) {
 
   var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
   
 	var values: List[Double] = Nil
+	var time : List[Long] = Nil
 
 	def recompute() {		
-		values = Nil ::: (movingSumExponential(ticks.map(_.close).toList, period, alpha))
-	observer.map(a => a ! values)
+		values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
+    time = ticks.map(_.date.getMillis()).toList
+    observer.map(a => a ! Points(Indicator.EMA, values zip time))
 		
   }
 	

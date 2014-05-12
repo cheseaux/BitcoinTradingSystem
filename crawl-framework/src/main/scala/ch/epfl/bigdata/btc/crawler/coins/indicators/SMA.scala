@@ -6,43 +6,47 @@ import akka.actor.ActorLogging
 import akka.actor.ActorRef
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import ch.epfl.bigdata.btc.types.Registration._
+import com.github.nscala_time.time.Imports._
+import ch.epfl.bigdata.btc.types.Transfer._
+import ch.epfl.bigdata.btc.types.Indicator
 
 class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int) extends Indicator(dataSource, watched) {
 
   var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
-  
-	var values: List[Double] = Nil
 
-	def recompute() {		
-		values = Nil ::: (movingSum(ticks.map(_.close).toList, period) map (_ / period))
-	observer.map(a => a ! values)
+  var values: List[Double] = Nil
+  var time: List[Long] = Nil
+
+  def recompute() {
+    values = Nil ::: (movingSum(ticks.map(_.close).toList, period) map (_ / period))
+
+    time = ticks.map(_.date.getMillis()).toList
+    observer.map(a => a ! Points(Indicator.EMA, values zip time))
+
   }
-	
-	
-	/* 
+
+  /* 
 	 * the computation of the moving simple moving average was taken from an online forum :
 	 * http://stackoverflow.com/questions/1319891/calculating-the-moving-average-of-a-list
 	 */
-	def simpleMovingAverage(values: List[Double], period: Int): List[Double] ={
-		Nil ::: (movingSum(values, period) map (_ / period))
-	}
+  def simpleMovingAverage(values: List[Double], period: Int): List[Double] = {
+    Nil ::: (movingSum(values, period) map (_ / period))
+  }
 
-	def movingSum(values: List[Double], period: Int): List[Double] = period match {
-		case 0 => throw new IllegalArgumentException
-		case 1 => values
-		case 2 => values.sliding(2).toList.map(_.sum)
-		case odd if odd % 2 == 1 => 
-			values zip movingSum(values drop 1, (odd - 1)) map Function.tupled(_+_)
-		case even =>
-			val half = even / 2
-			val partialResult = movingSum(values, half)
-			partialResult zip (partialResult drop half) map Function.tupled(_+_)
-	}
-	
-	def receiveOther(a: Any, ar: ActorRef) {
-	  observer += ar;
-	}
-	
-	
-	
+  def movingSum(values: List[Double], period: Int): List[Double] = period match {
+    case 0 => throw new IllegalArgumentException
+    case 1 => values
+    case 2 => values.sliding(2).toList.map(_.sum)
+    case odd if odd % 2 == 1 =>
+      values zip movingSum(values drop 1, (odd - 1)) map Function.tupled(_ + _)
+    case even =>
+      val half = even / 2
+      val partialResult = movingSum(values, half)
+      partialResult zip (partialResult drop half) map Function.tupled(_ + _)
+  }
+
+  def receiveOther(a: Any, ar: ActorRef) {
+    observer += ar;
+  }
+
 }
