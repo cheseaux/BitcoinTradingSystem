@@ -7,13 +7,13 @@ $ ->
     switch message.type
       when "stockhistory"
         populateStockHistory(message)
-      #when "stockupdate"
-        #updateStockChart(message)
-        #updatePrice(message)
+      when "stockupdate"
+        updateStockChart(message)
+        updatePrice(message)
       when "tweet"
-      	if message.sentiment != 0 
+      	if message.sentiment != 0
        	  tweets.push message
-          showTweets()
+       	  showTweets()
       else
         console.log(message)
 
@@ -126,7 +126,7 @@ root = exports ? this
  #tweet array 
 #max tweets
 updatePrice = (message) ->
-	document.getElementById('price').innerHTML =  '<font color="FFFF33", font size=2>Price :  </font>' + message.price + '$'
+	document.getElementById('price').innerHTML =  '$' + message.price.toFixed(2)
     
 showTweets = () ->
 	formattedTweets = (showtweet(tweet) for tweet in tweets).reduceRight (x, y) -> x + "\n" + y

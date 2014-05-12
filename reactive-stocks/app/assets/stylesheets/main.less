@@ -7,8 +7,6 @@
 
 #tweetList {
 	position: relative;
-    /*border: 1px solid grey;*/
-    /*background-color: gray;*/
     overflow: auto;
     color: white;
     height: 200px;
@@ -17,14 +15,24 @@
 	margin-left: auto;
 }
 
+#tweetList p {
+	text-align:center;
+	color: gray;
+	font-size: small;
+}
+
+#tweetList .postweet, #tweetList .negtweet {
+	-moz-box-shadow: 0 0 5px #888;
+	-webkit-box-shadow: 0 0 5px#888;
+	box-shadow: 0 0 5px #888;
+	
+}
+
 .postweet {
     color: white;
     background-color: #295200;
     font-size: small;
-    padding-left:5px; 
-    padding-right:5px; 
-    padding-top: 5px;
-    padding-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 .container {
@@ -35,11 +43,8 @@
     color: white;
     background-color: #822100;
     font-size: small;
-    padding-left:5px; 
-    padding-right:5px; 
-    padding-top: 5px;
-    padding-bottom: 5px;
     -khtml-opacity:.50; 
+     margin-bottom: 5px;
  -moz-opacity:.50; 
  -ms-filter:"alpha(opacity=50)";
   filter:alpha(opacity=50);
