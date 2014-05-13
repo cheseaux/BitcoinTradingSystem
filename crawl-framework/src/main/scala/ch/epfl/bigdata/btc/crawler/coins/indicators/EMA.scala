@@ -82,8 +82,8 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	  
 	}
 	/*
-  *  ind represents the list you want as indicator (i.e. envellope or the long-term MA)
-  * In the case of double cross-over, the value -1 indicates that the price should go down and
+  *  ind represents the list you want as indicator (i.e. the long-term MA)
+  *  The value -1 indicates that the price should go down and
   *  a value of 1 that the price will go up.
   */
   
