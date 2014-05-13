@@ -1,4 +1,5 @@
 tweets = []
+plotData = [0, 0]
 
 $ ->
   ws = new WebSocket $("body").data("ws-url")
@@ -9,7 +10,7 @@ $ ->
         populateStockHistory(message)
       when "stockupdate"
         updateStockData(message)
-        updateStockPlot(message)
+        #updateStockPlot()
         updatePrice(message)
       when "tweet"
       	if message.sentiment != 0
@@ -47,9 +48,9 @@ getChartOptions = (data) ->
 
 
 getAxisMin = (data) ->
-  Math.min.apply(Math, data) * 0.98
+  Math.min.apply(Math, data) * 0.999
 getAxisMax = (data) ->
-  Math.max.apply(Math, data) * 1.02
+  Math.max.apply(Math, data) * 1.001
 
   
   
@@ -68,7 +69,7 @@ populateStockHistory = (message) ->
   #populates with history, we do not want
   #plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
   chart = $("#chart").addClass("chart")
-  plot = chart.plot([[0, 0]], getChartOptions(message.history)).data("plot")
+  plot = chart.plot([plotData], getChartOptions(message.history)).data("plot")
   
   #console.log("mesage history", message.history)
   #console.log("data", plot.getData()[0].data)
@@ -76,12 +77,33 @@ populateStockHistory = (message) ->
 window.kl = 0
 
 
+
+root = exports ? this
+
+#global variable containing plot size
+nDataInPlot = 100;
+
+
+@updatePlotSize = updatePlotSize = () ->
+	inputNData = document.getElementsByName('textboxplotsize')[0].value
+	if (inputNData >= 1) and (inputNData <= 3000)
+	  nDataInPlot = inputNData
+	  #we have to resize the data array if it is bigger (if smaller will grow automatically), keeping the last values
+	  while (plotData.length >= nDataInPlot)
+	    plotData.shift()
+	  #redraw graph
+	  updateStockPlot()
+	else
+	  alert "invalid value, outside of : [1,3000]"
   
 updateStockData = (message) ->
 
+
   if ($("#chart").size() > 0)
     plot = $("#chart").data("plot")
-    data = getPricesFromArray(plot.getData()[0].data)
+    
+    
+    data = getPricesFromArray(plotData)
     data.shift()
     data.push(message.price)
     #plot.setData([getChartArray(data)])   data was used before, without timestamps
@@ -89,35 +111,41 @@ updateStockData = (message) ->
     #console.log("seconds", message.seconds)
     #console.log("price", message.price)
     
-    data2 = plot.getData()[0].data
-    
-  if (data2.length == 1) or (data2.length >= 100)
-    data2.shift()
+    #we do not get the data from the plot itself
+    #data2 = plot.getData()[0].data
+  
+  #check if we need to increase the plot size  
+  if (plotData.length == 1) or (plotData.length >= nDataInPlot)
+    plotData.shift()
 	
   #trying to do something with the time
   timestamp = message.time
   timestamp = timestamp % (3600*24)
   
   window.kl++
-  data2.push([timestamp, message.price])
+  plotData.push([timestamp, message.price])
   
-  data2.sort()
+  plotData.sort()
   
-  plot.setData([data2])
-  
-  
+  plot.setData([plotData])
+
+
+#redraws the plot every second, regardless of data pushed (to prevent freezes)  
+setInterval ( ->
+  updateStockPlot()
+), 1000
   
 #method for redrawing the plot and axis
-updateStockPlot = (message) ->
+updateStockPlot = () ->
   if ($("#chart").size() > 0)
     plot = $("#chart").data("plot")
-    data2 = plot.getData()[0].data
-    data = getPricesFromArray(plot.getData()[0].data)
+    #data2 = plot.getData()[0].data
+    data = getPricesFromArray(plotData)
   #setting the x axis
   
   xaxes = plot.getOptions().xaxes[0]
-  xaxes.min = getXAxisMin(data2)
-  xaxes.max = getXAxisMax(data2)
+  xaxes.min = getXAxisMin(plotData)
+  xaxes.max = getXAxisMax(plotData)
   plot.setupGrid()
     
     # update the yaxes if either the min or max is now out of the acceptable range
@@ -132,7 +160,7 @@ updateStockPlot = (message) ->
   #console.log("data", data)
     
   
-root = exports ? this
+
  
 	
  #tweet array 
