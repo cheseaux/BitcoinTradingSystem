@@ -118,9 +118,7 @@ updateStockData = (message) ->
   #  plot = $("#chart").data("plot")
     
     
-  data = getPricesFromArray(plotData)
-  data.shift()
-  data.push(message.price)
+  
     #plot.setData([getChartArray(data)])   data was used before, without timestamps
     
     #console.log("seconds", message.seconds)
@@ -144,7 +142,7 @@ updateStockData = (message) ->
   #if (timestamp >= beginTime) and (timestamp <= endTime)  
   window.kl++
   plotData.push([timestamp, message.price])
-  plotData.sort()
+  #plotData.sort()
   
   window.ps = plotData.length
 
@@ -180,6 +178,7 @@ updateStockPlot = () ->
   #console.log("data", data)
     
 drawLastValues = (numberOfValues) ->
+	plotData.sort()
 	#copying the array
 	lastPlotData = clone(plotData)
 	#resizing dataset locally
@@ -214,6 +213,7 @@ drawLastValues = (numberOfValues) ->
 
 
 drawValuesInRange = (beginRange, endRange) ->
+	
 	#copying the array
 	rangePlotData = clone(plotData)
 	#resizing dataset locally
