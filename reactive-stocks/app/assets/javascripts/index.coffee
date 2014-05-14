@@ -25,6 +25,8 @@ $ ->
     # reset the form
     $("#addsymboltext").val("")
     
+  
+    
     
 getPricesFromArray = (data) ->
   (v[1] for v in data)
@@ -74,7 +76,6 @@ populateStockHistory = (message) ->
   #console.log("data", plot.getData()[0].data)
 #compteur de messages recus
 window.kl = 0
-
 
   
 updateStockData = (message) ->
@@ -143,6 +144,7 @@ updatePrice = (message) ->
 showTweets = () ->
 	formattedTweets = (showtweet(tweet) for tweet in tweets).reduceRight (x, y) -> x + "\n" + y
 	document.getElementById('tweetList').innerHTML = formattedTweets
+	$("#popover-btn").popover()
     
 showtweet = (message) ->
 	sentiment = message.sentiment
@@ -153,7 +155,7 @@ showtweet = (message) ->
 		str = '<div class="postweet" id="clickable">'
 	
 	str += message.symbol
-	str += '<i class="icon-info-sign" id="info">click</i></div>'
+	str += '<a id="popover-btn" href="#" class="btn btn-danger" rel="popover" data-original-title="Example Popover" data-content="hello" data-html="true" data-trigger="click">...</a>'
 	return str
 
     
