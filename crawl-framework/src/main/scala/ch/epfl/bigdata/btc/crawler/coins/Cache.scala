@@ -48,7 +48,7 @@ class Cache {
           l += o
           return
         }
-        println("updateOhlcForMpro:updateOhlcForMpro: " + mp + " " + l.length + " " + l.last + " " + l.head)
+        //println("updateOhlcForMpro:updateOhlcForMpro: " + mp + " " + l.length + " " + l.last + " " + l.head)
         var head = l.head
         var last = l.last
         var currentTime = o.date
@@ -58,9 +58,9 @@ class Cache {
         // currentIndex  > 0 => this one is newer -> append and fill
         // currentindex  < 0 => this one is older -> prepend and fill
 
-        println("updateOhlcForMpro:currentIndex", currentIndex)
+        //println("updateOhlcForMpro:currentIndex", currentIndex)
         if (currentIndex == 0) {
-          println("updateOhlcForMpro:l.update", o)
+          //println("updateOhlcForMpro:l.update", o)
           l.update(l.length-1, o)
         } else if (currentIndex > 0) {
           var toAddDate = last.date
@@ -99,13 +99,13 @@ class Cache {
     var d = new Duration(mp.tickSize * 1000);
     var ts = new DateTime(t.getMillis() - (t.getMillis() % (mp.tickSize * 1000)))
 
-    println("d", d) // OK
-    println("ts", ts) // OK
+    //println("d", d) // OK
+    //println("ts", ts) // OK
    
 
     ohlc.get(mp) match {
       case Some(l) => {
-         println("l",  l)
+         //println("l",  l)
         if (l.length == 0) {
           return new OHLC(Double.MinValue, Double.MinValue, Double.MaxValue, 0.0, 0.0, ts, d)
         }
@@ -114,9 +114,9 @@ class Cache {
 
         var getIndex = ((ts.minus(l.last.date.getMillis()).getMillis()).toInt / 1000) / (mp.tickSize) // OK
 
-        println("getIndex", getIndex)
-        println("l.length", l.length)
-        println("l.get", l.length + getIndex - 1)
+        //println("getIndex", getIndex)
+        //println("l.length", l.length)
+        //println("l.get", l.length + getIndex - 1)
 
         if (-getIndex > l.length - 1) {
           return new OHLC(Double.MinValue, Double.MinValue, Double.MaxValue, 0.0, 0.0, ts, d)
@@ -140,11 +140,11 @@ class Cache {
       case None => return
       case Some(l) => l.map(mpro => {
 
-        println("updateOHLC:UPDATE OHLC", t)
+        //println("updateOHLC:UPDATE OHLC", t)
         var ohlc = getOhlcByTimestampAndMpro(mpro, t.timestamp)
-        println("updateOHLC:getOhlcByTimestampAndMpro", ohlc)
+        //println("updateOHLC:getOhlcByTimestampAndMpro", ohlc)
         ohlc = updateGivenOHLC(ohlc, t)
-        println("updateOHLC:updateGivenOHLC", ohlc)
+        //println("updateOHLC:updateGivenOHLC", ohlc)
         updateOhlcForMpro(mpro, ohlc)
       })
     }
@@ -184,7 +184,7 @@ class Cache {
     ohlc.get(mpro) match {
       case None => new OHLC(0.0, Int.MinValue, Int.MaxValue, 0.0, 0.0,
         new DateTime(), new Duration(mpro.tickSize * 1000))
-      case Some(l) => l.tail
+      case Some(l) => l.last
     }
   }
 

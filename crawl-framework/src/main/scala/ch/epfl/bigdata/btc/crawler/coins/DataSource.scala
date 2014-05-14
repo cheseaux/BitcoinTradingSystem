@@ -26,7 +26,7 @@ class DataSource() extends Actor {
     case t: Tweet => updateAndSendTweet(t)
     //println("dataSource a recu les cadeaux: " + t.content)
 
-    // Accepts registration for OHLC, Transaction, Twitters
+    // Accepts registration for OHLC, Transaction, Tweets
     case mpro: MarketPairRegistrationOHLC => acceptRegistrationOHLC(mpro)
     case mprt: MarketPairRegistrationTransaction => acceptRegistrationTrans(mprt);
     case trf: TwitterRegistrationFull => acceptRegistrationTwitter(trf)
@@ -34,17 +34,28 @@ class DataSource() extends Actor {
   }
 
   def acceptIndicatorRegistration(a: IndicatorRegistration) {
-    //println("ici Datasource, qqn s'inscrit aux EMA, Yipeee")
-    if (!registrations.getIndicatorRegistrations().contains(a)) {
-      registrations.addIndicator(a.asInstanceOf[IndicatorRegistration]);
-      a match {
-        case er: EMARegistration =>
-          context.actorOf(Props(classOf[EMA], self,
-            MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), 100, 0.8),
-            er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount + "100-0.8")
-        case _ => println("Could not register")
+    var observer = sender;
+    var ir = a;
+
+    registrations.getIndicatorRegistrations().get(ir) match {
+      case Some(indicator) => {
+        indicator ! observer
       }
+      case None => // create new, enreg
+        {
+          ir match {
+            case er: EMARegistration => {
+              var indicator = context.actorOf(Props(classOf[EMA], self,
+                MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), 100, 0.8),
+                er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount + "100-0.8")
+                registrations.addIndicator(ir, indicator)
+                indicator ! observer
+            }
+            case _ => println("Could not register")
+          }
+        }
     }
+
   }
 
   def acceptRegistrationOHLC(r: MarketPairRegistrationOHLC) {
@@ -74,9 +85,7 @@ class DataSource() extends Actor {
    * update the cache and the distribute
    */
   def updateCacheAndNotify(t: Transaction) {
-    
-    
-    
+
     //println(t)
     val mprt = MarketPairRegistrationTransaction(t.market, new CurrencyPair(t.from, t.to))
     val mp = MarketPair(t.market, new CurrencyPair(t.from, t.to))
@@ -97,12 +106,16 @@ class DataSource() extends Actor {
     registrations.getOhlcRegByMarketPair(mp) match {
       case None => return
       case Some(l) => {
-        l.map(a => { //println("getOhlcRegByMarketPair mp", mp)
+        l.map(a => {
           registrations.getOhlcRegByActor(a) match {
             case None => return
-            case Some(k) => { //println("getOhlcRegByMarketPair a", a)
-              k.map(mpro => a ! cache.getLatestOhlc(mpro))
-              //println("ohlc ")
+            case Some(mproList) => {
+              mproList.map(e => {
+                if (e.market == mp.market && e.c == mp.c) {
+                  //println("send to ", a)
+                  a ! cache.getLatestOhlc(e)
+                }
+              })
             }
           }
 
