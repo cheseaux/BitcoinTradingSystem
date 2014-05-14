@@ -8,7 +8,7 @@ import ch.epfl.bigdata.btc.crawler.coins.types._
 import ch.epfl.bigdata.btc.types.Registration._
 import com.github.nscala_time.time.Imports._
 import ch.epfl.bigdata.btc.types.Transfer._
-import ch.epfl.bigdata.btc.types.Indicator
+import ch.epfl.bigdata.btc.types.Indicator._
 
 class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int) extends Indicator(dataSource, watched) {
 
@@ -21,7 +21,7 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     values = Nil ::: (movingSum(ticks.map(_.close).toList, period) map (_ / period))
 
     time = ticks.map(_.date.getMillis()).toList
-    observer.map(a => a ! Points(Indicator.EMA, values zip time))
+    observer.map(a => a ! Points(EMA, values zip time))
 
   }
 
@@ -46,51 +46,51 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
   }
 
   def receiveOther(a: Any, ar: ActorRef) {
-    observer += ar;
+    a match {
+      case actor: ActorRef => observer += actor
+      case _ => println("unknown data")
+    }
   }
-  def envellopAbove(values:List[Double], percent : Double):List[Double] = {
-	  values.map( _ * (1+percent))
-	  
-	}
-	def envellopBelow(values:List[Double], percent : Double):List[Double] = {
-	  values.map( _ *(1-percent))
-	  
-	}
+  
+  def envellopAbove(values: List[Double], percent: Double): List[Double] = {
+    values.map(_ * (1 + percent))
+
+  }
+  def envellopBelow(values: List[Double], percent: Double): List[Double] = {
+    values.map(_ * (1 - percent))
+
+  }
   /*
-  *  ind represents the list you want as indicator (i.e. envellope or the long-term MA)
-  * In the case of double cross-over, the value -1 indicates that the price should go down and
+  *  ind represents the list you want as indicator (i.e. the long-term MA)
+  *  The value -1 indicates that the price should go down and
   *  a value of 1 that the price will go up.
   */
-  
-	def tradeSignalCO( values : List[Double], ind:List[Double]): Int ={
-	  
-	  if(ind.last >= values.last && ind.take(ind.length - 1).last < values.take(values.length -1).last){
-	    -1
-	  }
-	  else if(ind.last <= values.last &&  ind.take(ind.length -1).last > values.take(values.length -1).last){    
-	  1
-	  }
-	  else 
-	    0
-	}
-	
-	/*
+
+  def tradeSignalCO(values: List[Double], ind: List[Double]): Int = {
+
+    if (ind.last >= values.last && ind.take(ind.length - 1).last < values.take(values.length - 1).last) {
+      -1
+    } else if (ind.last <= values.last && ind.take(ind.length - 1).last > values.take(values.length - 1).last) {
+      1
+    } else
+      0
+  }
+
+  /*
 	 * For this function the percent is the size of the envellope you want to have,
 	 * In this case, a value of 1 would state that the price will go up, as
 	 * a value of -1 indicates that the price will go down.	 * 
 	 */
-	def tradeSignalEnv( values : List[Double], percent: Double): Int ={
-	  val envA = values.map(_ * (1+percent))
-	  val envB = values.map(_ * (1-percent))
-	  
-	  if(envA.last >= values.last && envA.take(envA.length - 1).last < values.take(values.length -1).last){
-	    1
-	  }
-	  else if(envB.last <= values.last &&  envB.take(envB.length -1).last > values.take(values.length -1).last){    
-	  -1
-	  }
-	  else 
-	    0
-	}
+  def tradeSignalEnv(values: List[Double], percent: Double): Int = {
+    val envA = values.map(_ * (1 + percent))
+    val envB = values.map(_ * (1 - percent))
+
+    if (envA.last >= values.last && envA.take(envA.length - 1).last < values.take(values.length - 1).last) {
+      1
+    } else if (envB.last <= values.last && envB.take(envB.length - 1).last > values.take(values.length - 1).last) {
+      -1
+    } else
+      0
+  }
 
 }

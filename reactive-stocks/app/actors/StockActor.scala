@@ -15,6 +15,10 @@ import utils.StockQuote
 import ch.epfl.bigdata.btc.types._
 import ch.epfl.bigdata.btc.types.Registration._
 import ch.epfl.bigdata.btc.types.Transfer._
+import scala.collection.JavaConverters._
+import com.fasterxml.jackson.databind.JsonNode
+import play.libs.Json
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor
 
 /**
  * There is one StockActor per stock symbol.  The StockActor maintains a list of users watching the stock and the stock
@@ -30,19 +34,10 @@ class StockActor(symbol: String) extends Actor {
   // variable used to store ref
   var dataSourceActor: ActorRef = null
 
+  // TODO: remplacer par le websocket
   // initialisé à l'instanciation - the actor that created it is inside
   protected[this] var watchers: HashSet[ActorRef] = HashSet.empty[ActorRef]
 
-  // TODO: template scheduler - unused now
-  // Fetch the latest stock value every 75ms
-  //  val stockTick = context.system.scheduler.schedule(Duration.Zero, 75.millis, self, FetchLatest)
-
-  // TODO: make stockTick variable global so that we can kill it when app closes on UnwatchStock msg received
-  // method used to launche scheduler
-  def launchScheduler = {
-    val stockTick = context.system.scheduler.schedule(Duration.Zero, 2000.millis, self, UpdateBitcoinValue)
-
-  }
 
   def receive = {
 
@@ -50,10 +45,9 @@ class StockActor(symbol: String) extends Actor {
     // send History back to UserActor 
     // initiate connection with dataSource
     // send the stock history to the user)
-
     case WatchStock(_) =>
 
-      // TODO: keep for beauty, remove if nice
+      // TODO: keep for beauty, remove if nice - remove this shit
       sender ! StockHistory(symbol, stockHistory.asJava)
 
       println("initiating connection to DataSource: " + dataSourceSelection)
@@ -61,8 +55,8 @@ class StockActor(symbol: String) extends Actor {
       // register with DataSource actor
       dataSourceSelection ! MarketPairRegistrationTransaction(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
       dataSourceSelection ! TwitterRegistrationFull()
-      dataSourceSelection ! EMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 30)
-      dataSourceSelection ! SMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 30)
+      dataSourceSelection ! EMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 10)
+      dataSourceSelection ! SMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 10)
       // add the watcher to the list
       watchers = watchers + sender
 
@@ -71,9 +65,24 @@ class StockActor(symbol: String) extends Actor {
         case Indicator.EMA =>
           // send as EMA
           println("received EMA, first val: " + points.values.last._1)
+          val jsonValues = Json.toJson(points.values.map(x => x._1))
+          val jsonTimestamps = Json.toJson(points.values.map(x => x._2))
+          val jsonEMA = Json.newObject();
+          jsonEMA.put("type", "EMA");
+          jsonEMA.put("values", jsonValues)
+          jsonEMA.put("timestamps", jsonTimestamps)
+
+        //          watchers.foreach(_ ! EMAupdate( (points.values.map(x => x._1)).asJava, (points.values.map(x => x._2)).asJava ))
         case Indicator.SMA =>
           // send as SMA
-          println("received EMA, first val: " + points.values.last._1)
+          println("received SMA, first val: " + points.values.last._1)
+          val jsonValues = Json.toJson(points.values.map(x => x._1))
+          val jsonTimestamps = Json.toJson(points.values.map(x => x._2))
+          val jsonEMA = Json.newObject();
+          jsonEMA.put("type", "SMA");
+          jsonEMA.put("values", jsonValues)
+          jsonEMA.put("timestamps", jsonTimestamps)
+        //watchers.foreach(_ ! SMAupdate(points.values.map(x => x._1), points.values.map(x => x._2)))
 
       }
 
@@ -102,22 +111,8 @@ class StockActor(symbol: String) extends Actor {
         context.stop(self)
       }
 
-    // TODO: initial template code
-    case FetchLatest =>
-      // add a new stock price to the history and drop the oldest
-      // TODO: modify price fetching here
-      val newPrice = stockQuote.newPrice(stockHistory.last.doubleValue())
-      stockHistory = stockHistory.drop(1) :+ newPrice
-      // notify watchers
-      watchers.foreach(_ ! StockUpdate(symbol, newPrice, 0))
   }
 
-  // TODO: remove
-  // A random data set which uses stockQuote.newPrice to get each data point
-  //  var stockHistory: Queue[java.lang.Double] = {
-  //    lazy val initialPrices: Stream[java.lang.Double] = (new Random().nextDouble * 800) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
-  //    initialPrices.take(50).to[Queue]
-  //  }
   var stockHistory: Queue[java.lang.Double] = {
     lazy val initialPrices: Stream[java.lang.Double] = (0) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
     initialPrices.take(5).to[Queue]
@@ -158,9 +153,7 @@ case class WatchStock(symbol: String)
 
 case class UnwatchStock(symbol: Option[String])
 
-// TODO: 
-case class EMAupdate(symbol: String)
+case class EMAupdate(json: JsonNode)
+case class SMAupdate(json: JsonNode)
 
-//// TODO: remove when Marzell's is here
-//case class OHLC
 

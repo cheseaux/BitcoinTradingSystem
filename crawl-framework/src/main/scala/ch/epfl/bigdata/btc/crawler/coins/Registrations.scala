@@ -14,7 +14,7 @@ import akka.actor.{Actor, ActorRef, Props}
    */
   class Registrations {
 	  
-      val indicators = new MutableList[IndicatorRegistration]()
+      val indicators = new HashMap[IndicatorRegistration, ActorRef]()
     
 	  val twitter = new MutableList[ActorRef]()
 	  val ohlc = new HashMap[MarketPair, MutableList[ActorRef]]()
@@ -56,9 +56,7 @@ import akka.actor.{Actor, ActorRef, Props}
 	    }
 	  }
 	  
-	  def addIndicator(i: IndicatorRegistration) {
-	    if(!indicators.contains(i)) {
-	      indicators += i;
-	    }
+	  def addIndicator(i: IndicatorRegistration, a: ActorRef) {
+	    indicators += (i -> a)
 	  }
   }

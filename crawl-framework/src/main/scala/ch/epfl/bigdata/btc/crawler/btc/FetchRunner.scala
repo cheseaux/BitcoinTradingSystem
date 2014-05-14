@@ -17,7 +17,7 @@ object FetchRunner extends App {
   println(system.name)
 
   // twittactor ! begin
-  ActorPool.twitterFetcher ! "start"
+  //ActorPool.twitterFetcher ! "start"
 
   ActorPool.dataSource ! new MarketPairRegistrationTransaction(
     Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
@@ -26,6 +26,9 @@ object FetchRunner extends App {
 
   ActorPool.dataSource ! new MarketPairRegistrationTransaction(
     Market.BTCe, CurrencyPair(Currency.BTC, Currency.USD))
+  
+  ActorPool.dataSource ! new EMARegistration(
+    Market.BTCe, CurrencyPair(Currency.BTC, Currency.USD), 30, 26)
 
   println("FetchRunner | dataSource")
 
