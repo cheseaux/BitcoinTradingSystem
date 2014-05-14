@@ -74,6 +74,9 @@ class DataSource() extends Actor {
    * update the cache and the distribute
    */
   def updateCacheAndNotify(t: Transaction) {
+    
+    
+    
     //println(t)
     val mprt = MarketPairRegistrationTransaction(t.market, new CurrencyPair(t.from, t.to))
     val mp = MarketPair(t.market, new CurrencyPair(t.from, t.to))
