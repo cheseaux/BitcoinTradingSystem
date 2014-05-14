@@ -26,6 +26,8 @@ $ ->
     # reset the form
     $("#addsymboltext").val("")
     
+  
+    
     
 getPricesFromArray = (data) ->
   (v[1] for v in data)
@@ -109,42 +111,18 @@ endTime = 1500064800
 	else
 	  alert "invalid value, outside of : [1,3000]"
 	window.ps = plotData.length
+
   
 updateStockData = (message) ->
-  plotData.push([message.time, message.price])
-  #plotData.sort()  
-  #console.log("plotData.length", plotData.length)
+	plotData.push([message.time, message.price])
+
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
   drawLastValues(nDataInPlot)
   #drawValuesInRange(beginTime, endTime)
 ), 1000
-  
-#method for redrawing the plot and axis
-updateStockPlot = () ->
-  if ($("#chart").size() > 0)
-    plot = $("#chart").data("plot")
-    plot.setData([plotData])
-    #data2 = plot.getData()[0].data
-    data = getPricesFromArray(plotData)
-  #setting the x axis
-  
-  xaxes = plot.getOptions().xaxes[0]
-  xaxes.min = getXAxisMin(plotData)
-  xaxes.max = getXAxisMax(plotData)
-  plot.setupGrid()
-    
-    # update the yaxes if either the min or max is now out of the acceptable range
-  yaxes = plot.getOptions().yaxes[0]
-  #if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
-    # reseting yaxes
-  yaxes.min = getAxisMin(data)*1
-  yaxes.max = getAxisMax(data)*1
-  plot.setupGrid()
-  # redraw the chart
-  plot.draw()
-  #console.log("data", data)
+
     
 drawLastValues = (numberOfValues) ->
 	plotData.sort()
@@ -179,6 +157,7 @@ drawLastValues = (numberOfValues) ->
 
 
 drawValuesInRange = (beginRange, endRange) ->
+	
 	#copying the array
 	rangePlotData = clone(plotData)
 	#resizing dataset locally
@@ -220,6 +199,7 @@ updatePrice = (message) ->
 showTweets = () ->
 	formattedTweets = (showtweet(tweet) for tweet in tweets).reduceRight (x, y) -> x + "\n" + y
 	document.getElementById('tweetList').innerHTML = formattedTweets
+	$("#popover-btn").popover()
     
 showtweet = (message) ->
 	sentiment = message.sentiment
@@ -230,7 +210,7 @@ showtweet = (message) ->
 		str = '<div class="postweet" id="clickable">'
 	
 	str += message.symbol
-	str += '<i class="icon-info-sign" id="info">click</i></div>'
+	str += '<a id="popover-btn" href="#" class="btn btn-danger" rel="popover" data-original-title="Example Popover" data-content="hello" data-html="true" data-trigger="click">...</a>'
 	return str
 
 clone = (obj) ->
