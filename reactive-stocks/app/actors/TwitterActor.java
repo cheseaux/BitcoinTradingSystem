@@ -17,7 +17,7 @@ public class TwitterActor extends UntypedActor {
 		// TODO Auto-generated constructor stub
 		this.out = out;
 		
-		System.out.println("twitter actor is online weep weep");
+		//System.out.println("twitter actor is online weep weep");
 		
 
 	}
