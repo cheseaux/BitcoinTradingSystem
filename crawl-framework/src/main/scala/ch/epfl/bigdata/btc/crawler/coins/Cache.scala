@@ -33,10 +33,66 @@ import org.joda.time.DateTime
      */
     def addTransaction(mp : MarketPairRegistrationTransaction, t : Transaction) {
       trans.get(mp) match {
-        case None => trans += (mp -> ((new MutableList[Transaction])+= t))
-        case Some(m) => m.+=:(t)
+        case None => trans += (mp -> ((new MutableList[Transaction]) += t))
+        case Some(m) => m += t
       }
     }
+    
+    /**
+     * Tested and works
+     */
+    // oldest - - - - - newest
+    // head   - - - - - last
+    def updateOhlcForMpro(mp: MarketPairRegistrationOHLC, o: OHLC) {
+      ohlc.get(mp) match {
+        case Some(l) => {
+          if (l.length == 0) {
+            l += o
+            return
+          }
+          var head = l.head
+          var last = l.last
+          var currentTime = o.date
+          var currentIndex = (o.date.minus(l.last.date.getMillis()).getMillis().toInt / 1000) / (o.duration.getMillis()/1000)
+          
+          // currentIndex == 0 => update last
+          // currentIndex  > 0 => this one is newer -> append and fill
+          // currentindex  < 0 => this one is older -> prepend and fill
+
+          println(currentIndex)
+          if(currentIndex == 0) {
+            println("l.update", o)
+            l.update(0, o)
+          } else if(currentIndex > 0) {
+            var toAddDate = last.date
+            for( i <- 1 to currentIndex.toInt) {
+              toAddDate = toAddDate.plus(o.duration)
+              l += new OHLC(last.close, last.close, last.close, last.close, 0, 
+                  new DateTime(toAddDate) , new Duration(o.duration))
+            }
+            l.update(l.length - 1, o)
+          } else if(currentIndex < 0) {
+            
+        	  if (-currentIndex >= l.length) {
+        	    var copy = l;
+                var toAddDate = head.date
+                currentIndex = - currentIndex;
+                for( i <- 1 to currentIndex.toInt) {
+                  toAddDate = toAddDate.minus(o.duration)
+                  copy = new OHLC(head.open, head.open, head.open, head.open, 0, 
+                      new DateTime(toAddDate) , new Duration(o.duration)) +: copy
+                }
+                copy.update(0, o)
+                ohlc.put(mp, copy)
+              } else {
+        	    l.update(l.length + (currentIndex.toInt) - 1, o)
+        	  }
+          }
+        }
+        case None => return
+      }
+    }
+
     
      /**
      * Initializes a new MarketPair for OHLC
@@ -45,7 +101,7 @@ import org.joda.time.DateTime
       val mp = new MarketPair(mpro.market, mpro.c)
       ohlc.get(mpro) match { // Check if mpro is already registered
         case None => ohlc += (mpro -> new MutableList[OHLC])
-        case _ => return
+        case _ =>
       }
       ohlcByMp.get(mp) match { // check if mp to mpro is registered
         case None => ohlcByMp += (mp -> ((new MutableList[MarketPairRegistrationOHLC]) += mpro))
@@ -69,19 +125,57 @@ import org.joda.time.DateTime
 	        case Some(l) => {
 	          var time = (t.timestamp.getMillis() / 1000) / mpro.tickSize
 	          if (l.length == 0) {
-	            l.+=:(new OHLC(t.unitPrice, t.unitPrice, t.unitPrice, t.unitPrice, 
-			           t.amount, new DateTime(time) , new Duration(mpro.tickSize*1000)))
+	            l += (new OHLC(t.unitPrice, t.unitPrice, t.unitPrice, t.unitPrice, 
+			           t.amount, new DateTime(time * 1000 * mpro.tickSize) , new Duration(mpro.tickSize*1000)))
 	          } else {
-	           var myOhlc = updateGivenOHLC(l.head, t)
-	           if(l.head.date.getMillis()/1000 == time ) {
-	             l.update(0, myOhlc)
+	           var myOhlc = updateGivenOHLC(l.last, t)
+	           if(l.last.date.getMillis()/1000 == time * 1000 * mpro.tickSize ) {
+	             l.update(l.length - 1, myOhlc)
 	           } else {
-	             l.+=:(myOhlc)
+	             l += (new OHLC(t.unitPrice, t.unitPrice, t.unitPrice, t.unitPrice, 
+			           t.amount, new DateTime(time * 1000 * mpro.tickSize) , new Duration(mpro.tickSize*1000)))
 	           }
 	          }
 	        }
 	      }
         }) 
+      }
+    }
+    
+    private def insertOhlc(l: MutableList[OHLC], o: OHLC): MutableList[OHLC] = {
+      if(l.length == 0) {
+        return l += o
+      } else {
+
+        var length = l.length
+    	var current = l.last
+    	
+    	
+    	
+        var indexRespectToCurrent = ((o.date.getMillis() - current.date.getMillis()) / 1000) / (o.duration.getMillis()/1000)
+        var currentDate = new DateTime(current.date)
+        if (indexRespectToCurrent.toInt == 0) {
+          l.update(length - 1, o)
+        } else if (indexRespectToCurrent.toInt > 0) {
+          currentDate = new DateTime(l.head.date)
+          for (i <- 1 to indexRespectToCurrent.toInt) {
+            currentDate = currentDate.plus(o.duration)
+            l += new OHLC(o.close, o.close, o.close, o.close, 0, new DateTime(currentDate), o.duration)
+          }
+          l.update(l.length - 1, o)
+          
+        } else {
+          var head = l.head
+          var copy = l
+          currentDate = new DateTime(head)
+          for (i <- 1 to -indexRespectToCurrent.toInt) {
+            currentDate = currentDate.minus(o.duration)
+            copy = new OHLC(o.close, o.close, o.close, o.close, 0, new DateTime(currentDate), o.duration) +: copy
+          }
+          copy.update(l.length + indexRespectToCurrent.toInt -1 , o);
+          return copy
+        }
+        return l
       }
     }
     
@@ -115,7 +209,7 @@ import org.joda.time.DateTime
 	            thelist.update(0, updateGivenOHLC(head, e))
 	          } else {
 	            thelist.+=:(new OHLC(e.unitPrice, e.unitPrice, e.unitPrice, e.unitPrice, 
-			           e.amount, new DateTime(time) , new Duration(mpro.tickSize*1000)))
+			           e.amount, new DateTime(time * 1000 * mpro.tickSize) , new Duration(mpro.tickSize*1000)))
 	          }
           }
         }
@@ -130,6 +224,13 @@ import org.joda.time.DateTime
       ohlc.get(mpro) match {
         case None => new OHLC(0.0, 0.0, 0.0, 0.0, 0.0, new DateTime() , new Duration)
         case Some(l) => l.head
+      }
+    }
+    
+    def getAllOhlc(mpro: MarketPairRegistrationOHLC) = {
+      ohlc.get(mpro) match {
+        case None => new MutableList[OHLC]()
+        case Some(l) => l
       }
     }
 

@@ -8,7 +8,7 @@ import ch.epfl.bigdata.btc.crawler.coins.types._
 import ch.epfl.bigdata.btc.types.Registration._
 import com.github.nscala_time.time.Imports._
 import ch.epfl.bigdata.btc.types.Transfer._
-import ch.epfl.bigdata.btc.types.Indicator
+import ch.epfl.bigdata.btc.types.Indicator._
 
 
 class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int, alpha : Double) extends Indicator(dataSource, watched) {
@@ -21,7 +21,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	def recompute() {		
 		values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
     time = ticks.map(_.date.getMillis()).toList
-    observer.map(a => a ! Points(Indicator.EMA, values zip time))
+    observer.map(a => a ! Points(EMA, values zip time))
 		
   }
 	
