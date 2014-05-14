@@ -1,6 +1,5 @@
 tweets = []
-plotData = [0, 0]
-
+plotData = []
 
 $ ->
   ws = new WebSocket $("body").data("ws-url")
@@ -112,41 +111,9 @@ endTime = 1500064800
 	window.ps = plotData.length
   
 updateStockData = (message) ->
-
-
-  #if ($("#chart").size() > 0)
-  #  plot = $("#chart").data("plot")
-    
-    
-  data = getPricesFromArray(plotData)
-  data.shift()
-  data.push(message.price)
-    #plot.setData([getChartArray(data)])   data was used before, without timestamps
-    
-    #console.log("seconds", message.seconds)
-    #console.log("price", message.price)
-    
-    #we do not get the data from the plot itself
-    #data2 = plot.getData()[0].data
-  
-  #check if we need to increase the plot size  
-  #append or below to if statement below if you wish to have fixed number of data values
-  #or (plotData.length >= nDataInPlot)
-  if (plotData.length == 1)
-    plotData.shift()
-  
-	
-  #trying to do something with the time
-  timestamp = message.time
-  #timestamp = timestamp % (3600*24)
-  
-  #we set the time only if they are in the range
-  #if (timestamp >= beginTime) and (timestamp <= endTime)  
-  window.kl++
-  plotData.push([timestamp, message.price])
-  plotData.sort()
-  
-  window.ps = plotData.length
+  plotData.push([message.time, message.price])
+  #plotData.sort()  
+  #console.log("plotData.length", plotData.length)
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
@@ -180,14 +147,12 @@ updateStockPlot = () ->
   #console.log("data", data)
     
 drawLastValues = (numberOfValues) ->
+	plotData.sort()
 	#copying the array
 	lastPlotData = clone(plotData)
 	#resizing dataset locally
 	while (lastPlotData.length >= numberOfValues)
 	  lastPlotData.shift()
-	  
-	console.log("number of values to draw", lastPlotData.length)
-	console.log(lastPlotData)
 	  
 	if ($("#chart").size() > 0)
       plot = $("#chart").data("plot")
