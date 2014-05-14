@@ -31,7 +31,7 @@ class CacheTest extends AssertionsForJUnit {
     var ohlc5 = new OHLC(5,5,5,5,5, new DateTime(150000), new Duration(30000))
     
     cache.addOhlcType(reg)
-    
+    /*
     cache.updateOhlcForMpro(reg, ohlc1)
     
     cache.updateOhlcForMpro(reg, ohlc3)
@@ -42,10 +42,11 @@ class CacheTest extends AssertionsForJUnit {
     cache.updateOhlcForMpro(reg, ohlc4)
     
     cache.updateOhlcForMpro(reg, ohlc5)
+    * */
+    
     
     //println(cache.getLatestOhlc(reg))
     
-    println(cache.getAllOhlc(reg))
     
     
   }

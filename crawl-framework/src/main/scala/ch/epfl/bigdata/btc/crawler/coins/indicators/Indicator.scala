@@ -19,8 +19,8 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
   }
 
   def updateTicks(tick: OHLC) = {
-    println("tick", tick)
-    println("ticks.length", ticks.length)
+    //println("tick", tick)
+    //println("ticks.length", ticks.length)
     if (ticks.isEmpty) {
       var currentDate = tick.date.minusMillis(watched.tickSize * 1000 * (watched.tickCount - 1))
       for (a <- 1 to watched.tickCount) {
@@ -34,7 +34,7 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
 
     var idRespectToHead = (tick.date.getMillis() - last.date.getMillis()) / 1000 / watched.tickSize
     var myTicks = ticks
-    println("idRespectToHead", idRespectToHead)
+    //println("idRespectToHead", idRespectToHead)
     if (idRespectToHead == 0) { // the same time
       ticks.update(length - 1, tick)
     } else if (idRespectToHead > 0) { // before

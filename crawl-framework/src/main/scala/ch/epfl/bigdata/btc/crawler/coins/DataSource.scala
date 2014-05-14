@@ -1,7 +1,6 @@
 package ch.epfl.bigdata.btc.crawler.coins
 
-import ch.epfl.bigdata.btc.crawler.coins.Cache;
-import ch.epfl.bigdata.btc.crawler.coins.Registrations;
+import ch.epfl.bigdata.btc.crawler.coins._;
 import ch.epfl.bigdata.btc.crawler.coins.indicators.Indicator
 import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
 import ch.epfl.bigdata.btc.types.Transfer._
@@ -14,7 +13,7 @@ import akka.event.Logging
 import akka.actor.{ Actor, ActorRef, Props }
 
 class DataSource() extends Actor {
-import context._
+  import context._
   val pool = context.actorOf(Props[MarketFetchPool], "MarketFetchPool")
   val log = Logging(context.system, this)
 
@@ -35,7 +34,7 @@ import context._
   }
 
   def acceptIndicatorRegistration(a: IndicatorRegistration) {
-    println("ici Datasource, qqn s'inscrit aux EMA, Yipeee")
+    //println("ici Datasource, qqn s'inscrit aux EMA, Yipeee")
     if (!registrations.getIndicatorRegistrations().contains(a)) {
       registrations.addIndicator(a.asInstanceOf[IndicatorRegistration]);
       a match {
@@ -75,7 +74,7 @@ import context._
    * update the cache and the distribute
    */
   def updateCacheAndNotify(t: Transaction) {
-    println(t)
+    //println(t)
     val mprt = MarketPairRegistrationTransaction(t.market, new CurrencyPair(t.from, t.to))
     val mp = MarketPair(t.market, new CurrencyPair(t.from, t.to))
 
@@ -86,7 +85,7 @@ import context._
     // distribution
     registrations.getTransRegByMarketPair(mp) match {
       case None =>
-      case Some(l) => { println("getTransRegByMarketPair", mp)
+      case Some(l) => { //println("getTransRegByMarketPair", mp)
         l.map(a => a ! t)
       }
 
@@ -95,12 +94,12 @@ import context._
     registrations.getOhlcRegByMarketPair(mp) match {
       case None => return
       case Some(l) => {
-        l.map(a => { println("getOhlcRegByMarketPair mp", mp)
+        l.map(a => { //println("getOhlcRegByMarketPair mp", mp)
           registrations.getOhlcRegByActor(a) match {
             case None => return
-            case Some(k) => {println("getOhlcRegByMarketPair a", a)
+            case Some(k) => { //println("getOhlcRegByMarketPair a", a)
               k.map(mpro => a ! cache.getLatestOhlc(mpro))
-              println("ohlc ")
+              //println("ohlc ")
             }
           }
 
