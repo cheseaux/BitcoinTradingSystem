@@ -92,5 +92,27 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     } else
       0
   }
+  def trans(ma : List[Double], transactions : List [(Int, Double, Double)], signal : Int, 
+	    maxBTC : Double, actualPrice : Double):List[(Int, Double, Double)]={
+	  
+	  val actual = ma.last
+	  var newTrans = transactions
+	  val min = ma.min
+	  val max = ma.max
+	  var price= 0.0
+	  var btc = 0.0
+
+	  if(signal == 1 && actual == min){
+	    
+		 btc = (1- min/max)*maxBTC
+	  }
+	  else if (signal == -1 && actual == max){
+	        
+		btc = (1- min/max)*maxBTC 
+	  }
+	  price = btc * actualPrice
+	 (signal, price, btc) :: newTrans
+	}
+	
 
 }
