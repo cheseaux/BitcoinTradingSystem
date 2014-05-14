@@ -1,6 +1,8 @@
 tweets = []
 plotData = []
 
+fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
+
 $ ->
   ws = new WebSocket $("body").data("ws-url")
   ws.onmessage = (event) ->
@@ -10,8 +12,9 @@ $ ->
         populateStockHistory(message)
       when "stockupdate"
         updateStockData(message)
-        #updateStockPlot()
         updatePrice(message)
+      when "EMA"
+        updateEMAData(message)
       when "tweet"
       	if message.sentiment != 0
        	  tweets.push message
@@ -69,7 +72,7 @@ populateStockHistory = (message) ->
   #populates with history, we do not want
   #plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
   chart = $("#chart").addClass("chart")
-  plot = chart.plot([plotData], getChartOptions(message.history)).data("plot")
+  plot = chart.plot([plotData, fakePlot], getChartOptions(message.history)).data("plot")
   
   #console.log("mesage history", message.history)
   #console.log("data", plot.getData()[0].data)
@@ -113,6 +116,8 @@ endTime = 1500064800
 updateStockData = (message) ->
 	plotData.push([message.time, message.price])
 
+updateEMAData = (message) ->
+	console.log("EMA JSON Array", message.values);
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
@@ -131,7 +136,7 @@ drawLastValues = (numberOfValues) ->
 	  
 	if ($("#chart").size() > 0)
       plot = $("#chart").data("plot")
-      plot.setData([lastPlotData])
+      plot.setData([lastPlotData, fakePlot])
       #data2 = plot.getData()[0].data
       data = getPricesFromArray(lastPlotData)
 	#setting the x axis
