@@ -19,6 +19,10 @@ import scala.collection.JavaConverters._
 import com.fasterxml.jackson.databind.JsonNode
 import play.libs.Json
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor
+import play.api.libs.json.JsArray
+import play.api.libs.json.JsString
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * There is one StockActor per stock symbol.  The StockActor maintains a list of users watching the stock and the stock
@@ -65,12 +69,39 @@ class StockActor(symbol: String) extends Actor {
         case Indicator.EMA =>
           // send as EMA
           println("received EMA, first val: " + points.values.last._1)
-          val jsonValues = Json.toJson(points.values.map(x => x._1))
-          val jsonTimestamps = Json.toJson(points.values.map(x => x._2))
-          val jsonEMA = Json.newObject();
+          println("liste entiere: " + points.values)
+          println("liste de vals: " + points.values.map(x => x._1))
+          
+//          var arr = points.values.map( e => (new JSONArray()).put(0,e._1.toString).put(1,e._2.toString))
+//          println(arr)
+//          
+//         
+//          
+//          var data = new JSONArray()
+//          arr.map(e => data.put(e))
+          
+          var inner = points.values.map( e => (new JsArray()) :+ (new JsString(e._2.toString)) :+ (new JsString(e._1.toString)))
+          
+//          println("inner" + inner);
+          
+          var data = new JsArray(inner)
+//          println("data; " + data)
+          
+          
+          
+//          val jsonValues = Json.toJson(points.values.map(x => x._1))
+//          val jsonValues = JsArray(points.values.map(x => x._1))
+          val jsonEMA = new JSONObject()
+//          val jsonValues = new JSONArray(points.values.map(x => x._1))
+//          val jsonTimestamps = new JSONArray(points.values.map(x => x._2))
+//          jsonEMA.put
+//          val jsonEMA = Json.newObject();
+          jsonEMA.put("values", data)
           jsonEMA.put("type", "EMA");
-          jsonEMA.put("values", jsonValues)
-          jsonEMA.put("timestamps", jsonTimestamps)
+//          jsonEMA.put("values", jsonValues)
+//          jsonEMA.put("timestamps", jsonTimestamps)
+          println("created JSON: " + jsonEMA)
+          watchers.foreach(_ ! EMAupdate(jsonEMA))
 
         //          watchers.foreach(_ ! EMAupdate( (points.values.map(x => x._1)).asJava, (points.values.map(x => x._2)).asJava ))
         case Indicator.SMA =>
@@ -78,10 +109,11 @@ class StockActor(symbol: String) extends Actor {
           println("received SMA, first val: " + points.values.last._1)
           val jsonValues = Json.toJson(points.values.map(x => x._1))
           val jsonTimestamps = Json.toJson(points.values.map(x => x._2))
-          val jsonEMA = Json.newObject();
-          jsonEMA.put("type", "SMA");
-          jsonEMA.put("values", jsonValues)
-          jsonEMA.put("timestamps", jsonTimestamps)
+          val jsonSMA = Json.newObject();
+          jsonSMA.put("type", "SMA");
+          jsonSMA.put("values", jsonValues)
+          jsonSMA.put("timestamps", jsonTimestamps)
+          watchers.foreach(_ ! SMAupdate(jsonSMA))
         //watchers.foreach(_ ! SMAupdate(points.values.map(x => x._1), points.values.map(x => x._2)))
 
       }
@@ -110,6 +142,8 @@ class StockActor(symbol: String) extends Actor {
         //stockTick.cancel()
         context.stop(self)
       }
+    case _ =>
+      println("StockActor: received unknown type")
 
   }
 
@@ -153,7 +187,7 @@ case class WatchStock(symbol: String)
 
 case class UnwatchStock(symbol: Option[String])
 
-case class EMAupdate(json: JsonNode)
+case class EMAupdate(json: JSONObject)
 case class SMAupdate(json: JsonNode)
 
 
