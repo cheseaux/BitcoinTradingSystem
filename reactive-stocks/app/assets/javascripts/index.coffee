@@ -81,7 +81,20 @@ window.kl = 0
 root = exports ? this
 
 #global variable containing plot size
-nDataInPlot = 100;
+nDataInPlot = 1000;
+
+#begin and end times for plot graph
+beginTime = 1400029200
+endTime = 1400108400
+
+@updatePlotTimeRange = updatePlotTimeRange = () ->
+	inputBeginTime = document.getElementsByName('textboxbegintime')[0].value
+	inputEndTime = document.getElementsByName('textboxendtime')[0].value
+	beginTime = inputBeginTime
+	endTime = inputEndTime
+	alert plotData[0][0]
+	#now we have to old values with shifting
+	#while (plotData[0][0])
 
 
 @updatePlotSize = updatePlotSize = () ->
@@ -115,18 +128,21 @@ updateStockData = (message) ->
     #data2 = plot.getData()[0].data
   
   #check if we need to increase the plot size  
-  if (plotData.length == 1) or (plotData.length >= nDataInPlot)
+  #append or below to if statement below if you wish to have fixed number of data values
+  #or (plotData.length >= nDataInPlot)
+  if (plotData.length == 1)
     plotData.shift()
+  
 	
   #trying to do something with the time
   timestamp = message.time
-  timestamp = timestamp % (3600*24)
+  #timestamp = timestamp % (3600*24)
   
+  #we set the time only if they are in the range
+  #if (timestamp >= beginTime) and (timestamp <= endTime)  
   window.kl++
   plotData.push([timestamp, message.price])
-  
   plotData.sort()
-  
   plot.setData([plotData])
 
 
