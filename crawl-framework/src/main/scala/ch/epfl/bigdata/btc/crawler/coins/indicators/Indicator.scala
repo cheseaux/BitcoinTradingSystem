@@ -12,14 +12,15 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
 
   var ticks: MutableList[OHLC] = new MutableList[OHLC]()
   dataSource ! watched
+  
+  println("self", self)
 
   def receive = {
-    case t: OHLC => updateTicks(t)
-    case a: Any => receiveOther(a, sender)
+    case t: OHLC => updateTicks(t); 
+    case a: Any => println("Indicator: Any", a); receiveOther(a, sender)
   }
 
   def updateTicks(tick: OHLC) = {
-    //println("tick", tick)
     //println("ticks.length", ticks.length)
     if (ticks.isEmpty) {
       var currentDate = tick.date.minusMillis(watched.tickSize * 1000 * (watched.tickCount - 1))
@@ -34,7 +35,6 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
 
     var idRespectToHead = (tick.date.getMillis() - last.date.getMillis()) / 1000 / watched.tickSize
     var myTicks = ticks
-    //println("idRespectToHead", idRespectToHead)
     if (idRespectToHead == 0) { // the same time
       ticks.update(length - 1, tick)
     } else if (idRespectToHead > 0) { // before
@@ -48,6 +48,7 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
     } else if (idRespectToHead < 0 && idRespectToHead > -watched.tickCount) { // insert some in between
       ticks.update(length + idRespectToHead.toInt, tick)
     }
+    recompute()
   }
 
   def recompute()
