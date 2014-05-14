@@ -1,6 +1,7 @@
 tweets = []
 plotData = [0, 0]
 
+
 $ ->
   ws = new WebSocket $("body").data("ws-url")
   ws.onmessage = (event) ->
@@ -73,26 +74,28 @@ populateStockHistory = (message) ->
   
   #console.log("mesage history", message.history)
   #console.log("data", plot.getData()[0].data)
+
 #compteur de messages recus
 window.kl = 0
-
+#taille d'affichage du plot
+window.ps = 0
 
 
 root = exports ? this
 
 #global variable containing plot size
-nDataInPlot = 1000;
+nDataInPlot = 100;
 
 #begin and end times for plot graph
-beginTime = 1400029200
-endTime = 1400108400
+beginTime = 1400043400
+endTime = 1500064800
 
 @updatePlotTimeRange = updatePlotTimeRange = () ->
 	inputBeginTime = document.getElementsByName('textboxbegintime')[0].value
 	inputEndTime = document.getElementsByName('textboxendtime')[0].value
 	beginTime = inputBeginTime
 	endTime = inputEndTime
-	alert plotData[0][0]
+	drawValuesInRange(beginTime, endTime)
 	#now we have to old values with shifting
 	#while (plotData[0][0])
 
@@ -101,24 +104,23 @@ endTime = 1400108400
 	inputNData = document.getElementsByName('textboxplotsize')[0].value
 	if (inputNData >= 1) and (inputNData <= 3000)
 	  nDataInPlot = inputNData
-	  #we have to resize the data array if it is bigger (if smaller will grow automatically), keeping the last values
-	  while (plotData.length >= nDataInPlot)
-	    plotData.shift()
+	  
 	  #redraw graph
-	  updateStockPlot()
+	  drawLastValues(nDataInPlot)
 	else
 	  alert "invalid value, outside of : [1,3000]"
+	window.ps = plotData.length
   
 updateStockData = (message) ->
 
 
-  if ($("#chart").size() > 0)
-    plot = $("#chart").data("plot")
+  #if ($("#chart").size() > 0)
+  #  plot = $("#chart").data("plot")
     
     
-    data = getPricesFromArray(plotData)
-    data.shift()
-    data.push(message.price)
+  data = getPricesFromArray(plotData)
+  data.shift()
+  data.push(message.price)
     #plot.setData([getChartArray(data)])   data was used before, without timestamps
     
     #console.log("seconds", message.seconds)
@@ -143,18 +145,20 @@ updateStockData = (message) ->
   window.kl++
   plotData.push([timestamp, message.price])
   plotData.sort()
-  plot.setData([plotData])
-
+  
+  window.ps = plotData.length
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
-  updateStockPlot()
+  drawLastValues(nDataInPlot)
+  #drawValuesInRange(beginTime, endTime)
 ), 1000
   
 #method for redrawing the plot and axis
 updateStockPlot = () ->
   if ($("#chart").size() > 0)
     plot = $("#chart").data("plot")
+    plot.setData([plotData])
     #data2 = plot.getData()[0].data
     data = getPricesFromArray(plotData)
   #setting the x axis
@@ -175,9 +179,73 @@ updateStockPlot = () ->
   plot.draw()
   #console.log("data", data)
     
+drawLastValues = (numberOfValues) ->
+	#copying the array
+	lastPlotData = clone(plotData)
+	#resizing dataset locally
+	while (lastPlotData.length >= numberOfValues)
+	  lastPlotData.shift()
+	  
+	console.log("number of values to draw", lastPlotData.length)
+	console.log(lastPlotData)
+	  
+	if ($("#chart").size() > 0)
+      plot = $("#chart").data("plot")
+      plot.setData([lastPlotData])
+      #data2 = plot.getData()[0].data
+      data = getPricesFromArray(lastPlotData)
+	#setting the x axis
   
+	xaxes = plot.getOptions().xaxes[0]
+	xaxes.min = getXAxisMin(lastPlotData)
+	xaxes.max = getXAxisMax(lastPlotData)
+	plot.setupGrid()
+    
+    # update the yaxes if either the min or max is now out of the acceptable range
+	yaxes = plot.getOptions().yaxes[0]
+	#if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
+    # reseting yaxes
+	yaxes.min = getAxisMin(data)*1
+	yaxes.max = getAxisMax(data)*1
+	plot.setupGrid()
+	# redraw the chart
+	plot.draw()
+	#console.log("data", data)
 
- 
+
+drawValuesInRange = (beginRange, endRange) ->
+	#copying the array
+	rangePlotData = clone(plotData)
+	#resizing dataset locally
+	while (rangePlotData[0][0] <= beginRange)
+	  rangePlotData.shift()
+	while (rangePlotData[rangePlotData.length - 1][0] >= endRange)
+	  rangePlotData.pop()
+	console.log("range from", beginRange)
+	console.log("range to", endRange)  
+	console.log("n. of vals to draw for range", rangePlotData.length)
+	  
+	if ($("#chart").size() > 0)
+      plot = $("#chart").data("plot")
+      plot.setData([rangePlotData])
+      #data2 = plot.getData()[0].data
+      data = getPricesFromArray(rangePlotData)
+	#setting the x axis
+	xaxes = plot.getOptions().xaxes[0]
+	xaxes.min = getXAxisMin(rangePlotData)
+	xaxes.max = getXAxisMax(rangePlotData)
+	plot.setupGrid()
+    
+    # update the yaxes if either the min or max is now out of the acceptable range
+	yaxes = plot.getOptions().yaxes[0]
+	#if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
+    # reseting yaxes
+	yaxes.min = getAxisMin(data)*1
+	yaxes.max = getAxisMax(data)*1
+	plot.setupGrid()
+	# redraw the chart
+	plot.draw()
+	#console.log("data", data)
 	
  #tweet array 
 #max tweets
@@ -200,4 +268,24 @@ showtweet = (message) ->
 	str += '<i class="icon-info-sign" id="info">click</i></div>'
 	return str
 
-    
+clone = (obj) ->
+  if not obj? or typeof obj isnt 'object'
+    return obj
+
+  if obj instanceof Date
+    return new Date(obj.getTime()) 
+
+  if obj instanceof RegExp
+    flags = ''
+    flags += 'g' if obj.global?
+    flags += 'i' if obj.ignoreCase?
+    flags += 'm' if obj.multiline?
+    flags += 'y' if obj.sticky?
+    return new RegExp(obj.source, flags) 
+
+  newInstance = new obj.constructor()
+
+  for key of obj
+    newInstance[key] = clone obj[key]
+
+  return newInstance   
