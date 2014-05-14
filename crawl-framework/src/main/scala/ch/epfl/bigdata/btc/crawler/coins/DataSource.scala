@@ -41,6 +41,7 @@ class DataSource() extends Actor {
     registrations.getIndicatorRegistrations().get(ir) match {
       case Some(indicator) => {
         indicator ! observer
+        println("already register indicator, oh non, c'est balot !!! :( ", ir)
       }
       case None => // create new, enreg
         {
@@ -51,6 +52,7 @@ class DataSource() extends Actor {
                 "EMA" + er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount + "_" + er.tickCount + "-" + er.percent)
                 registrations.addIndicator(ir, indicator)
                 indicator ! observer
+                println("EMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
             }
             case er: SMARegistration => {
               var indicator = context.actorOf(Props(classOf[SMA], self,
@@ -58,6 +60,7 @@ class DataSource() extends Actor {
                 "SMA" + er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount)
                 registrations.addIndicator(ir, indicator)
                 indicator ! observer
+                println("SMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
             }
             case _ => println("Could not register")
           }

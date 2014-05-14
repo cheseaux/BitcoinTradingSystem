@@ -69,7 +69,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   def receiveOther(a: Any, ar: ActorRef) {
     a match {
-      case actor: ActorRef => observer += actor
+      case actor: ActorRef => observer += actor; println("EMAEMAEMAEMAEMAEMAEMAEMAEMAEMAEMAEMAregistered", actor)
       case _ => println("unknown data")
     }
   }

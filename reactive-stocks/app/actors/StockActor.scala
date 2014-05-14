@@ -36,7 +36,13 @@ import java.util.Collection
 
 class StockActor(symbol: String) extends Actor {
 
+  // shit legacy stuff required to run, DO NOT REMOVE
   lazy val stockQuote: StockQuote = new FakeStockQuote
+  
+  // parameters for EMA/SMA
+  val TICK_SIZE = 26
+  val TICK_COUNT = 10
+  val PERCENTAGE = 0.6
 
   // remote dataSource address
   val dataSourceSelection = context.actorSelection("akka.tcp://DataSourceSystem@127.0.0.1:2553/user/DataSource")
@@ -64,8 +70,10 @@ class StockActor(symbol: String) extends Actor {
       // register with DataSource actor
       dataSourceSelection ! MarketPairRegistrationTransaction(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
       dataSourceSelection ! TwitterRegistrationFull()
-      dataSourceSelection ! EMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 10)
-      dataSourceSelection ! SMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 10)
+      
+      
+      dataSourceSelection ! EMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), TICK_SIZE, TICK_COUNT, PERCENTAGE)
+      dataSourceSelection ! SMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), TICK_SIZE, TICK_COUNT)
       // add the watcher to the list
       watchers = watchers + sender
 

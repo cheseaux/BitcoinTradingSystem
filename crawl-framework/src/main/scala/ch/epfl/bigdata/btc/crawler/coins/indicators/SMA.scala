@@ -22,7 +22,12 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
     time = ticks.map(_.date.getMillis()).toList
     observer.map(a => a ! Points(EMA, values zip time))
-
+  }
+  def receiveOther(a: Any, ar: ActorRef) {
+    a match {
+      case actor: ActorRef => observer += actor; println("SMASMASMASMASMASMASMASMASMASMASMASMASMASMAregistered", actor)
+      case _ => println("unknown data")
+    }
   }
 
   /* 
@@ -45,12 +50,6 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
       partialResult zip (partialResult drop half) map Function.tupled(_ + _)
   }
 
-  def receiveOther(a: Any, ar: ActorRef) {
-    a match {
-      case actor: ActorRef => observer += actor
-      case _ => println("unknown data")
-    }
-  }
   
   def envellopAbove(values: List[Double], percent: Double): List[Double] = {
     values.map(_ * (1 + percent))
