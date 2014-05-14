@@ -7,21 +7,60 @@ import ch.epfl.bigdata.btc.types.Market._
 import ch.epfl.bigdata.btc.crawler.coins.types._
 import scala.collection.mutable.MutableList
 import org.joda.time.Duration
+import org.joda.time.DateTime
 
-abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOHLC) extends Actor {
+/**
+ * @param dataSource a reference to the data source / master actor
+ * @param watched the market and currency pair the indicator should work on
+ * @param sensibility the minimal wait time between executions
+ *
+ * @param T the return type of the getResult method, such that observer notification can be automated
+ */
+abstract class Indicator[T](dataSource: ActorRef, watched: MarketPairRegistrationOHLC, sensibility: Long) extends Actor {
 
-  var ticks: MutableList[OHLC] = new MutableList[OHLC]()
+  protected var ticks: MutableList[OHLC] = new MutableList[OHLC]()
+  private var lastUpdate: DateTime = DateTime.now()
+  private var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
   dataSource ! watched
-  
-  println("self", self)
 
+  /**
+   * executes the algorithm on the available data
+   */
+  protected def recompute()
+
+  /**
+   * Should return the result of the computations
+   */
+  protected def getResult(): T
+
+  /**
+   * Delegation of message handling for unknown type
+   */
+  protected def receiveOther(a: Any, ar: ActorRef)
   def receive = {
-    case t: OHLC => updateTicks(t); 
-    case a: Any => println("Indicator: Any", a); receiveOther(a, sender)
+    case t: OHLC => doUpdateDataAndDistribute(t)
+    case actor: ActorRef => observer += actor;
+    case a: Any => receiveOther(a, sender)
   }
 
+  /**
+   * Updates the local OHLC cache and reruns the algorithm if
+   * it wasn't executed for some time, the distributes the result to the observers
+   */
+  def doUpdateDataAndDistribute(t: OHLC) {
+    updateTicks(t)
+    if (lastUpdate.getMillis() - DateTime.now().getMillis() < -sensibility) {
+      recompute()
+      var r: T = getResult()
+      observer.map(a => a ! r)
+      lastUpdate = DateTime.now()
+    }
+  }
+
+  /**
+   * Updates the local OHLC cache with the received OHLC
+   */
   def updateTicks(tick: OHLC) = {
-    //println("ticks.length", ticks.length)
     if (ticks.isEmpty) {
       var currentDate = tick.date.minusMillis(watched.tickSize * 1000 * (watched.tickCount - 1))
       for (a <- 1 to watched.tickCount) {
@@ -29,10 +68,8 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
         currentDate = currentDate.plusMillis(watched.tickSize * 1000)
       }
     }
-
     val last = ticks.last
     val length = ticks.length
-
     var idRespectToHead = (tick.date.getMillis() - last.date.getMillis()) / 1000 / watched.tickSize
     var myTicks = ticks
     if (idRespectToHead == 0) { // the same time
@@ -48,10 +85,5 @@ abstract class Indicator(dataSource: ActorRef, watched: MarketPairRegistrationOH
     } else if (idRespectToHead < 0 && idRespectToHead > -watched.tickCount) { // insert some in between
       ticks.update(length + idRespectToHead.toInt, tick)
     }
-    recompute()
   }
-
-  def recompute()
-
-  def receiveOther(a: Any, ar: ActorRef)
 }
