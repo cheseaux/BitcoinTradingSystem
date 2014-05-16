@@ -1,7 +1,6 @@
 package ch.epfl.bigdata.btc.crawler.coins.indicators
 
 import scala.collection.mutable.MutableList
-
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
 import ch.epfl.bigdata.btc.crawler.coins.types._
@@ -9,20 +8,25 @@ import ch.epfl.bigdata.btc.types.Registration._
 import com.github.nscala_time.time.Imports._
 import ch.epfl.bigdata.btc.types.Transfer._
 import ch.epfl.bigdata.btc.types.Indicator._
+import org.joda.time.DateTime
 
-class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int) extends Indicator(dataSource, watched) {
-
-  var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
+class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int) extends Indicator[Points](dataSource, watched, 10000) {
 
   var values: List[Double] = Nil
   var time: List[Long] = Nil
 
   def recompute() {
+    println("SMA-recompute", DateTime.now())
     values = Nil ::: (movingSum(ticks.map(_.close).toList, period) map (_ / period))
-
     time = ticks.map(_.date.getMillis()).toList
-    observer.map(a => a ! Points(EMA, values zip time))
-
+  }
+  
+  def getResult() = Points(SMA, values zip time)
+  
+  def receiveOther(a: Any, ar: ActorRef) {
+    a match {
+      case _ => println("Class:SMA, received unknown data")
+    }
   }
 
   /* 
@@ -45,12 +49,6 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
       partialResult zip (partialResult drop half) map Function.tupled(_ + _)
   }
 
-  def receiveOther(a: Any, ar: ActorRef) {
-    a match {
-      case actor: ActorRef => observer += actor
-      case _ => println("unknown data")
-    }
-  }
   
   def envellopAbove(values: List[Double], percent: Double): List[Double] = {
     values.map(_ * (1 + percent))
@@ -92,5 +90,27 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     } else
       0
   }
+  def trans(ma : List[Double], transactions : List [(Int, Double, Double)], signal : Int, 
+	    maxBTC : Double, actualPrice : Double):List[(Int, Double, Double)]={
+	  
+	  val actual = ma.last
+	  var newTrans = transactions
+	  val min = ma.min
+	  val max = ma.max
+	  var price= 0.0
+	  var btc = 0.0
+
+	  if(signal == 1 && actual == min){
+	    
+		 btc = (1- min/max)*maxBTC
+	  }
+	  else if (signal == -1 && actual == max){
+	        
+		btc = (1- min/max)*maxBTC 
+	  }
+	  price = btc * actualPrice
+	 (signal, price, btc) :: newTrans
+	}
+	
 
 }

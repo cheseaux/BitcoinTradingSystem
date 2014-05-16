@@ -27,9 +27,7 @@ public class Application extends Controller {
             public void onReady(final WebSocket.In<JsonNode> in, final WebSocket.Out<JsonNode> out) {
                 // create a new UserActor and give it the default stocks to watch
                 final ActorRef userActor = Akka.system().actorOf(Props.create(UserActor.class, out));
-                
-                final ActorRef twitterActor = Akka.system().actorOf(Props.create(TwitterActor.class, out));
-                
+                                
                 System.out.println("application system name: \'" + Akka.system().name() + "\'");
                 
                 

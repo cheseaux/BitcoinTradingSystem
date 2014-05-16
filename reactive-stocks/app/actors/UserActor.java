@@ -88,14 +88,12 @@ public class UserActor extends UntypedActor {
 
 		} else if (message instanceof EMAupdate) {
 			// type: "EMA"
-			// array de valeur: "values"
-			// array de timestamps: "timestamps"
+			// array: "values", dedans: array: [timestamp,valeur]
 			out.write(((EMAupdate) message).json());
 
 		} else if (message instanceof SMAupdate) {
 			// type: "SMA"
-			// array de valeur: "values"
-			// array de timestamps: "timestamps"
+			// array: "values", dedans: array: [timestamp,valeur]
 			out.write(((SMAupdate) message).json());
 		}
 

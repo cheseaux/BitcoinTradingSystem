@@ -122,9 +122,9 @@ class Cache {
           return new OHLC(Double.MinValue, Double.MinValue, Double.MaxValue, 0.0, 0.0, ts, d)
         } else {
           l.get(l.length + getIndex - 1) match {
-            case Some(n) => { println("SOME", n); n }
+            case Some(n) => { n }
             case None => {
-              println("NONE");
+              //println("NONE");
               return new OHLC(Double.MinValue, Double.MinValue, Double.MaxValue, 0.0, 0.0, ts, d)
             }
           }

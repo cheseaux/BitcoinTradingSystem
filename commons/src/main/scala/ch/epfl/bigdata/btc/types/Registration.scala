@@ -11,6 +11,6 @@ object Registration {
 	
 	trait IndicatorRegistration
 	
-	case class EMARegistration(market: Market, c: CurrencyPair, tickSize: Int, tickCount: Int) extends IndicatorRegistration
+	case class EMARegistration(market: Market, c: CurrencyPair, tickSize: Int, tickCount: Int, percent: Double) extends IndicatorRegistration
 	case class SMARegistration(market: Market, c: CurrencyPair, tickSize: Int, tickCount: Int) extends IndicatorRegistration
 }
