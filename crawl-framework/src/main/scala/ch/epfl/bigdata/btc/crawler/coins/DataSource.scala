@@ -7,6 +7,7 @@ import ch.epfl.bigdata.btc.types.Transfer._
 import ch.epfl.bigdata.btc.types.Registration._
 import ch.epfl.bigdata.btc.types.CurrencyPair
 import ch.epfl.bigdata.btc.crawler.coins.indicators.EMA
+import ch.epfl.bigdata.btc.crawler.coins.indicators.SMA 
 import scala.collection.mutable.MutableList
 import scala.collection.mutable.HashMap
 import akka.event.Logging
@@ -40,16 +41,26 @@ class DataSource() extends Actor {
     registrations.getIndicatorRegistrations().get(ir) match {
       case Some(indicator) => {
         indicator ! observer
+        println("already register indicator, oh non, c'est balot !!! :( ", ir)
       }
       case None => // create new, enreg
         {
           ir match {
             case er: EMARegistration => {
               var indicator = context.actorOf(Props(classOf[EMA], self,
-                MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), 100, 0.8),
-                er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount + "100-0.8")
+                MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), er.tickCount, er.percent),
+                "EMA" + er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount + "_" + er.tickCount + "-" + er.percent)
                 registrations.addIndicator(ir, indicator)
                 indicator ! observer
+                println("EMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
+            }
+            case er: SMARegistration => {
+              var indicator = context.actorOf(Props(classOf[SMA], self,
+                MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), er.tickCount),
+                "SMA" + er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount)
+                registrations.addIndicator(ir, indicator)
+                indicator ! observer
+                println("SMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
             }
             case _ => println("Could not register")
           }

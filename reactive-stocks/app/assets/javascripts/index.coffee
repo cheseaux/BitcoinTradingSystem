@@ -88,7 +88,7 @@ window.ps = 0
 root = exports ? this
 
 #global variable containing plot size
-nDataInPlot = 100;
+nDataInPlot = 2000;
 
 #begin and end times for plot graph
 beginTime = 1400043400
@@ -215,7 +215,7 @@ showtweet = (message) ->
 		str = '<div class="postweet" id="clickable">'
 	
 	str += message.symbol
-	str += '<a id="popover-btn" href="#" class="btn btn-danger" rel="popover" data-original-title="Example Popover" data-content="hello" data-html="true" data-trigger="click">...</a>'
+	#str += '<a id="popover-btn" href="#" class="btn btn-danger" rel="popover" data-original-title="Example Popover" data-content="hello" data-html="true" data-trigger="click">...</a>'
 	return str
 
 clone = (obj) ->

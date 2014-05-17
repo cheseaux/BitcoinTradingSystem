@@ -19,10 +19,15 @@ import scala.collection.JavaConverters._
 import com.fasterxml.jackson.databind.JsonNode
 import play.libs.Json
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor
+import com.fasterxml.jackson.databind.node.ArrayNode
 import play.api.libs.json.JsArray
 import play.api.libs.json.JsString
 import org.json.JSONArray
 import org.json.JSONObject
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
+import java.util.Collection
 
 /**
  * There is one StockActor per stock symbol.  The StockActor maintains a list of users watching the stock and the stock
@@ -31,7 +36,13 @@ import org.json.JSONObject
 
 class StockActor(symbol: String) extends Actor {
 
+  // shit legacy stuff required to run, DO NOT REMOVE
   lazy val stockQuote: StockQuote = new FakeStockQuote
+  
+  // parameters for EMA/SMA
+  val TICK_SIZE = 26
+  val TICK_COUNT = 10
+  val PERCENTAGE = 0.6
 
   // remote dataSource address
   val dataSourceSelection = context.actorSelection("akka.tcp://DataSourceSystem@127.0.0.1:2553/user/DataSource")
@@ -59,62 +70,64 @@ class StockActor(symbol: String) extends Actor {
       // register with DataSource actor
       dataSourceSelection ! MarketPairRegistrationTransaction(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC))
       dataSourceSelection ! TwitterRegistrationFull()
-      dataSourceSelection ! EMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 10)
-      dataSourceSelection ! SMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), 26, 10)
+      
+      
+      dataSourceSelection ! EMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), TICK_SIZE, TICK_COUNT, PERCENTAGE)
+      dataSourceSelection ! SMARegistration(Market.BTCe, CurrencyPair(Currency.USD, Currency.BTC), TICK_SIZE, TICK_COUNT)
       // add the watcher to the list
       watchers = watchers + sender
 
     case points: Points =>
       points.ind match {
         case Indicator.EMA =>
-          // send as EMA
-          println("received EMA, first val: " + points.values.last._1)
-          println("liste entiere: " + points.values)
-          println("liste de vals: " + points.values.map(x => x._1))
+
           
-//          var arr = points.values.map( e => (new JSONArray()).put(0,e._1.toString).put(1,e._2.toString))
-//          println(arr)
-//          
-//         
-//          
-//          var data = new JSONArray()
-//          arr.map(e => data.put(e))
+          println("StockActor: received EMA")
+
+          // parse and create JSON
+          var array = points.values.map( e => {
+            var inner = JsonNodeFactory.instance.arrayNode();
+            inner.insert(0, e._2)
+            inner.insert(1, e._1)
+            inner
+          })
+          var data : ArrayNode = JsonNodeFactory.instance.arrayNode();
           
-          var inner = points.values.map( e => (new JsArray()) :+ (new JsString(e._2.toString)) :+ (new JsString(e._1.toString)))
-          
-//          println("inner" + inner);
-          
-          var data = new JsArray(inner)
-//          println("data; " + data)
+          var javaArray: java.util.List[ArrayNode] = array.asJava
+          data.addAll(javaArray.asInstanceOf[java.util.Collection[JsonNode]] )
           
           
-          
-//          val jsonValues = Json.toJson(points.values.map(x => x._1))
-//          val jsonValues = JsArray(points.values.map(x => x._1))
-          val jsonEMA = new JSONObject()
-//          val jsonValues = new JSONArray(points.values.map(x => x._1))
-//          val jsonTimestamps = new JSONArray(points.values.map(x => x._2))
-//          jsonEMA.put
-//          val jsonEMA = Json.newObject();
+          val jsonEMA = Json.newObject();
           jsonEMA.put("values", data)
           jsonEMA.put("type", "EMA");
-//          jsonEMA.put("values", jsonValues)
-//          jsonEMA.put("timestamps", jsonTimestamps)
-          println("created JSON: " + jsonEMA)
+          
+          println("EMA Json sent to GUI: " + jsonEMA)
+          
+          // send the stuff
           watchers.foreach(_ ! EMAupdate(jsonEMA))
 
-        //          watchers.foreach(_ ! EMAupdate( (points.values.map(x => x._1)).asJava, (points.values.map(x => x._2)).asJava ))
         case Indicator.SMA =>
           // send as SMA
-          println("received SMA, first val: " + points.values.last._1)
-          val jsonValues = Json.toJson(points.values.map(x => x._1))
-          val jsonTimestamps = Json.toJson(points.values.map(x => x._2))
+          println("StockActor: received SMA")
+
+          // parse and create JSON
+          var array = points.values.map( e => {
+            var inner = JsonNodeFactory.instance.arrayNode();
+            inner.insert(0, e._2)
+            inner.insert(1, e._1)
+            inner
+          })
+          var data : ArrayNode = JsonNodeFactory.instance.arrayNode();
+          
+          var javaArray: java.util.List[ArrayNode] = array.asJava
+          data.addAll(javaArray.asInstanceOf[java.util.Collection[JsonNode]] )
+          
+          
           val jsonSMA = Json.newObject();
+          jsonSMA.put("values", data)
           jsonSMA.put("type", "SMA");
-          jsonSMA.put("values", jsonValues)
-          jsonSMA.put("timestamps", jsonTimestamps)
-          watchers.foreach(_ ! SMAupdate(jsonSMA))
-        //watchers.foreach(_ ! SMAupdate(points.values.map(x => x._1), points.values.map(x => x._2)))
+          
+          println("SMA Json sent to GUI: " + jsonSMA)
 
       }
 
@@ -175,9 +188,6 @@ object StocksActor {
   lazy val stocksActor: ActorRef = Akka.system.actorOf(Props(classOf[StocksActor]))
 }
 
-case object UpdateBitcoinValue
-
-case object FetchLatest
 
 case class StockUpdate(symbol: String, price: Number, time: Long)
 
@@ -187,7 +197,7 @@ case class WatchStock(symbol: String)
 
 case class UnwatchStock(symbol: Option[String])
 
-case class EMAupdate(json: JSONObject)
+case class EMAupdate(json: JsonNode)
 case class SMAupdate(json: JsonNode)
 
 
