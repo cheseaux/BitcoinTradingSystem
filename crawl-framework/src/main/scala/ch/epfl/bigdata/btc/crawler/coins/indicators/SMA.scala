@@ -33,20 +33,19 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	 * the computation of the moving simple moving average was taken from an online forum :
 	 * http://stackoverflow.com/questions/1319891/calculating-the-moving-average-of-a-list
 	 */
-  def simpleMovingAverage(values: List[Double], period: Int): List[Double] = {
+ def simpleMovingAverage(values: List[Double], period: Int): List[Double] = {
     Nil ::: (movingSum(values, period) map (_ / period))
   }
 
   def movingSum(values: List[Double], period: Int): List[Double] = period match {
     case 0 => throw new IllegalArgumentException
     case 1 => values
-    case 2 => values.sliding(2).toList.map(_.sum)
-    case odd if odd % 2 == 1 =>
-      values zip movingSum(values drop 1, (odd - 1)) map Function.tupled(_ + _)
-    case even =>
-      val half = even / 2
-      val partialResult = movingSum(values, half)
-      partialResult zip (partialResult drop half) map Function.tupled(_ + _)
+    case _ =>
+      var finalList: List[Double] = Nil
+      for (i <- 0 to values.length - period)
+        finalList ::= (values.drop(i).take(period)).sum
+
+      finalList.reverse
   }
 
   
