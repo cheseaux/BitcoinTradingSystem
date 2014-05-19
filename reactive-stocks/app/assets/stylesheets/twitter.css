@@ -1,0 +1,1472 @@
+html body {
+display:block;
+background:transparent;
+}
+
+html,body,h1,h2,h3,blockquote,p,ol,ul,li,img,iframe,button {
+font:normal normal normal 12px/16px "Helvetica Neue",Arial,sans-serif;
+text-decoration:none;
+-webkit-text-size-adjust:100%;
+-ms-text-size-adjust:100%;
+text-transform:none;
+vertical-align:baseline;
+list-style:none;
+border:0;
+-webkit-outline:0;
+-moz-outline:0;
+-ms-outline:0;
+-o-outline:0;
+outline:0;
+margin:0;
+padding:0;
+}
+
+b,i {
+font-style:normal;
+font-weight:400;
+}
+
+abbr {
+border-bottom:0;
+}
+
+.p-author:before,.p-author:after,.cards-base:before,.cards-base:after {
+display:table;
+content:"";
+}
+
+.p-author:after,.cards-base:after {
+clear:both;
+}
+
+.twitter-tweet {
+  cursor:pointer;
+  display: inline-block;
+  width: 100%;
+  border: #ddd 1px solid;
+  border-top-color: #eee;
+  border-bottom-color: #bbb;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  margin: 0px;
+  padding: 0px;
+}
+
+.tweet,.root,.p-author {
+zoom:1;
+}
+
+.root,.tweet,.footer,.detail-expander,.header,.timeline {
+position:relative;
+}
+
+button.load-more,.tweet-box-button,.no-tweets-pane .load-tweets {
+-webkit-box-sizing:border-box;
+-moz-box-sizing:border-box;
+box-sizing:border-box;
+}
+
+.timeline {
+font-family:'Helvetica Neue',Arial,sans-serif;
+margin-bottom:10px;
+background-color:#fff;
+border-radius:5px;
+}
+
+.no-tweets-pane p {
+font-size:20px;
+line-height:24px;
+font-weight:200;
+text-align:center;
+margin:24px 12px;
+}
+
+.timeline-header .custom-timeline-summary,.timeline-header h1.summary {
+font-size:18px;
+font-weight:700;
+line-height:18px;
+}
+
+.custom-timeline-owner-profile,.timeline .e-entry-title,.p-author .p-name,.cards-base h3,.new-tweets-bar button,.load-tweets,.no-more-pane {
+font-size:14px;
+line-height:16px;
+}
+
+.tweet-box-button {
+font-size:13px;
+color:#aaa;
+display:block;
+width:100%;
+text-align:left;
+background:#fff;
+border:1px #ccc solid;
+border-radius:4px;
+padding:6px;
+}
+
+.stats strong,.timeline-header- .byline,.timeline-header .list-description {
+font-size:12px;
+line-height:18px;
+}
+
+.timeline-header .byline {
+margin:2px 0;
+}
+
+.stats span {
+font-size:10px;
+display:inline-block;
+margin-right:3px;
+text-transform:uppercase;
+}
+
+.timeline-header .custom-timeline-description {
+font-size:14px;
+font-weight:200;
+color:#707070;
+}
+
+.custom-timeline-owner-profile .p-nickname {
+font-size:13px;
+}
+
+.p-author a,.e-entry-title,.cards-base h3,.cards-base .cards-content p {
+line-height:18px;
+}
+
+.e-entry-title a {
+max-width:100%;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+a,a:visited,a:active,a:hover,a:focus,.p-author .full-name,.p-author a.profile,.p-author a.profile:hover .p-nickname,.p-author a.profile:focus .p-nickname,.p-author a.profile:hover .p-nickname b,.p-author a.profile:focus .p-nickname b,.timeline-header .custom-timeline-owner-profile:hover,.timeline-header .custom-timeline-owner-profile:focus,.custom-timeline-owner-profile:hover .p-nickname,.custom-timeline-owner-profile:focus .p-nickname,.custom-timeline-owner-profile:hover .p-nickname b,.custom-timeline-owner-profile:focus .p-nickname b,.cards-base a.profile:hover .p-nickname,.cards-base a.profile:focus .p-nickname,.cards-base a.profile:hover .p-nickname b,.cards-base a.profile:focus .p-nickname b,.cards-base .byline-user .p-nickname {
+text-decoration:none;
+outline:0;
+}
+
+html,.p-author .profile .p-name,.custom-timeline-owner-profile .p-name,.cards-base p,.cards-base p a,.timeline-header .custom-timeline-summary,.timeline-header .custom-timeline-summary a:link,.timeline-header .custom-timeline-summary a:visited,.timeline-header .summary,.timeline-header .summary a:link,.timeline-header .summary a:visited,.p-author a.profile:hover .p-name,.p-author a.profile:focus .p-name {
+color:#292f33;
+}
+
+.customisable,.customisable:link,.customisable:visited,.customisable:hover,.customisable:focus,.customisable:active,.customisable-highlight:hover,.customisable-highlight:focus,a:hover .customisable-highlight,a:focus .customisable-highlight {
+color:#0084b4;
+}
+
+a:link,a:visited,.stats span,.byline,.retweet-credit,.no-more-pane,.no-tweets-pane p,.p-geo,.cards-base .byline-user {
+color:#707070;
+}
+
+a:hover,a:focus,a:active,.p-author a.profile:hover,.p-author a.profile:focus,.retweet-credit .profile:hover,.retweet-credit .profile:focus,.stats strong,.no-tweets-pane .load-tweets,.nsfw {
+color:#66757f;
+}
+
+.customisable-border {
+border:1px solid #e8e8e8;
+}
+
+.verified b,.tweet-actions b,abbr.p-geo b,.ic-twitter-badge b,.e-entry-title a .tco-hidden,.collapse-geo .p-geo b,.collapse-media-tag .media-tag b {
+position:absolute;
+top:0;
+left:0;
+clip:rect(0000);
+}
+
+.verified,.ic-rt,.ic-mask,.ic-top,.ic-twitter-alert,.ic-twitter-badge,.ic-bird-flourish,.ic-button-bird {
+display:inline-block;
+vertical-align:middle;
+background:transparent url(../images/sprite.png) no-repeat 0 0;
+background-image:url(data:image/png;base64,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);
+background-size:177px 191px;
+}
+
+.verified {
+width:15px;
+height:17px;
+margin-left:-21px;
+vertical-align:-25%;
+background-position:0 -161px;
+}
+
+.ic-twitter-badge {
+width:18px;
+height:15px;
+background-position:-20px -161px;
+border:1px solid #fff;
+border-radius:3px;
+border-color:transparent;
+}
+
+.ic-top {
+display:inline-block;
+width:12px;
+height:10px;
+vertical-align:top;
+background-position:0 -181px;
+margin:2px 4px 0 0;
+}
+
+.ic-twitter-alert {
+width:16px;
+height:12px;
+background-position:-80px -142px;
+margin:0 3px 3px 0;
+}
+
+.ic-bird-flourish {
+display:block;
+width:32px;
+height:20px;
+background-position:-40px -161px;
+margin:12px auto 0;
+}
+
+.ic-button-bird {
+width:16px;
+height:16px;
+background-position:-73px -160px;
+margin:0 3px 0 0;
+}
+
+.ic-mask {
+width:12px;
+height:13px;
+background-color:#999;
+}
+
+a:hover .ic-mask,a:focus .ic-mask {
+background-color:#0084b4;
+}
+
+.ic-reply {
+width:19px;
+height:15px;
+background-position:0 -87px;
+}
+
+.ic-retweet {
+width:22px;
+height:15px;
+background-position:-31px -87px;
+}
+
+.ic-fav {
+width:16px;
+height:15px;
+background-position:-60px -87px;
+}
+
+.ic-geo,.ic-pho,.ic-sum,.ic-pla,.ic-con,.ic-people {
+display:inline-block;
+width:16px;
+height:16px;
+}
+
+.ic-geo {
+background-position:-100px -30px;
+}
+
+.ic-pho {
+background-position:-60px -29px;
+}
+
+.ic-sum {
+background-position:-120px -29px;
+}
+
+.ic-pla {
+background-position:-80px -29px;
+}
+
+.ic-con {
+background-position:-140px -29px;
+}
+
+.ic-people {
+width:14px;
+background-position:-160px -31px;
+}
+
+.ic-rt {
+width:14px;
+height:16px;
+margin-right:4px;
+background-position:-20px -2px;
+}
+
+.timeline .stream {
+position:relative;
+width:100%;
+overflow-x:hidden;
+overflow-y:scroll;
+}
+
+.timeline.pending-scroll-in .stream .h-feed {
+-webkit-transition:margin-top .5s ease-out;
+-moz-transition:margin-top .5s ease-out;
+-o-transition:margin-top .5s ease-out;
+transition:margin-top .5s ease-out;
+}
+
+.timeline-header,.timeline-footer {
+position:relative;
+z-index:100;
+}
+
+.timeline-header {
+box-shadow:0 0 0 -3px rgba(0,0,0,0);
+-webkit-transition:box-shadow .3s ease-out;
+-moz-transition:box-shadow .3s ease-out;
+-o-transition:box-shadow .3s ease-out;
+transition:box-shadow .3s ease-out;
+border-width:0 0 1px;
+padding:12px;
+}
+
+.scrolled-down .timeline-header {
+box-shadow:0 0 10px -3px #ccc;
+}
+
+.timeline-header .list-description {
+font-family:Georgia,Palatino,serif;
+font-style:italic;
+}
+
+.timeline-header .follow-button,.timeline-header .twitter-follow-button,.timeline-header .ic-twitter-badge {
+position:absolute;
+top:10px;
+right:10px;
+}
+
+.new-tweets-bar {
+position:absolute;
+right:0;
+left:0;
+z-index:100;
+display:none;
+width:auto;
+margin-top:-2px;
+opacity:0;
+-webkit-transition:opacity .3s ease-in;
+-moz-transition:opacity .3s ease-in;
+-o-transition:opacity .3s ease-in;
+transition:opacity .3s ease-in;
+}
+
+.pending-new-tweet .new-tweets-bar {
+opacity:1;
+}
+
+.new-tweets-bar button {
+width:100%;
+_width:92%;
+color:#fff;
+text-align:center;
+background-color:rgba(0,0,0,0.87);
+border-width:0;
+padding:10px 0;
+}
+
+.new-tweets-bar button:hover,.new-tweets-bar button:focus {
+text-decoration:underline;
+cursor:pointer;
+}
+
+button.load-more {
+display:block;
+width:92%;
+text-align:center;
+text-shadow:0 1px 0 rgba(255,255,255,0.4);
+cursor:pointer;
+background-color:rgba(0,0,0,0.02);
+border:0;
+box-shadow:inset 0 3px 8px rgba(0,0,0,0.05);
+-webkit-transition:background-color .2s ease-out;
+-moz-transition:background-color .2s ease-out;
+-o-transition:background-color .2s ease-out;
+transition:background-color .2s ease-out;
+margin:0;
+padding:10px 0;
+}
+
+button.load-more:hover,button.load-more:focus {
+text-decoration:underline;
+background-color:rgba(0,0,0,0.08);
+}
+
+.no-more-pane {
+display:none;
+text-align:center;
+padding:12px;
+}
+
+.no-tweets-pane {
+text-align:center;
+margin:30px 0;
+}
+
+.nsfw .display-sensitive-image,.no-tweets-pane .load-tweets {
+font-weight:700;
+line-height:18px;
+text-align:center;
+text-shadow:0 1px 0 rgba(255,255,255,0.5);
+cursor:pointer;
+background-color:rgba(0,0,0,0.15);
+background-image:linear-gradient(#fff,#ddd);
+border:1px solid #ccc;
+border-radius:4px;
+border-color:rgba(0,0,0,0.2);
+margin:5px auto;
+padding:5px 10px;
+}
+
+.nsfw .display-sensitive-image:hover,.nsfw .display-sensitive-image:focus,.nsfw .display-sensitive-image:active,.no-tweets-pane .load-tweets:hover,.no-tweets-pane .load-tweets:focus,.no-tweets-pane .load-tweets:active {
+background-color:rgba(0,0,0,0.5);
+background-image:linear-gradient(top,rgba(0,0,0,0.5),rgba(0,0,0,0.15));
+border-color:rgba(0,0,0,0.27);
+}
+
+.timeline-footer {
+background:rgba(0,0,0,0.1);
+padding:6px 10px;
+}
+
+.timeline-footer a.widget-link {
+display:block;
+text-align:center;
+padding:10px;
+}
+
+.tweet-box-button:hover,.tweet-box-button:focus {
+cursor:pointer;
+border-color:rgba(0,0,0,0.4);
+}
+
+a.tweet-box-button {
+width:auto;
+}
+
+.tweet {
+border-width:0 0 1px;
+padding:12px 12px 10px 69px;
+}
+
+.tweet.with-expansion {
+cursor:pointer;
+}
+
+.header {
+_float:left;
+_clear:left;
+}
+
+.header .avatar {
+position:absolute;
+top:0;
+left:-57px;
+width:48px;
+height:48px;
+background:#fff;
+border-radius:4px;
+}
+
+.permalink {
+position:relative;
+z-index:50;
+float:right;
+margin-top:2px;
+_clear:right;
+}
+
+.tweet .e-entry-title {
+overflow:hidden;
+clear:both;
+word-wrap:break-word;
+white-space:pre-wrap;
+margin:0 5px 0 0;
+}
+
+.inline-media {
+max-width:100%;
+overflow:hidden;
+margin:10px 0 0;
+}
+
+.tweet .retweet-credit {
+margin:3px 0;
+}
+
+.tweet .twitter-alerts {
+margin-top:6px;
+}
+
+.footer {
+zoom:1;
+min-height:16px;
+padding-top:1px;
+margin-top:2px;
+overflow:hidden;
+-webkit-transition:margin-top .2s ease-out,padding-top .2s ease-out;
+-moz-transition:margin-top .2s ease-out,padding-top .2s ease-out;
+-o-transition:margin-top .2s ease-out,padding-top .2s ease-out;
+transition:margin-top .2s ease-out,padding-top .2s ease-out;
+border-width:0;
+}
+
+.tweet-actions {
+position:absolute;
+_position:static;
+right:0;
+bottom:1px;
+_float:right;
+background:#fff;
+visibility:hidden;
+_visibility:visible;
+box-shadow:0 0 10px 5px #fff;
+}
+
+.tweet-actions a i {
+overflow:hidden;
+margin:1px 0 0 3px;
+}
+
+.tweet .tweet-actions a,.tweet .tweet-actions a b,.tweet .tweet-actions a i,.tweet .tweet-actions li {
+cursor:pointer;
+outline:0;
+}
+
+.expanded .footer {
+padding-top:11px;
+margin-top:10px;
+border-width:1px 0 0;
+}
+
+.stats-wide,.stats-narrow,.brand {
+display:none;
+margin-left:.3em;
+border-width:0;
+}
+
+.expanded .stats-wide {
+display:inline-block;
+margin-top:-2px;
+}
+
+.detail-expander {
+height:0;
+overflow:hidden;
+-webkit-transition:height .3s ease-in;
+-moz-transition:height .3s ease-in;
+-o-transition:height .3s ease-in;
+transition:height .3s ease-in;
+}
+
+.detail-expander .detail-content {
+_display:none;
+}
+
+.expanded .detail-expander .detail-content {
+_display:block;
+}
+
+.brand .ic-twitter-badge {
+margin:-4px 5px 0 0;
+}
+
+.cards-base {
+-webkit-transition:margin-top .3s ease-out;
+-moz-transition:margin-top .3s ease-out;
+-o-transition:margin-top .3s ease-out;
+transition:margin-top .3s ease-out;
+border-width:0;
+padding:13px 0 12px;
+}
+
+.expanded .cards-base {
+margin-top:12px;
+border-width:1px 0 0;
+padding:12px 0 0;
+}
+
+.expanded .cards-multimedia,.cards-multimedia {
+padding-top:0;
+border-top:0;
+}
+
+.cards-base h3 {
+font-weight:700;
+margin:0 0 4px;
+}
+
+.cards-base .cards-content p {
+margin:5px 0 10px;
+}
+
+.cards-base .summary-thumbnail {
+float:right;
+max-width:120px;
+max-height:120px;
+margin:4px 0 0 15px;
+}
+
+.cards-base .summary-large-thumbnail {
+display:block;
+margin:4px 0 5px;
+}
+
+.cards-base .media {
+line-height:0;
+margin:0 0 8px;
+}
+
+.cards-base .source-user {
+position:relative;
+height:16px;
+padding-left:21px;
+line-height:16px;
+margin:10px 0;
+}
+
+.cards-base .source-user .avatar {
+position:absolute;
+top:-2px;
+left:0;
+display:block;
+width:16px;
+height:16px;
+border-radius:2px;
+}
+
+.multi-photo {
+background:#fff;
+padding:7px 6px 0;
+}
+
+.crop-media-box {
+display:inline-block;
+overflow:hidden;
+vertical-align:top;
+}
+
+.multi-photo .box-0,.multi-photo-4 .box-2 {
+margin-right:6px;
+}
+
+.multi-photo-4 .box-0,.multi-photo-4 .box-1,.multi-photo-3 .box-1 {
+margin-bottom:6px;
+}
+
+.multi-photo-2 .box-0,.multi-photo-3 .box-0 {
+border-radius:4px 0 0 4px;
+}
+
+.multi-photo-2 .box-1 {
+border-radius:0 4px 4px 0;
+}
+
+.multi-photo-4 .box-0 {
+border-radius:4px 0 0 0;
+}
+
+.multi-photo-4 .box-2 {
+border-radius:0 0 0 4px;
+}
+
+.custom-timeline-owner-profile {
+display:block;
+position:relative;
+height:16px;
+padding-left:21px;
+line-height:16px;
+margin-bottom:4px;
+}
+
+.custom-timeline-owner-profile .verified {
+margin-right:3px;
+margin-left:-38px;
+}
+
+.custom-timeline .timeline-header {
+border-bottom-width:3px;
+}
+
+.custom-timeline-owner-profile .avatar {
+position:absolute;
+left:0;
+display:block;
+width:16px;
+height:16px;
+border-radius:2px;
+}
+
+.custom-timeline .custom-timeline-summary {
+margin-bottom:11px;
+}
+
+.custom-timeline .custom-timeline-description {
+margin-bottom:12px;
+}
+
+.nsfw {
+background-color:rgba(0,0,0,0.02);
+border-radius:4px;
+padding:8px;
+}
+
+.standalone-tweet {
+background:#fff;
+border-radius:5px;
+padding:0px;
+}
+
+.standalone-tweet .subject {
+margin-top:4px;
+border:0;
+padding:4px 8px 8px;
+}
+
+.standalone-tweet .subject .header {
+position:relative;
+_height:48px;
+min-height:48px;
+padding:3px 0 0px 57px;
+}
+
+.standalone-tweet .expanded .footer {
+margin-top:5px;
+}
+
+.standalone-tweet .reply {
+position:relative;
+min-height:48px;
+border:0;
+padding:8px 8px 8px 65px;
+}
+
+.standalone-tweet .subject .header .avatar {
+left:0;
+}
+
+.standalone-tweet .subject .header .profile .p-name {
+font-size:16px;
+}
+
+.standalone-tweet .follow-button,.standalone-tweet .twitter-follow-button {
+position:absolute;
+top:0;
+right:0;
+}
+
+.standalone-tweet .subject .e-entry-title {
+font:18px/24px Georgia,"Times New Roman",Palatino,serif;
+}
+
+.standalone-tweet .subject .dateline {
+margin-top:6px;
+white-space:nowrap;
+}
+
+.standalone-tweet .subject .p-geo {
+float:none;
+}
+
+.standalone-tweet .subject .dateline .p-geo,.standalone-tweet .subject .dateline .media-tag {
+margin-left:3px;
+}
+
+.standalone-tweet .subject .cards-base {
+padding-bottom:0;
+}
+
+.standalone-tweet .subject .stats-narrow,.standalone-tweet .subject .brand {
+display:block;
+float:left;
+margin:0;
+}
+
+.standalone-tweet .subject .tweet-actions {
+position:static;
+float:right;
+margin-bottom:4px;
+visibility:visible;
+}
+
+.standalone-tweet .conversation {
+background:#f6f6f6;
+border-bottom:1px solid #e8e8e8;
+border-bottom-color:rgba(0,0,0,0.1);
+margin:-8px -8px 8px;
+padding:8px 8px 4px;
+}
+
+.follow-button:link,.follow-button:visited {
+display:inline-block;
+font:bold 11px/18px 'Helvetica Neue',Arial,sans-serif;
+color:#333;
+text-decoration:none;
+text-shadow:0 1px 0 rgba(255,255,255,0.5);
+white-space:nowrap;
+cursor:pointer;
+background-color:#eee;
+background-image:linear-gradient(#fff,#dedede);
+border:#ccc solid 1px;
+border-radius:3px;
+padding:0 5px 0 3px;
+}
+
+.ie9 .follow-button:link,.ie9 .follow-button:visited {
+border-radius:0;
+-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dedede')";
+}
+
+.follow-button:focus,.follow-button:hover,.follow-button:active {
+color:#333;
+text-decoration:none;
+background-color:#d9d9d9;
+background-image:linear-gradient(#f8f8f8,#d9d9d9);
+box-shadow:none;
+border-color:#bbb;
+}
+
+.timeline-header a.follow-button:link,.timeline-header a.follow-button:visited,.timeline-header a.follow-button:hover,.timeline-header a.follow-button:focus,.timeline-header a.follow-button:active,.thm-dark .timeline-header a.follow-button:link,.thm-dark .timeline-header a.follow-button:visited,.thm-dark .timeline-header a.follow-button:hover,.thm-dark .timeline-header a.follow-button:focus,.thm-dark .timeline-header a.follow-button:active {
+color:#333;
+text-decoration:none;
+}
+
+.thm-dark a.follow-button:link,.thm-dark a.follow-button:visited,.thm-dark a.follow-button:hover,.thm-dark a.follow-button:focus,.thm-dark a.follow-button:active {
+color:#333;
+}
+
+.ie9 .follow-button:hover,.ie9 .follow-button:focus,.ie9 .follow-button:active {
+-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8f8f8', endColorstr='#d9d9d9')";
+}
+
+.follow-button:focus {
+outline:0;
+border-color:#0089cb;
+}
+
+.var-narrow .custom-timeline-summary {
+margin-bottom:7px;
+font-size:14px;
+}
+
+.var-narrow .custom-timeline-description {
+margin-bottom:10px;
+}
+
+.var-narrow .header .profile .p-name,.var-narrow .timeline-header .byline,.var-narrow .timeline-header .list-description,.var-narrow .e-entry-title,.var-narrow .cards-base h3 {
+font-size:12px;
+line-height:16px;
+}
+
+.var-narrow .timeline-header {
+padding:8px;
+}
+
+.var-narrow .timeline-footer {
+padding:4px;
+}
+
+.var-narrow .timeline-header .follow-button,.var-narrow .timeline-header .twitter-follow-button {
+top:6px;
+right:6px;
+}
+
+.var-narrow .tweet .header {
+position:relative;
+_height:36px;
+min-height:32px;
+padding:0 0 4px 36px;
+}
+
+.var-narrow .header .avatar {
+top:2px;
+left:0;
+width:32px;
+height:32px;
+}
+
+.var-narrow .header .p-nickname {
+line-height:16px;
+}
+
+.var-narrow .permalink {
+font-size:11px;
+}
+
+.var-narrow .expanded .stats-narrow,.var-narrow .brand {
+display:block;
+font-size:11px;
+margin:0 0 4px;
+}
+
+.var-narrow .cards-base .summary-thumbnail {
+max-width:60px;
+max-height:60px;
+}
+
+.var-narrow.standalone-tweet .subject .e-entry-title {
+font-size:16px;
+line-height:20px;
+}
+
+.var-narrow.standalone-tweet .expanded .footer {
+padding-top:6px;
+}
+
+.var-narrow.standalone-tweet .stats-narrow,.var-narrow.standalone-tweet .brand {
+display:block;
+float:none;
+padding-bottom:5px;
+border-width:0 0 1px;
+margin:0 0 8px;
+}
+
+.var-narrow.standalone-tweet .tweet-actions {
+position:static;
+float:none;
+margin-bottom:3px;
+overflow:hidden;
+white-space:nowrap;
+}
+
+.var-narrow.standalone-tweet .tweet-actions li {
+display:inline-block;
+float:none;
+width:33.33%;
+text-align:center;
+}
+
+.var-narrow.standalone-tweet .tweet-actions li a {
+display:block;
+width:100%;
+margin:0;
+}
+
+.rtl,.rtl .tweet-box-button,.rtl .follow-button {
+text-align:right;
+direction:rtl;
+}
+
+.rtl .p-nickname {
+text-align:left;
+direction:ltr;
+}
+
+.rtl .header {
+_float:right;
+_clear:right;
+}
+
+.rtl .expand,.rtl .p-geo,.rtl .tweet-actions li {
+float:right;
+}
+
+.rtl .permalink {
+clear:left;
+}
+
+.rtl .custom-timeline-owner-profile {
+padding-right:21px;
+padding-left:0;
+}
+
+.rtl .tweet {
+padding:12px 69px 10px 12px;
+}
+
+.rtl .header .avatar {
+right:-57px;
+left:auto;
+}
+
+.var-narrow.rtl .tweet .header {
+padding:0 36px 4px 0;
+}
+
+.rtl .timeline-header .follow-button,.rtl .timeline-header .twitter-follow-button,.rtl .timeline-header .ic-twitter-badge {
+position:absolute;
+right:auto;
+left:12px;
+}
+
+.var-narrow.rtl .timeline-header .follow-button,.var-narrow.rtl .timeline-header .twitter-follow-button {
+right:auto;
+left:6px;
+}
+
+.rtl .cards-base .source-user {
+padding:0 21px 0 0;
+}
+
+.rtl .cards-base .source-user .avatar {
+right:0;
+left:auto;
+}
+
+.rtl .follow-button {
+padding:0 3px 0 5px;
+}
+
+.rtl .ic-top {
+margin:2px 0 0 4px;
+}
+
+.rtl .ic-twitter-alert {
+margin:0 0 3px 3px;
+}
+
+.rtl .ic-rt {
+margin:0 0 0 4px;
+}
+
+.rtl .expand .ic-mask,.rtl .p-geo .ic-mask {
+margin:0 0 0 2px;
+}
+
+.thm-dark {
+color:#a9a9a9;
+background-color:#333;
+}
+
+.thm-dark .scrolled-down .timeline-header {
+box-shadow:0 0 10px -3px #000;
+}
+
+.thm-dark .ic-twitter-badge {
+border-color:transparent;
+}
+
+.thm-dark .timeline-footer,.standalone-tweet.thm-dark .conversation {
+background-color:rgba(0,0,0,0.2);
+}
+
+.thm-dark .load-more,.thm-dark .nsfw,.thm-dark .tweet-box-button {
+background-color:rgba(0,0,0,0.64);
+}
+
+.thm-dark .load-more {
+text-shadow:0 1px 0 rgba(0,0,0,0.6);
+}
+
+.thm-dark .load-more:hover,.thm-dark .load-more:focus,.thm-dark .load-more:active {
+background-color:rgba(0,0,0,0.39);
+}
+
+.thm-dark .tweet-actions {
+background-color:#333;
+box-shadow:0 0 10px 5px #333;
+}
+
+.thm-dark .customisable,.thm-dark .customisable:link,.thm-dark .customisable:visited,.thm-dark .customisable:hover,.thm-dark .customisable:focus,.thm-dark .customisable:active,.thm-dark .customisable-highlight:hover,.thm-dark .customisable-highlight:focus,.thm-dark a:hover .customisable-highlight,.thm-dark a:focus .customisable-highlight {
+color:#87c2ed;
+}
+
+.thm-dark a:hover .ic-mask,.thm-dark a:focus .ic-mask {
+background-color:#87c2ed;
+}
+
+.thm-dark,.thm-dark .p-author .profile .p-name,.thm-dark .cards-base p,.thm-dark .cards-base p a,.thm-dark .timeline-header .summary,.thm-dark .timeline-header a:link,.thm-dark .timeline-header a:visited,.thm-dark .byline,.thm-dark .p-author a.profile:hover .p-name,.thm-dark .p-author a.profile:focus .p-name .thm-dark .custom-timeline-owner-profile .p-name:hover,.thm-dark .custom-timeline-owner-profile .p-name:focus {
+color:#cfcfcf;
+}
+
+.thm-dark .custom-timeline-summary,.thm-dark .custom-timeline-owner-profile .p-name {
+color:#e5e5e5;
+}
+
+.thm-dark .custom-timeline-description,.thm-dark .custom-timeline-owner-profile .p-nickname {
+color:#999;
+}
+
+.thm-dark a:link,.thm-dark a:visited,.thm-dark .stats span,.thm-dark .retweet-credit,.thm-dark .no-more-pane,.thm-dark .no-tweets-pane p,.thm-dark .p-geo,.thm-dark .cards-base .byline-user {
+color:#a0a0a0;
+}
+
+.thm-dark a:focus,.thm-dark a:hover,.thm-dark a:active,.thm-dark .p-author a.profile:hover,.thm-dark .p-author a.profile:focus,.thm-dark .custom-timeline-owner-profile:hover,.thm-dark .custom-timeline-owner-profile:focus,.thm-dark .retweet-credit .profile:hover,.thm-dark .retweet-credit .profile:focus,.thm-dark .stats strong,.thm-dark .no-tweets-pane .load-tweets,.thm-dark .nsfw {
+color:#bbb;
+}
+
+.customisable-border.thm-dark,.thm-dark .customisable-border {
+border-color:#444;
+}
+
+.thm-dark .tweet-box-button {
+border-color:#222;
+}
+
+.thm-dark .ic-mask {
+background-color:#999;
+}
+
+.thm-dark .tweet-actions .ic-reply {
+background-position:0 -116px;
+}
+
+.thm-dark .tweet-actions .ic-retweet {
+background-position:-31px -116px;
+}
+
+.thm-dark .tweet-actions .ic-fav {
+background-position:-60px -116px;
+}
+
+.thm-dark .ic-pho {
+background-position:-60px -59px;
+}
+
+.thm-dark .ic-pla {
+background-position:-80px -59px;
+}
+
+.thm-dark .ic-geo {
+background-position:-100px -60px;
+}
+
+.thm-dark .ic-sum {
+background-position:-120px -59px;
+}
+
+.thm-dark .ic-con {
+background-position:-140px -59px;
+}
+
+.thm-dark .ic-people {
+background-position:-160px -59px;
+}
+
+.is-touch .tweet-actions a {
+padding-left:10px;
+}
+
+.is-touch.var-narrow .tweet-actions a {
+padding-left:0;
+}
+
+.var-chromeless .tweet-actions .ic-reply,.is-touch .tweet-actions .ic-reply {
+background-position:-80px -84px;
+}
+
+.var-chromeless .tweet-actions .ic-retweet,.is-touch .tweet-actions .ic-retweet {
+background-position:-82px -102px;
+}
+
+.var-chromeless .tweet-actions .ic-fav,.is-touch .tweet-actions .ic-fav {
+background-position:-82px -122px;
+}
+
+.var-chromeless .tweet-actions a:hover .ic-reply,.var-chromeless .tweet-actions a:focus .ic-reply,.var-chromeless .tweet-actions a:active .ic-reply,.is-touch .tweet-actions a:hover .ic-reply,.is-touch .tweet-actions a:focus .ic-reply,.is-touch .tweet-actions a:active .ic-reply {
+background-position:-103px -84px;
+}
+
+.var-chromeless .tweet-actions a:hover .ic-retweet,.var-chromeless .tweet-actions a:focus .ic-retweet,.var-chromeless .tweet-actions a:active .ic-retweet,.is-touch .tweet-actions a:hover .ic-retweet,.is-touch .tweet-actions a:focus .ic-retweet,.is-touch .tweet-actions a:active .ic-retweet {
+background-position:-109px -102px;
+}
+
+.var-chromeless .tweet-actions a:hover .ic-fav,.var-chromeless .tweet-actions a:focus .ic-fav,.var-chromeless .tweet-actions a:active .ic-fav,.is-touch .tweet-actions a:hover .ic-fav,.is-touch .tweet-actions a:focus .ic-fav,.is-touch .tweet-actions a:active .ic-fav {
+background-position:-103px -122px;
+}
+
+.timeline.var-chromeless {
+margin-bottom:10px;
+background-color:transparent;
+border:0;
+border-radius:0;
+}
+
+.var-chromeless .timeline-header {
+padding:12px 0;
+}
+
+.var-chromeless .tweet {
+padding:12px 2px 10px 58px;
+}
+
+.var-chromeless.rtl .tweet {
+padding:12px 58px 10px 2px;
+}
+
+.var-chromeless .permalink {
+padding:0 2px 0 0;
+}
+
+.var-chromeless.rtl .permalink {
+padding:0 0 0 2px;
+}
+
+.var-chromeless .timeline-footer {
+padding:6px;
+}
+
+.var-chromeless .ic-geo {
+background-position:-100px 0;
+}
+
+.var-chromeless .ic-pho {
+background-position:-60px -2px;
+}
+
+.var-chromeless .ic-sum {
+background-position:-120px -2px;
+}
+
+.var-chromeless .ic-pla {
+background-position:-80px -2px;
+}
+
+.var-chromeless .ic-con {
+background-position:-140px -2px;
+}
+
+.var-chromeless .ic-people {
+background-position:-160px -2px;
+}
+
+.var-chromeless .tweet-actions {
+background:0;
+box-shadow:none;
+}
+
+.var-chromeless span.p-geo {
+padding:0 90px 0 0;
+}
+
+.var-chromeless.rtl span.p-geo {
+padding:0 0 0 90px;
+}
+
+.var-chromeless button.load-more {
+width:98%;
+text-shadow:none;
+border:1px solid #ccc;
+border-radius:4px;
+margin:4px;
+}
+
+.var-borderless,.var-borderless .customisable-border {
+border:0;
+}
+
+.var-borderless .expanded .cards-multimedia {
+margin-top:2px;
+}
+
+.var-borderless .expanded .footer {
+padding-top:5px;
+margin:0;
+}
+
+.var-static .stream {
+overflow-y:visible;
+}
+
+.var-static .tweet.with-expansion {
+cursor:default;
+}
+
+.withheld {
+border-width:0 0 1px;
+padding:12px 12px 10px;
+}
+
+.timeline .withheld-title {
+font-size:14px;
+font-weight:700;
+}
+
+.standalone-tweet.media-forward {
+padding:0;
+}
+
+.standalone-tweet.media-forward,.standalone-tweet.media-forward .tweet {
+position:static;
+overflow:hidden;
+}
+
+.standalone-tweet.media-forward .content {
+padding:0 10px 3px;
+}
+
+.standalone-tweet.media-forward .subject .header .avatar {
+top:4px;
+left:10px;
+width:28px;
+height:28px;
+}
+
+.standalone-tweet.rtl.media-forward .subject .header .avatar {
+right:10px;
+left:auto;
+}
+
+.standalone-tweet.media-forward .subject .header {
+min-height:36px;
+padding:0 0 0 47px;
+}
+
+.standalone-tweet.rtl.media-forward .subject .header {
+padding:0 47px 0 0;
+}
+
+.standalone-tweet.media-forward .expanded .cards-base {
+margin-top:0;
+}
+
+.standalone-tweet.media-forward .follow-button,.standalone-tweet.media-forward .twitter-follow-button {
+top:4px;
+right:10px;
+}
+
+.standalone-tweet.rtl.media-forward .follow-button,.standalone-tweet.rtl.media-forward .twitter-follow-button {
+right:auto;
+left:10px;
+}
+
+.standalone-tweet.media-forward .subject .e-entry-title {
+display:inline;
+font-size:16px;
+line-height:20px;
+}
+
+.standalone-tweet.media-forward .expanded .footer {
+padding-bottom:8px;
+margin:2px 10px 0;
+}
+
+.standalone-tweet.media-forward .subject .dateline {
+margin-top:7px;
+}
+
+.standalone-tweet.media-forward .cards-base .media {
+margin-bottom:6px;
+text-align:center;
+background-color:#1d1d1d;
+}
+
+.standalone-tweet.media-forward .cards-base .multi-photo {
+background-color:#fff;
+}
+
+.standalone-tweet.media-forward.thm-dark .cards-base .multi-photo {
+background-color:#333;
+}
+
+.standalone-tweet.media-forward .subject,.standalone-tweet.media-forward.var-narrow .subject {
+margin-top:0;
+padding:0;
+}
+
+.var-narrow.standalone-tweet.media-forward .subject .header {
+margin-bottom:4px;
+}
+
+.brand span,.var-narrow.standalone-tweet .subject .header .profile .p-nickname,.var-narrow .withheld-title,.standalone-tweet.media-forward .source-user,.standalone-tweet.media-forward .subject .header .profile .p-name,.standalone-tweet.media-forward .subject .header .profile .p-nickname {
+font-size:12px;
+}
+
+.custom-timeline-owner-profile .p-name,.p-author .profile .p-name,.cards-base .profile .p-name,.timeline-header h1.summary,.stats strong {
+font-weight:700;
+}
+
+a:hover b,a:focus b,a:hover span,a:focus span,h3 a:hover,h3 a:focus,.timeline-header a:hover,.timeline-header a:focus,.e-entry-title .link:hover,.e-entry-title .link:focus,.footer a.expand:hover,.footer a.expand:focus,a.permalink:hover,a.permalink:focus,a.long-permalink:hover,a.long-permalink:focus,.cards-base p a:hover,.cards-base p a:focus,.retweet-credit a:hover,.retweet-credit a:focus,.withheld-text a:hover,.withheld-text a:focus {
+text-decoration:underline;
+}
+
+.ic-twitter-badge:focus,.thm-dark .ic-twitter-badge:focus {
+border-color:#00acee;
+}
+
+.pending-new-tweet-display .new-tweets-bar,.no-more .no-more-pane {
+display:block;
+}
+
+.empty-timeline button.load-more,.no-more button.load-more,.has-tweets .no-tweets-pane,.media-tag .tag-count,.var-narrow .expanded .stats-wide,.var-preview .load-more,.var-headerless .timeline-header,.var-footerless .timeline-footer,.var-static .load-more {
+display:none;
+}
+
+.nsfw .display-sensitive-image:active,.no-tweets-pane .load-tweets:active,.follow-button:active {
+background-color:#efefef;
+box-shadow:inset 0 3px 5px rgba(0,0,0,0.1);
+}
+
+.tweet-actions li,.expand,.p-geo {
+_display:inline;
+float:left;
+}
+
+.tweet:hover .tweet-actions,.tweet:focus .tweet-actions,.expanded .tweet-actions,.is-touch .tweet-actions {
+visibility:visible;
+}
+
+.twt-tweet .tweet-actions .ic-retweet,.var-narrow.standalone-tweet .subject {
+margin-top:1px;
+}
+
+.cards-multimedia .cards-content-concise .byline,.var-narrow.standalone-tweet .subject .header {
+margin-bottom:8px;
+}
+
+.multi-photo-3 .box-1,.multi-photo-4 .box-1 {
+border-radius:0 4px 0 0;
+}
+
+.multi-photo-3 .box-2,.multi-photo-4 .box-3 {
+border-radius:0 0 4px 0;
+}
+
+.multi-photo-3 .crop-media-box:first-child,.rtl .permalink,.rtl .tweet-actions,.rtl .cards-base .summary-thumbnail {
+float:left;
+}
+
+.standalone-tweet .subject .header .profile .p-nickname,.var-narrow .timeline-header .summary,.var-narrow.standalone-tweet .subject .header .profile .p-name {
+font-size:14px;
+}
+
+.standalone-tweet .subject .header .profile .p-nickname::before,.var-narrow .header .profile .p-nickname::before {
+white-space:pre;
+content:"\A";
+}
+
+.standalone-tweet.rtl .follow-button,.standalone-tweet.rtl .twitter-follow-button,.rtl .tweet-actions {
+right:auto;
+left:0;
+}
+
+.collapse-media-tag .media-tag .tag-count,.var-narrow .header .p-name {
+display:inline;
+}
+
+.var-narrow .tweet,.var-narrow.rtl .tweet,.var-narrow .withheld {
+padding:5px 8px 6px;
+}
+
+.var-narrow.standalone-tweet .tweet-actions a i,.var-borderless .expanded .footer,.var-borderless .expanded .cards-base {
+margin:0;
+}
+
+.rtl .custom-timeline-owner-profile .avatar,.rtl.var-narrow .header .avatar {
+right:0;
+}
+
+.rtl .ic-button-bird,.rtl .stats span {
+margin:0 0 0 3px;
+}
+
+.var-chromeless .tweet-actions .ic-mask,.thm-dark.var-chromeless .tweet-actions .ic-mask,.is-touch .tweet-actions .ic-mask,.var-chromeless .footer .ic-mask {
+background-color:transparent;
+}
+
+.var-narrow.var-chromeless .tweet,.var-chromeless .withheld {
+padding:12px 2px 10px 0;
+}
+
+.var-narrow.var-chromeless.rtl .tweet,.var-chromeless.rtl .withheld {
+padding:12px 0 10px 2px;
+}
+
+@media print {
+.ic-mask {
+display:none;
+}
+}
