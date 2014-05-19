@@ -1,7 +1,7 @@
 plotData = []
 EMAValues = []
 SMAValues = []
-nDataInPlot = 1000;
+nDataInPlot = 2000;
 sumSentiment = 0
 totalSentiment = 0
 blacklist = []
@@ -39,7 +39,7 @@ $ ->
             
             console.log(strSenti)
             document.getElementById('senti').innerHTML =  strSenti
-            document.getElementById('sentipercent').innerHTML =  sumSentiment
+            document.getElementById('sentipercent').innerHTML =  'Index : ' + sumSentiment
 
             showtweet(message)
             $('body').append(getModalHTML(message))

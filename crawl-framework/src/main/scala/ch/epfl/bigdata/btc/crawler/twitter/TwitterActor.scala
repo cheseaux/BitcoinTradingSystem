@@ -26,6 +26,9 @@ class TwitterActor(dataSource: ActorRef) extends Actor {
 
 	def simpleStatusListener = new StatusListener() {
 		def onStatus(status: Status) {
+			if (status.getUser().getFollowersCount() < 30) {
+			    return
+			}
 			val tweet = status.getText().replace('\n',' ')
 			// send stuff to datasource
 			val commands = Array("python","sentiment.py",tweet)
