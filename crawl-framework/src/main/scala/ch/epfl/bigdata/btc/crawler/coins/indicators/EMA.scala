@@ -122,7 +122,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	 * In this case, a value of 1 would state that the price will go up, as
 	 * a value of -1 indicates that the price will go down.	 * 
 	 */
-  def tradeSignalEnv(values: List[Double], percent: Double): Int = {
+  def tradeSignalEnv( percent: Double): Int = {
     val envA = values.map(_ * (1 + percent))
     val envB = values.map(_ * (1 - percent))
 
@@ -134,25 +134,26 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
       0
   }
 
-  def trans(ma: List[Double], transactions: List[(Int, Double, Double)], signal: Int,
-    maxBTC: Double, actualPrice: Double): List[(Int, Double, Double)] = {
+  def trans(signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
 
-    val actual = ma.last
-    var newTrans = transactions
-    val min = ma.min
-    val max = ma.max
-    var price = 0.0
-    var btc = 0.0
+    val actual = values.last
+
+    val min = values.min
+    val max = values.max
+    
+    var btc=0.0
+    var money = 0.0
 
     if (signal == 1 && actual == min) {
 
-      btc = (1 - min / max) * maxBTC
+      btc = (1 - (min+1) / (max+1)) * maxBTC
+      money = (-1)* actualPrice* btc
     } else if (signal == -1 && actual == max) {
 
-      btc = (1 - min / max) * maxBTC
+      btc = (-1)*(1 - (min+1) / (max+1)) * maxBTC
+      money = (-1)*actualPrice*btc
     }
-    price = btc * actualPrice
-    (signal, price, btc) :: newTrans
+    (money, btc)
   }
 
 }
