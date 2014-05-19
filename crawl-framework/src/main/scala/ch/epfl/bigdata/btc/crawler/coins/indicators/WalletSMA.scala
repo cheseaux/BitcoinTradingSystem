@@ -2,6 +2,7 @@ package ch.epfl.bigdata.btc.crawler.coins.indicators
 
 import akka.actor.ActorRef
 import ch.epfl.bigdata.btc.types.Registration._
+import ch.epfl.bigdata.btc.types.Transfer._
 
 class WalletSMA(dataSource: ActorRef, watched: SMARegistration, msu : Double, btcsu : Double, 
     maxInv : Double, maxbtc : Double)
@@ -15,6 +16,10 @@ class WalletSMA(dataSource: ActorRef, watched: SMARegistration, msu : Double, bt
   
   def gainUpdate() : Double = {
     return 0.0
+  }
+  
+  def updateTweet(t: Tweet) {
+    
   }
   
   
