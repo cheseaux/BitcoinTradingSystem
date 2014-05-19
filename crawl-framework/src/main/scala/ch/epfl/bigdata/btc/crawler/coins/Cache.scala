@@ -1,6 +1,7 @@
 package ch.epfl.bigdata.btc.crawler.coins
 
 import ch.epfl.bigdata.btc.crawler.coins.indicators.Indicator
+import java.io._
 import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
 import ch.epfl.bigdata.btc.types.Transfer._
 import ch.epfl.bigdata.btc.types.Registration._
@@ -17,7 +18,10 @@ class Cache {
   private val ohlcByMp = new HashMap[MarketPair, MutableList[MarketPairRegistrationOHLC]]()
   private val twitter = new MutableList[Tweet]()
   private val ohlc = new HashMap[MarketPairRegistrationOHLC, MutableList[OHLC]]()
+  // MarketPairRegistrationTransaction
   private val trans = new HashMap[MarketPairRegistrationTransaction, MutableList[Transaction]]()
+
+  private val printers = new HashMap[MarketPairRegistrationTransaction, PrintWriter]()
 
   /**
    * Add a new Tweet to the cache
@@ -31,9 +35,32 @@ class Cache {
    */
   def addTransaction(mp: MarketPairRegistrationTransaction, t: Transaction) {
     trans.get(mp) match {
-      case None => trans += (mp -> ((new MutableList[Transaction]) += t))
-      case Some(m) => m += t
+      case None => {
+        trans += (mp -> ((new MutableList[Transaction]) += t))
+        // create printWriter
+        printers += (mp -> (new PrintWriter(new File(mp.c.toString() + "-" + mp.market.toString() + ".txt"))))
+        println("Cache: new file created")
+        // write first transaction
+        printers.get(mp) match {
+          case Some(p) => writeTransaction(p, t)
+          case None => println("Cache: creating PrintWriter for MarkePairRegistration :" + mp.market + "," + mp.c + " failed")
+        }
+
+      }
+      case Some(m) => {
+        m += t
+        // write new transaction to file
+        printers.get(mp) match {
+          case Some(p) => writeTransaction(p, t)
+          case None => println("Cache: failed to write transaction.")
+        }
+      }
     }
+  }
+
+  def writeTransaction(p: PrintWriter, t: Transaction) {
+    p.write(t.from.toString() + "," + t.to.toString() + "," + t.unitPrice + "," + t.amount + "," + 
+        t.tradeId + "," + t.timestamp.toString() + "," + t.direction.toString() + "," + t.market.toString() + "\n")
   }
 
   /**
@@ -61,7 +88,7 @@ class Cache {
         //println("updateOhlcForMpro:currentIndex", currentIndex)
         if (currentIndex == 0) {
           //println("updateOhlcForMpro:l.update", o)
-          l.update(l.length-1, o)
+          l.update(l.length - 1, o)
         } else if (currentIndex > 0) {
           var toAddDate = last.date
           for (i <- 1 to currentIndex.toInt) {
@@ -91,6 +118,13 @@ class Cache {
       case None => return
     }
   }
+  
+  
+  def updateOhlcForMpro(mp: MarketPairRegistrationOHLC, t: Transaction) {
+    var o = getOhlcByTimestampAndMpro(mp, t.timestamp)
+    o = updateGivenOHLC(o, t)
+    updateOhlcForMpro(mp, o)
+  }
 
   /**
    * Should work
@@ -101,11 +135,10 @@ class Cache {
 
     //println("d", d) // OK
     //println("ts", ts) // OK
-   
 
     ohlc.get(mp) match {
       case Some(l) => {
-         //println("l",  l)
+        //println("l",  l)
         if (l.length == 0) {
           return new OHLC(Double.MinValue, Double.MinValue, Double.MaxValue, 0.0, 0.0, ts, d)
         }

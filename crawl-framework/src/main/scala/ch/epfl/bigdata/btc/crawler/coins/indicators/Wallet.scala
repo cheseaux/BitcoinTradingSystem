@@ -5,9 +5,11 @@ import akka.actor.{ ActorSystem, ActorLogging, Actor, Props, ActorRef }
 import scala.collection.mutable.MutableList
 import ch.epfl.bigdata.btc.types.Registration._
 import ch.epfl.bigdata.btc.types.Transfer._
+import ch.epfl.bigdata.btc.types.CurrencyPair
+import ch.epfl.bigdata.btc.types.Market._
 
 
-abstract class Wallet[T](dataSource: ActorRef, watched: T) extends Actor {
+abstract class Wallet[T](dataSource: ActorRef, watched: T, m: Market, c: CurrencyPair) extends Actor {
   
   private var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
   private var earned = 0.0
@@ -24,6 +26,7 @@ abstract class Wallet[T](dataSource: ActorRef, watched: T) extends Actor {
   
   dataSource ! watched
   dataSource ! new TwitterRegistrationFull()
+  dataSource ! new MarketPairRegistrationTransaction(m, c)
   
   def receive = {
     case actor: ActorRef => observer += actor;

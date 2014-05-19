@@ -5,7 +5,7 @@ import ch.epfl.bigdata.btc.types.Registration._
 import ch.epfl.bigdata.btc.types.Transfer._
 
 class WalletSMA(dataSource: ActorRef, watched: SMARegistration)
-    extends Wallet[SMARegistration] (dataSource, watched) {
+    extends Wallet[SMARegistration] (dataSource, watched, watched.market, watched.c) {
 
   var values : List[Double] = Nil 
 

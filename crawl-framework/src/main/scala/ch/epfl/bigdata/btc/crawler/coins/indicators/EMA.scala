@@ -20,7 +20,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
   def recompute() {
     //values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
     //time = ticks.map(_.date.getMillis()).toList
-    println(ticks);
+    //println(ticks);
    movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period, alpha)
   }
 

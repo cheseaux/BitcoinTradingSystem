@@ -97,13 +97,26 @@ class CacheTest extends AssertionsForJUnit {
     for(i <- 0 to l.length -1) {
       l.get(i) match {
         case Some(n) => {
-          println("ASDFASDFASDF", n)
+          println( n)
           if (!n.date.equals(current)) fail()
           current = current.plus(30000)
         }
         case None => fail()
       }
     }
+    
+    
+    println("\n\n\n\n\n\n")
+    
+    current = new DateTime(90000)
+    for(i <- 0 to l.length -1) {
+      var r = cache.getOhlcByTimestampAndMpro(reg, current)
+    		  println(r)
+      current = current.plus(30000)
+       
+    }
+    
+    
     
  
     

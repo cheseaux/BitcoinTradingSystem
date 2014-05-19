@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 import java.util.Collection
+import ch.epfl.bigdata.btc.types.Transfer.Transaction
 
 /**
  * There is one StockActor per stock symbol.  The StockActor maintains a list of users watching the stock and the stock
@@ -41,7 +42,7 @@ class StockActor(symbol: String) extends Actor {
 //  val TICK_SIZE = 26
 //  val TICK_COUNT = 10
   val TICK_COUNT = 26
-  val TICK_SIZE = 10
+  val TICK_SIZE = 300	
   val PERCENTAGE = 0.6
 
   // remote dataSource address
@@ -143,8 +144,8 @@ class StockActor(symbol: String) extends Actor {
 
     case transaction: Transaction =>
       val price: Double = transaction.unitPrice;
-      val time = transaction.timestamp.getMillis()
-      println("received transaction update, time: " + transaction.timestamp)
+      val time = transaction.timestamp.getMillis();
+//      println("received transaction update, time: " + transaction.timestamp + ", " + transaction.timestamp.getMillis())
       watchers.foreach(_ ! StockUpdate(symbol, price, time))
 
     case tweet: Tweet =>

@@ -59,6 +59,7 @@ class MarketFetchPool() extends Actor {
   
   private def createFetcher(market: Market, c1: Currency, c2: Currency) : ActorRef = market match {
     case BTCe => context.actorOf(Props(classOf[BtcePublicFetcher], c1, c2), "BTC-e_" + c1 + "-" + c2)
+    case Bitstamp => context.actorOf(Props(classOf[BitstampPublicFetcher], c1, c2), "Bistamp_" + c1 + "-" + c2)
   }
   
   private def scheduleFetcher(f: ActorRef) {
