@@ -1,8 +1,11 @@
 tweets = []
 plotData = []
 EMAValues = []
+SMAValues = []
+nDataInPlot = 2000;
 sumSentiment = 0
 blacklist = ["USA Government trying to shutdown Bitcoin network read more here:"]
+
 
 fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
 
@@ -18,6 +21,8 @@ $ ->
         updatePrice(message)
       when "EMA"
         updateEMAData(message)
+      when "SMA"
+        updateSMAData(message)
       when "tweet"
       	if message.sentiment != 0
       	  if not 0 #isBlackListed(message.content)
@@ -53,7 +58,7 @@ getChartOptions = (data) ->
     max: 410
   xaxis:
     show: true
-    #mode: time
+    mode: "time"
     #timeformat: "%Y/%m/%d"
 
 
@@ -79,7 +84,7 @@ populateStockHistory = (message) ->
   #populates with history, we do not want
   #plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
   chart = $("#chart").addClass("chart")
-  plot = chart.plot([plotData, EMAValues], getChartOptions(message.history)).data("plot")
+  plot = chart.plot([plotData, EMAValues, SMAValues], getChartOptions(message.history)).data("plot")
   
   #console.log("mesage history", message.history)
   #console.log("data", plot.getData()[0].data)
@@ -92,8 +97,7 @@ window.ps = 0
 
 root = exports ? this
 
-#global variable containing plot size
-nDataInPlot = 2000;
+
 
 #begin and end times for plot graph
 beginTime = 1400043400
@@ -111,13 +115,13 @@ endTime = 1500064800
 
 @updatePlotSize = updatePlotSize = () ->
 	inputNData = document.getElementsByName('textboxplotsize')[0].value
-	if (inputNData >= 1) and (inputNData <= 3000)
+	if (inputNData >= 1) and (inputNData <= plotData.length-1)
 	  nDataInPlot = inputNData
 	  
 	  #redraw graph
 	  drawLastValues(nDataInPlot)
 	else
-	  alert "invalid value, outside of : [1,3000]"
+	  alert "invalid value, max value is " + (plotData.length - 1)
 	window.ps = plotData.length
 
   
@@ -127,6 +131,11 @@ updateStockData = (message) ->
 updateEMAData = (message) ->
 	console.log("EMA JSON Array", message.values)
 	EMAValues = message.values
+	
+updateSMAData = (message) ->
+	console.log("SMAAAAAAA!!", 8)
+	console.log("SMA JSON Array", message.values)
+	SMAValues = message.values
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
@@ -146,7 +155,7 @@ drawLastValues = (numberOfValues) ->
 	  
 	if ($("#chart").size() > 0)
       plot = $("#chart").data("plot")
-      plot.setData([lastPlotData, EMAValues])
+      plot.setData([lastPlotData, EMAValues, SMAValues])
       #data2 = plot.getData()[0].data
       data = getPricesFromArray(lastPlotData)
 	#setting the x axis
