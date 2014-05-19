@@ -89,7 +89,7 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     } else
       0
   }
-  def trans(signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
+  def trans(values : List [Double], signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
 
     val actual = values.last
 
