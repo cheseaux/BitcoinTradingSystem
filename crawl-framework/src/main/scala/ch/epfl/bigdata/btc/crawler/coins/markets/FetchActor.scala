@@ -21,6 +21,7 @@ abstract class PublicFetchActor extends Actor with PublicFetcher  {
   }
   
   protected def sendResults(t: List[Transaction]) {
+    var length = t.length;
     //println(t)
     t.map(e => sender ! e)
   }

@@ -1,10 +1,13 @@
 package ch.epfl.bigdata.btc.crawler.coins.indicators
 
+import akka.actor.ActorRef
+import ch.epfl.bigdata.btc.types.Registration._
 
-class Wallet_EMA (msu : Double, btcsu : Double, maxInv : Double, maxbtc : Double, e :EMA){
-  
+class Wallet_EMA (dataSource: ActorRef, watched: MarketPairRegistrationOHLC, msu : Double, btcsu : Double, maxInv : Double, maxbtc : Double) 
+  extends Wallet(dataSource, watched)
+{
 
-  var gain =0.0;
+  var gain = 0.0;
   var actualSentiment = 0.0;
   var oldSentiment = 0.0
   var ema =e
@@ -24,15 +27,26 @@ class Wallet_EMA (msu : Double, btcsu : Double, maxInv : Double, maxbtc : Double
     actualSentiment = sentiment
     
   }
+  
+    
+  def gainUpdate() : Double = {
+    return gain
+  }
+  
+  def receiveOther(a: Any, ar: ActorRef) {
+    a match {
+      case a : EMA => ema = a
+      case b : Double => sentimentUpdate(b)
+    }
+  }
+  
+  
   def emaUpdate(e : EMA){
     ema = e
     
   }
   def gainUpdate (price : Double) {
-    
-
-    
-    
+        
    val signal = ema.tradeSignalEnv(0.5) 
    var diff_bt = 0.0
    var diff_money = 0.0

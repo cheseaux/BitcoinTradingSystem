@@ -66,6 +66,7 @@ class DataSource() extends Actor {
           }
         }
     }
+    println("sent");
 
   }
 

@@ -37,6 +37,7 @@ abstract class Indicator[T](dataSource: ActorRef, watched: MarketPairRegistratio
    * Delegation of message handling for unknown type
    */
   protected def receiveOther(a: Any, ar: ActorRef)
+  
   def receive = {
     case t: OHLC => doUpdateDataAndDistribute(t)
     case actor: ActorRef => observer += actor;
@@ -54,6 +55,7 @@ abstract class Indicator[T](dataSource: ActorRef, watched: MarketPairRegistratio
       var r: T = getResult()
       observer.map(a => a ! r)
       lastUpdate = DateTime.now()
+      println(ticks)
     }
   }
 
