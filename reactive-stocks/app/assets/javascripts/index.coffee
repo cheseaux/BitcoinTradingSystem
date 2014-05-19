@@ -7,7 +7,6 @@ sumSentiment = 0
 blacklist = ["USA Government trying to shutdown Bitcoin network read more here:"]
 
 
-fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
 
 $ ->
   ws = new WebSocket $("body").data("ws-url")
@@ -126,16 +125,17 @@ endTime = 1500064800
 
   
 updateStockData = (message) ->
-	plotData.push([message.time*1000, message.price])
+	plotData.push([message.time, message.price])
 
 updateEMAData = (message) ->
 	console.log("EMA JSON Array", message.values)
 	EMAValues = message.values
+	EMAValues.sort()
 	
 updateSMAData = (message) ->
-	console.log("SMAAAAAAA!!", 8)
 	console.log("SMA JSON Array", message.values)
 	SMAValues = message.values
+	SMAValues.sort()
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
@@ -169,8 +169,8 @@ drawLastValues = (numberOfValues) ->
 	yaxes = plot.getOptions().yaxes[0]
 	#if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
     # reseting yaxes
-	yaxes.min = getAxisMin(data)*0.98
-	yaxes.max = getAxisMax(data)*1.02
+	yaxes.min = getAxisMin(data)*1
+	yaxes.max = getAxisMax(data)*1
 	plot.setupGrid()
 	# redraw the chart
 	plot.draw()
