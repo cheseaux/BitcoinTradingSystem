@@ -52,7 +52,7 @@ def receiveOther(a: Any, ar: ActorRef) {
       diff_money = (-1.0)* diff_bt *actualPrice
    }
    
-   money = money + diff_money
+   money = money + diff_money - (Math.abs(diff_money)*0.02)
    btcnumber = btcnumber + diff_bt
    
    gain = (money - msu) + (btcnumber - btcsu)*actualPrice
