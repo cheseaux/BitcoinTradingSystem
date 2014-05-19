@@ -14,7 +14,9 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   var values: List[Double] = Nil
   var time: List[Long] = Nil
-
+  var oldEMA: List[Double] = Nil
+  var first = true  
+  
   def recompute() {
     values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
     time = ticks.map(_.date.getMillis()).toList
@@ -26,7 +28,26 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
   def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
     Nil ::: (movingSumExponential(values, period, alpha))
   }
-  def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {
+  def movingSumExponential(values: List[Double], period: Int, alpha1: Double): List[Double] ={
+     var finalList: List[Double] = Nil
+     if(first){
+       oldEMA ::= values.last
+       first = false
+     }
+     
+    val alpha =  1.0/(2.0*period.toDouble +1.0)
+    var toAdd = values.last * alpha + (1.0-alpha) * oldEMA.head
+    finalList ::= toAdd
+    oldEMA::=toAdd
+    if(oldEMA.length > period)
+      oldEMA = oldEMA.take(period)
+    for (i <- 0 to values.length - period -1){
+        finalList ::= oldEMA.drop(i).head
+    }
+    finalList.reverse
+  }
+ 
+  /*def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {
     case 0 => throw new IllegalArgumentException
     case 1 => values
    
@@ -56,7 +77,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
       
       list
   }
-
+*/
   def receiveOther(a: Any, ar: ActorRef) {
     a match {
       case _ => println("Class:EMA, received unknown data")
