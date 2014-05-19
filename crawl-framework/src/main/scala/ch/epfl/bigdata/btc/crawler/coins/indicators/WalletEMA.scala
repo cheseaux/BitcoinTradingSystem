@@ -22,7 +22,7 @@ def receiveOther(a: Any, ar: ActorRef) {
      
      
       var gain = 0.0
-   val signal = tradeSignalEnv(0.025) 
+   val signal = tradeSignalEnv(0.0) 
    var diff_bt = 0.0
    var diff_money = 0.0
    
