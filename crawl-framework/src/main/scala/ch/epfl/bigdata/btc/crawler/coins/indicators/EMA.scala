@@ -14,39 +14,47 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   var values: List[Double] = Nil
   var time: List[Long] = Nil
-  var oldEMA: List[Double] = Nil
+  var oldEMA: List[(Double, Long)] = Nil
   var first = true
 
   def recompute() {
-    values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
-    time = ticks.map(_.date.getMillis()).toList
+    //values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
+    //time = ticks.map(_.date.getMillis()).toList
+   movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period, alpha)
   }
 
-  def getResult() = Points(EMA, values zip time)
+  def getResult() = Points(EMA, oldEMA.reverse)
 
-  def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
+  /*def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
     Nil ::: (movingSumExponential(values, period, alpha))
   }
-  def movingSumExponential(values: List[Double], period: Int, alpha1: Double): List[Double] = {
-    var finalList: List[Double] = Nil
+  * */
+  
+  def movingSumExponential(newValues: List[Double], newTime: List[Long],  period: Int, alpha1: Double){
+
     if (first) {
-      oldEMA ::= values.last
+      oldEMA ::= (newValues.last, newTime.last)
       first = false
     }
 
-    val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
-    var toAdd = values.last * alpha + (1.0 - alpha) * oldEMA.head
-    finalList ::= toAdd
-    oldEMA ::= toAdd
+    else {
+    	val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
+    	var toAdd = newValues.last * alpha + (1.0 - alpha) * oldEMA.head._1
+    
+    	oldEMA ::= (toAdd, newTime.last)
+    }
     if (oldEMA.length > period)
       oldEMA = oldEMA.take(period)
+      /*
     for (i <- 0 to values.length - period - 1) {
       if (oldEMA.length -1 > i) {
         finalList ::= oldEMA.drop(i).head
       }
 
     }
-    finalList.reverse
+    values = finalList.reverse
+    * 
+    */
   }
 
   /*def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {

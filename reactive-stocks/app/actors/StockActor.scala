@@ -143,7 +143,8 @@ class StockActor(symbol: String) extends Actor {
 
     case transaction: Transaction =>
       val price: Double = transaction.unitPrice;
-      val time = transaction.timestamp.getMillis() / 1000;
+      val time = transaction.timestamp.getMillis()
+      println("received transaction update, time: " + transaction.timestamp)
       watchers.foreach(_ ! StockUpdate(symbol, price, time))
 
     case tweet: Tweet =>
