@@ -146,11 +146,11 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
     if (signal == 1 && actual == min) {
 
-      btc = (1 - (min+1) / (max+1)) * maxBTC
+      btc = (1 - (min) / (max)) * maxBTC
       money = (-1)* actualPrice* btc
     } else if (signal == -1 && actual == max) {
 
-      btc = (-1)*(1 - (min+1) / (max+1)) * maxBTC
+      btc = (-1)*(1 - (min) / (max)) * maxBTC
       money = (-1)*actualPrice*btc
     }
     (money, btc)
