@@ -33,13 +33,28 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
   
   def movingSumExponential(newValues: List[Double], newTime: List[Long],  period: Int, alpha1: Double){
 
+    var old =0.0
+    var newv=0.0
+    val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
+    var newt : Long =0
     if (first) {
+      for(i <- 0 to newValues.length - 2){
+        newv = newValues.drop(i).head
+        newt = newTime.drop(i).head
+        if( newv != 0){
+         
+          oldEMA ::= (newv * alpha + old*(1-alpha), newt)
+          old = newv
+        }
+ 
+      }
+        
       oldEMA ::= (newValues.last, newTime.last)
       first = false
     }
 
     else {
-    	val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
+    	
     	var toAdd = newValues.last * alpha + (1.0 - alpha) * oldEMA.head._1
     
     	oldEMA ::= (toAdd, newTime.last)
