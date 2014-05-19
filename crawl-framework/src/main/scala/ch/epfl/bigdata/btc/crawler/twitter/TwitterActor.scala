@@ -49,9 +49,10 @@ class TwitterActor(dataSource: ActorRef) extends Actor {
 			} else if (intSentiment == -1){
 			  System.err.println(tweet)
 			} 
-			
+			var imagesrc = status.getUser().getProfileImageURL()
+			var author = status.getUser().getScreenName()
 
-			dataSource ! new Tweet(new DateTime(status.getCreatedAt().getTime()), tweet, intSentiment)
+			dataSource ! new Tweet(new DateTime(status.getCreatedAt().getTime()), tweet, intSentiment, imagesrc, author)
 
 		}
 		def onDeletionNotice(statusDeletionNotice: StatusDeletionNotice) {}

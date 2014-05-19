@@ -17,9 +17,14 @@ $ ->
       when "EMA"
         updateEMAData(message)
       when "tweet"
-      	if message.sentiment != 0
-       	  tweets.push message
-       	  showTweets()
+        console.log(message)
+        console.log(message.content)
+        console.log(message.date)
+        console.log(message.author)
+        console.log(message.imgsrc)
+      	#if message.sentiment != 0
+       	#  tweets.push message
+       	# showTweets()
       else
         console.log(message)
 
@@ -209,25 +214,25 @@ updatePrice = (message) ->
 showTweets = () ->
 	formattedTweets = (showtweet(tweet) for tweet in tweets).reduceRight (x, y) -> x + "\n" + y
 	`$.getScript('http://platform.twitter.com/widgets.js');`
-	$( ".root" ).remove();
+	$( "blockquote" ).remove();
 	document.getElementById('tweetList').innerHTML = formattedTweets
-	
 
-    
 showtweet = (message) ->
 	sentiment = message.sentiment
 	if sentiment == -1
 		strSentiment = 'negative'
 	if sentiment == 1
 		strSentiment = 'positive'
-		
+	console.log(message.imagesrc)
+	console.log(message.author)
+	console.log(message.symbol)
+	
 	name = 'Jonathan Cheseaux'
 	username = '@cheseaux'
 	tweetURL = 'example.com'
 	date = '22 December 1920'
 	
-	return '<blockquote class="twitter-tweet"><p>Currently testing: jQuery and CSS animations: fly-in - <a href="http://t.co/8sFm5wFM" title="http://jsfiddle.net/gabrieleromanato/km3TE/">jsfiddle.net/gabrieleromana…</a> for web apps</p>&mdash; Gabriele Romanato (@gabromanato) <a href="https://twitter.com/gabromanato/status/275673554408837120" data-datetime="2012-12-03T18:51:11+00:00">December 3, 2012</a></blockquote>
-'
+	return '<blockquote class="twitter-tweet"><p>Currently testing: jQuery and CSS animations: fly-in - <a href="http://t.co/8sFm5wFM" title="http://jsfiddle.net/gabrieleromanato/km3TE/">jsfiddle.net/gabrieleromana…</a> for web apps</p>&mdash; Gabriele Romanato (@gabromanato) <a href="https://twitter.com/gabromanato/status/275673554408837120" data-datetime="2012-12-03T18:51:11+00:00">December 3, 2012</a></blockquote>'
 
 clone = (obj) ->
   if not obj? or typeof obj isnt 'object'
