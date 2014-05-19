@@ -3,7 +3,7 @@ EMAValues = []
 SMAValues = []
 nDataInPlot = 1000;
 sumSentiment = 0
-
+totalSentiment = 0
 blacklist = []
 modalID = 0
 fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
@@ -29,6 +29,18 @@ $ ->
       	if message.sentiment != 0
       	  if not isBlackListed(message.content)
             sumSentiment += message.sentiment
+            totalSentiment += 1
+            if sumSentiment > 10
+              strSenti = 'Positive'
+            else if sumSentiment < -10
+              strSenti = 'Negative'
+            else
+              strSenti = 'Neutral'
+            
+            console.log(strSenti)
+            document.getElementById('senti').innerHTML =  strSenti
+            document.getElementById('sentipercent').innerHTML =  sumSentiment
+
             showtweet(message)
             $('body').append(getModalHTML(message))
             $('#btnNeg'+modalID).click -> 
