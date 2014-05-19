@@ -14,7 +14,9 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   var values: List[Double] = Nil
   var time: List[Long] = Nil
-
+  var oldEMA: List[Double] = Nil
+  var first = true  
+  
   def recompute() {
     values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
     time = ticks.map(_.date.getMillis()).toList
@@ -26,46 +28,56 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
   def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
     Nil ::: (movingSumExponential(values, period, alpha))
   }
-  def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {
+  def movingSumExponential(values: List[Double], period: Int, alpha1: Double): List[Double] ={
+     var finalList: List[Double] = Nil
+     if(first){
+       oldEMA ::= values.last
+       first = false
+     }
+     
+    val alpha =  1.0/(2.0*period.toDouble +1.0)
+    var toAdd = values.last * alpha + (1.0-alpha) * oldEMA.head
+    finalList ::= toAdd
+    oldEMA::=toAdd
+    if(oldEMA.length > period)
+      oldEMA = oldEMA.take(period)
+    for (i <- 0 to values.length - period -1){
+        finalList ::= oldEMA.drop(i).head
+    }
+    finalList.reverse
+  }
+ 
+  /*def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {
     case 0 => throw new IllegalArgumentException
     case 1 => values
-    case odd if odd % 2 == 1 =>
+   
 
-      var halfPeriod = Math.ceil(period.toDouble / 2).toInt
-      val listCoeff = exponentialList(halfPeriod, alpha)
-      var finalList: List[Double] = Nil
-      for (i <- 0 to halfPeriod)
-        finalList ::= (values.drop(i).take(halfPeriod), listCoeff).zipped.map(_ * _).sum / listCoeff.sum
-
-      finalList.reverse
-
-    case even =>
-
-      var halfPeriod = period / 2
-      val listCoeff = exponentialList(halfPeriod, alpha)
-      var finalList: List[Double] = Nil
-      for (i <- 0 to halfPeriod)
-        finalList ::= (values.drop(i).take(halfPeriod), listCoeff).zipped.map(_ * _).sum / listCoeff.sum
-
-      finalList.reverse
-
-  }
-  def exponentialList(period: Int, alpha: Double): List[Double] = period match {
-    case 0 => throw new IllegalArgumentException
-    case 1 => List(1)
     case _ =>
 
-      var list: List[Double] = Nil
+      
+      val listCoeff = exponentialList(period, alpha)
+      var finalList: List[Double] = Nil
+      for (i <- 0 to values.length - period)
+        finalList ::= (values.drop(i).take(period), listCoeff).zipped.map(_ * _).sum / listCoeff.sum
+
+      finalList.reverse
+
+  }
+  def exponentialList(period: Int, alpha: Double): List[Double] =  {
+    
+
+      var list: List[Double] =  Nil
+      list::= 1.0
       val element = 1 - alpha
-      var toAdd = 0.0
-      for (i <- 0 to (period - 1)) {
-        toAdd = Math.pow(element, i)
+      var toAdd = 1.0
+      for (i <- 0 to (period - 2)) {
+        toAdd = toAdd * element
         list ::= toAdd
       }
-
+      
       list
   }
-
+*/
   def receiveOther(a: Any, ar: ActorRef) {
     a match {
       case _ => println("Class:EMA, received unknown data")

@@ -78,7 +78,9 @@ public class UserActor extends UntypedActor {
 			Tweet tweet = (Tweet) message;
 			ObjectNode messageForGUI = Json.newObject();
 			messageForGUI.put("type", "tweet");
-			messageForGUI.put("symbol", tweet.content());
+			messageForGUI.put("content", tweet.content());
+			messageForGUI.put("author", tweet.author());
+			messageForGUI.put("imagesrc", tweet.imagesrc());
 			messageForGUI.put("sentiment", tweet.sentiment());
 			messageForGUI
 					.put("hour", tweet.date().hourOfDay().getAsShortText());
