@@ -15,38 +15,40 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
   var values: List[Double] = Nil
   var time: List[Long] = Nil
   var oldEMA: List[Double] = Nil
-  var first = true  
-  
+  var first = true
+
   def recompute() {
     values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
     time = ticks.map(_.date.getMillis()).toList
   }
-  
+
   def getResult() = Points(EMA, values zip time)
-  
 
   def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
     Nil ::: (movingSumExponential(values, period, alpha))
   }
-  def movingSumExponential(values: List[Double], period: Int, alpha1: Double): List[Double] ={
-     var finalList: List[Double] = Nil
-     if(first){
-       oldEMA ::= values.last
-       first = false
-     }
-     
-    val alpha =  1.0/(2.0*period.toDouble +1.0)
-    var toAdd = values.last * alpha + (1.0-alpha) * oldEMA.head
+  def movingSumExponential(values: List[Double], period: Int, alpha1: Double): List[Double] = {
+    var finalList: List[Double] = Nil
+    if (first) {
+      oldEMA ::= values.last
+      first = false
+    }
+
+    val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
+    var toAdd = values.last * alpha + (1.0 - alpha) * oldEMA.head
     finalList ::= toAdd
-    oldEMA::=toAdd
-    if(oldEMA.length > period)
+    oldEMA ::= toAdd
+    if (oldEMA.length > period)
       oldEMA = oldEMA.take(period)
-    for (i <- 0 to values.length - period -1){
+    for (i <- 0 to values.length - period - 1) {
+      if (finalList.length > i) {
         finalList ::= oldEMA.drop(i).head
+      }
+
     }
     finalList.reverse
   }
- 
+
   /*def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {
     case 0 => throw new IllegalArgumentException
     case 1 => values
@@ -124,26 +126,25 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
       0
   }
 
-  def trans(ma : List[Double], transactions : List [(Int, Double, Double)], signal : Int, 
-	    maxBTC : Double, actualPrice : Double):List[(Int, Double, Double)]={
-	  
-	  val actual = ma.last
-	  var newTrans = transactions
-	  val min = ma.min
-	  val max = ma.max
-	  var price= 0.0
-	  var btc = 0.0
+  def trans(ma: List[Double], transactions: List[(Int, Double, Double)], signal: Int,
+    maxBTC: Double, actualPrice: Double): List[(Int, Double, Double)] = {
 
-	  if(signal == 1 && actual == min){
-	    
-		 btc = (1- min/max)*maxBTC
-	  }
-	  else if (signal == -1 && actual == max){
-	        
-		btc = (1- min/max)*maxBTC 
-	  }
-	  price = btc * actualPrice
-	 (signal, price, btc) :: newTrans
-	}
-	
+    val actual = ma.last
+    var newTrans = transactions
+    val min = ma.min
+    val max = ma.max
+    var price = 0.0
+    var btc = 0.0
+
+    if (signal == 1 && actual == min) {
+
+      btc = (1 - min / max) * maxBTC
+    } else if (signal == -1 && actual == max) {
+
+      btc = (1 - min / max) * maxBTC
+    }
+    price = btc * actualPrice
+    (signal, price, btc) :: newTrans
+  }
+
 }
