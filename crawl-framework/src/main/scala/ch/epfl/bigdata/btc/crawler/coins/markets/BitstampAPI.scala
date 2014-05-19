@@ -37,7 +37,7 @@ class BitstampAPI(from: Currency, to: Currency) {
 	  var t = parse(json).extract[List[BitstampCaseTransaction]]
 
 	  return t.map(f => new Transaction(from, to, f.price.toDouble, 
-	      f.amount.toDouble, f.tid, new DateTime(f.date.toLong), OfferType.BID, Market.Bitstamp))
+	      f.amount.toDouble, f.tid, new DateTime(f.date.toLong * 1000), OfferType.BID, Market.Bitstamp))
 	}
 	
 	def getDepth() {

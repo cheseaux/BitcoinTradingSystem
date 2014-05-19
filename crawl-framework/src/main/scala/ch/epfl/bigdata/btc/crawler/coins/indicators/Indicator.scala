@@ -19,7 +19,7 @@ import org.joda.time.DateTime
 abstract class Indicator[T](dataSource: ActorRef, watched: MarketPairRegistrationOHLC, sensibility: Long) extends Actor {
 
   protected var ticks: MutableList[OHLC] = new MutableList[OHLC]()
-  private var lastUpdate: DateTime = DateTime.now()
+  private var lastUpdate: DateTime = DateTime.now().minusMillis(10000)
   private var observer: MutableList[ActorRef] = new MutableList[ActorRef]()
   dataSource ! watched
 
@@ -50,12 +50,12 @@ abstract class Indicator[T](dataSource: ActorRef, watched: MarketPairRegistratio
    */
   def doUpdateDataAndDistribute(t: OHLC) {
     updateTicks(t)
+    
     if (lastUpdate.getMillis() - DateTime.now().getMillis() < -sensibility) {
       recompute()
       var r: T = getResult()
       observer.map(a => a ! r)
       lastUpdate = DateTime.now()
-      println(ticks)
     }
   }
 
@@ -70,7 +70,7 @@ abstract class Indicator[T](dataSource: ActorRef, watched: MarketPairRegistratio
         currentDate = currentDate.plusMillis(watched.tickSize * 1000)
       }
     }
-    val last = ticks.last
+    val last = ticks.last // most recent
     val length = ticks.length
     var idRespectToHead = (tick.date.getMillis() - last.date.getMillis()) / 1000 / watched.tickSize
     var myTicks = ticks
@@ -80,7 +80,7 @@ abstract class Indicator[T](dataSource: ActorRef, watched: MarketPairRegistratio
       var currentDate = last.date
       for (i <- 1 to idRespectToHead.toInt) {
         currentDate = last.date.plusMillis(watched.tickSize * 1000 * i)
-        ticks += new OHLC(0.0, 0.0, 0.0, 0.0, 0.0, currentDate, new Duration(watched.tickSize))
+        ticks += new OHLC(last.close, last.close, last.close, last.close, 0.0, currentDate, new Duration(watched.tickSize))
       }
       ticks.update(ticks.length - 1, tick)
       ticks.drop(idRespectToHead.toInt)

@@ -23,7 +23,10 @@ abstract class PublicFetchActor extends Actor with PublicFetcher  {
   protected def sendResults(t: List[Transaction]) {
     var length = t.length;
     //println(t)
-    t.map(e => sender ! e)
+    if(length != 0) {
+    	t.reverse.map(e => sender ! e)
+    }
+//    t.map(e => sender ! e)
   }
 }
 
@@ -38,7 +41,29 @@ final class BtcePublicFetcher(c1: Currency, c2: Currency) extends PublicFetchAct
     val trades = btce.getTrade(count)
     val idx = trades.indexOf(latest)
     count = if (idx < 0)  2000 else Math.min(10*idx, 2000)
-    latest = trades.head
+    latest = if (trades.length == 0) latest else trades.head
+    
+    if(idx > 0)
+    	sendResults(trades.slice(0, idx))
+    else if (idx == -1)
+    	sendResults(trades)
+  }
+  
+  def exit() {}
+}
+
+final class BitstampPublicFetcher(c1: Currency, c2: Currency) extends PublicFetchActor {
+  val bistamp = new BitstampAPI(c1, c2)
+  var count = 2000
+  var latest = new Transaction(c1, c2, 0.0, 0.0, 0, new DateTime, OfferType.BID, Market.Bitstamp)
+  
+  def fetch() {
+    println("fetch called");
+    val trades = bistamp.getTrade(count)
+    val idx = trades.indexOf(latest)
+    count = if (idx < 0)  2000 else Math.min(10*idx, 2000)
+    latest = if (trades.length == 0) latest else trades.head
+    
     
     if(idx > 0)
     	sendResults(trades.slice(0, idx))

@@ -1,17 +1,18 @@
 package ch.epfl.bigdata.btc.crawler.coins
 
-import ch.epfl.bigdata.btc.crawler.coins._;
+import ch.epfl.bigdata.btc.crawler.coins._
 import ch.epfl.bigdata.btc.crawler.coins.indicators.Indicator
 import ch.epfl.bigdata.btc.crawler.coins.markets.MarketFetchPool
 import ch.epfl.bigdata.btc.types.Transfer._
 import ch.epfl.bigdata.btc.types.Registration._
 import ch.epfl.bigdata.btc.types.CurrencyPair
 import ch.epfl.bigdata.btc.crawler.coins.indicators.EMA
-import ch.epfl.bigdata.btc.crawler.coins.indicators.SMA 
+import ch.epfl.bigdata.btc.crawler.coins.indicators.SMA
 import scala.collection.mutable.MutableList
 import scala.collection.mutable.HashMap
 import akka.event.Logging
 import akka.actor.{ Actor, ActorRef, Props }
+import org.joda.time.DateTime
 
 class DataSource() extends Actor {
   import context._
@@ -47,11 +48,14 @@ class DataSource() extends Actor {
         {
           ir match {
             case er: EMARegistration => {
+              var mpr = MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount)
               var indicator = context.actorOf(Props(classOf[EMA], self,
-                MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), er.tickCount, er.percent),
+                mpr, er.tickCount, er.percent),
                 "EMA" + er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount + "_" + er.tickCount + "-" + er.percent)
                 registrations.addIndicator(ir, indicator)
                 indicator ! observer
+                cache.getAllTransByMarketPair(new MarketPair(er.market,er.c)).map(e => cache.updateOhlcForMpro(mpr, e))
+                cache.getAllOhlc(mpr).map(e => indicator ! e)
                 println("EMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
             }
             case er: SMARegistration => {
@@ -97,6 +101,8 @@ class DataSource() extends Actor {
    * update the cache and the distribute
    */
   def updateCacheAndNotify(t: Transaction) {
+    
+    println("transaction in", DateTime.now)
 
     //println(t)
     val mprt = MarketPairRegistrationTransaction(t.market, new CurrencyPair(t.from, t.to))
@@ -135,6 +141,7 @@ class DataSource() extends Actor {
       }
 
     }
+    println("transaction out", DateTime.now + "\n\n")
   }
 
   def updateAndSendTweet(t: Tweet) {
