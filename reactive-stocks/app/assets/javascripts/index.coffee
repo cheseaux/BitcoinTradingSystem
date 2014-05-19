@@ -1,12 +1,13 @@
-tweets = []
 plotData = []
 EMAValues = []
 sumSentiment = 0
-blacklist = ["USA Government trying to shutdown Bitcoin network read more here:"]
-
+blacklist = []
+modalID = 0
 fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
 
 $ ->
+
+  
   ws = new WebSocket $("body").data("ws-url")
   ws.onmessage = (event) ->
     message = JSON.parse event.data
@@ -20,10 +21,23 @@ $ ->
         updateEMAData(message)
       when "tweet"
       	if message.sentiment != 0
-      	  if not 0 #isBlackListed(message.content)
+      	  if not isBlackListed(message.content)
             sumSentiment += message.sentiment
-            tweets.push message
             showtweet(message)
+            $('body').append(getModalHTML(message))
+            $('#btnNeg'+modalID).click -> 
+              console.log("clicked neg")
+              $.post( "http://jonathancheseaux.ch/saveCorrection.php", { tweet: message.content, sentiment: "negative" } );
+            $('#btnNeu'+modalID).click -> 
+              console.log("clicked neu")
+              $.post( "http://jonathancheseaux.ch/saveCorrection.php", { tweet: message.content, sentiment: "neutral" } );
+            $('#btnPos'+modalID).click -> 
+              console.log("clicked pos")
+              $.post( "http://jonathancheseaux.ch/saveCorrection.php", { tweet: message.content, sentiment: "positive" } );
+            $('#btnIgn'+modalID).click -> 
+              console.log("clicked spam " + message.content)
+              blacklist.push(cleanTweet(message.content))
+              console.log("added " + cleanTweet(message.content))
       else
         console.log(message)
 
@@ -39,6 +53,8 @@ $ ->
     
 getPricesFromArray = (data) ->
   (v[1] for v in data)
+  
+  
   
   
 getChartArray = (data) ->
@@ -210,26 +226,40 @@ drawValuesInRange = (beginRange, endRange) ->
 updatePrice = (message) ->
 	document.getElementById('price').innerHTML =  '$' + message.price.toFixed(2)
     
-
-isBlackListed = (text) ->
+cleanTweet = (text) ->
 	regex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
 	cleanText = text.replace(regex, "")
 	cleanText = cleanText.replace(/(^|\W+)\@([\w\-]+)/gm,'');
-	cleanText = cleanText.replace /^\s+|\s+$/g, ""
-	return (blacklist.indexOf(cleanText) != -1)
+	return cleanText.replace /^\s+|\s+$/g, ""
 
-showtweet = (message) ->
+isBlackListed = (text) ->
+	return (blacklist.indexOf(cleanTweet(text)) != -1)
+	
+getModalHTML = (message) ->
+	return '<div id="static'+modalID+'" class="modal fade" tabindex="-1" style="display: none;">'+
+			'<div class="modal-header">'+
+			'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
+			'<h4 class="modal-title">What is your sentiment about this tweet ?</h4>'+
+			'</div><div class="modal-body">'+ formatTweet(message) +
+			'<div class="modal-footer">' +
+			'<button id="btnNeg'+modalID+'" type="button" data-dismiss="modal" class="btn btn-default">Negative</button>'+
+			'<button id="btnNeu'+modalID+'" type="button" data-dismiss="modal" class="btn btn-default">Neutral</button>'+
+			'<button id="btnPos'+modalID+'" type="button" data-dismiss="modal" class="btn btn-default">Positive</button>'+
+			'<button id="btnIgn'+modalID+'" type="button" data-dismiss="modal" class="btn btn-default">Spam !</button>'+
+		    '<button type="button" data-dismiss="modal" class="btn btn-primary">Cancel</button>' + 
+			'</div></div></div>'
+			
+formatTweet = (message) ->
 	sentiment = message.sentiment
 	if sentiment == -1
 		strSentiment = 'negative'
 	if sentiment == 1
 		strSentiment = 'positive'
-
-	formatted = '<div class="root standalone-tweet ltr twitter-tweet not-touch" id="'+strSentiment+'">' +
-	'<blockquote class="tweet subject expanded h-entry" >' +
-	'<div class="header" style="padding-top: 0px;>' +
+	return '<div class="root standalone-tweet ltr twitter-tweet not-touch" id="'+strSentiment+'">' +
+	'<blockquote class="tweet subject expanded h-entry" class="btn btn-primary btn-lg" data-toggle="modal" href="#static'+modalID+'">' +    
+    '<div class="header" style="padding-top: 0px;>' +
 	'<div class="h-card p-author">'+
-	'<a class="u-url profile" href="https://twitter.com/'+message.author+'">'+
+	'<a class="u-url profile">'+
 	'<img class="u-photo avatar" src="'+message.imagesrc+'">'+
 	'<span class="full-name">'+
 	'<span class="p-name customisable-highlight">'+message.author+'</span>'+
@@ -237,7 +267,10 @@ showtweet = (message) ->
 	'<span class="p-nickname">'+message.content+'</span>'+
 	'</div></div></blockquote></div>'
 
-	$('#tweetList').prepend(formatted)
+showtweet = (message) ->
+  modalID += 1
+  formatted = formatTweet(message)
+  $('#tweetList').prepend(formatted)
 
 
 clone = (obj) ->

@@ -3,17 +3,20 @@
 <html>
 <head>
     <title>Reactive Stock News Dashboard</title>
-
+    
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/twitter.css")">
     <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.min.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-modalcss-bs3patch.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-modal.css")">
+    
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.flot.js"))'></script>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.flot.time.js"))'></script>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))'></script>
     <script type='text/javascript' src='@routes.Assets.at("javascripts/index.min.js")'></script>
-
+	
 </head>
 <body data-ws-url="@routes.Application.ws.webSocketURL(request)">
 
@@ -25,6 +28,8 @@
 	    </div>
 	</div>
 	
+	
+	
 	<div class="jumbotron2">
 	    <div class="container">
 	            
@@ -35,7 +40,11 @@
 					<div class="panel-body">
 						<div id="chart"></div>
 					</div>
-				</div>
+				</div>	
+				
+			
+          
+         
 				
 				<div class="panel panel-default" id="statpanel" >
 					<div class="panel-heading">
@@ -44,8 +53,9 @@
 					<div class="panel-body" id="stats">
 						
 						
-					
-	            
+	
+        
+               
 				<div class="row">
 					<div class="col-xs-4">
 						<div id="secondary-stat-item1" class="secondary-stat-item big-number-stat clearfix">

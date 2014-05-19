@@ -1507,10 +1507,34 @@ padding:12px 0 10px 2px;
 	color: #000000;
 }
 
+.p-name {
+	text-decoration: none ! important;
+	font-weight:bold;
+	
+}
+
 .u-url:link {text-decoration:none;}
 .u-url:visited {text-decoration:none;}
 .u-url:hover {text-decoration:none;}
 .u-url:active {text-decoration:none;}
+
+.a:link {text-decoration:none;}
+.a:visited {text-decoration:none;}
+.a:hover {text-decoration:none;}
+.a:active {text-decoration:none;}
+
+
+.hide {
+	 max-width:100%;
+}
+
+.popover p{
+	 width:1000px;
+	 max-width:100%;
+	 font-size:24px;
+	 text-align:center;
+}
+
 
 
 @media print {
