@@ -23,7 +23,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
    movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period, alpha)
   }
 
-  def getResult() = Points(EMA, oldEMA)
+  def getResult() = Points(EMA, oldEMA.reverse)
 
   /*def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
     Nil ::: (movingSumExponential(values, period, alpha))
@@ -31,7 +31,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
   * */
   
   def movingSumExponential(newValues: List[Double], newTime: List[Long],  period: Int, alpha1: Double){
-    var finalList: List[Double] = Nil
+
     if (first) {
       oldEMA ::= (newValues.last, newTime.last)
       first = false
@@ -40,7 +40,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     else {
     	val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
     	var toAdd = newValues.last * alpha + (1.0 - alpha) * oldEMA.head._1
-    	finalList ::= toAdd
+    
     	oldEMA ::= (toAdd, newTime.last)
     }
     if (oldEMA.length > period)
