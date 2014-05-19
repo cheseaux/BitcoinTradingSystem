@@ -1,6 +1,7 @@
 tweets = []
 plotData = []
 EMAValues = []
+SMAValues = []
 
 fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
 
@@ -16,6 +17,8 @@ $ ->
         updatePrice(message)
       when "EMA"
         updateEMAData(message)
+      when "EMA"
+        updateSMAData(message)
       when "tweet"
       	if message.sentiment != 0
        	  tweets.push message
@@ -75,7 +78,7 @@ populateStockHistory = (message) ->
   #populates with history, we do not want
   #plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
   chart = $("#chart").addClass("chart")
-  plot = chart.plot([plotData, EMAValues], getChartOptions(message.history)).data("plot")
+  plot = chart.plot([plotData, EMAValues, SMAValues], getChartOptions(message.history)).data("plot")
   
   #console.log("mesage history", message.history)
   #console.log("data", plot.getData()[0].data)
@@ -123,6 +126,10 @@ updateStockData = (message) ->
 updateEMAData = (message) ->
 	console.log("EMA JSON Array", message.values)
 	EMAValues = message.values
+	
+updateSMAData = (message) ->
+	console.log("SMA JSON Array", message.values)
+	SMAValues = message.values
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
@@ -142,7 +149,7 @@ drawLastValues = (numberOfValues) ->
 	  
 	if ($("#chart").size() > 0)
       plot = $("#chart").data("plot")
-      plot.setData([lastPlotData, EMAValues])
+      plot.setData([lastPlotData, EMAValues, SMAValues])
       #data2 = plot.getData()[0].data
       data = getPricesFromArray(lastPlotData)
 	#setting the x axis
