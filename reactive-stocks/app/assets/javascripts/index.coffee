@@ -1,6 +1,8 @@
 tweets = []
 plotData = []
 EMAValues = []
+sumSentiment = 0
+blacklist = ["USA Government trying to shutdown Bitcoin network read more here:"]
 
 fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
 
@@ -17,14 +19,11 @@ $ ->
       when "EMA"
         updateEMAData(message)
       when "tweet"
-        console.log(message)
-        console.log(message.content)
-        console.log(message.date)
-        console.log(message.author)
-        console.log(message.imgsrc)
-      	#if message.sentiment != 0
-       	#  tweets.push message
-       	# showTweets()
+      	if message.sentiment != 0
+      	  if not 0 #isBlackListed(message.content)
+            sumSentiment += message.sentiment
+            tweets.push message
+            showtweet(message)
       else
         console.log(message)
 
@@ -211,11 +210,13 @@ drawValuesInRange = (beginRange, endRange) ->
 updatePrice = (message) ->
 	document.getElementById('price').innerHTML =  '$' + message.price.toFixed(2)
     
-showTweets = () ->
-	formattedTweets = (showtweet(tweet) for tweet in tweets).reduceRight (x, y) -> x + "\n" + y
-	`$.getScript('http://platform.twitter.com/widgets.js');`
-	$( "blockquote" ).remove();
-	document.getElementById('tweetList').innerHTML = formattedTweets
+
+isBlackListed = (text) ->
+	regex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+	cleanText = text.replace(regex, "")
+	cleanText = cleanText.replace(/(^|\W+)\@([\w\-]+)/gm,'');
+	cleanText = cleanText.replace /^\s+|\s+$/g, ""
+	return (blacklist.indexOf(cleanText) != -1)
 
 showtweet = (message) ->
 	sentiment = message.sentiment
@@ -223,16 +224,21 @@ showtweet = (message) ->
 		strSentiment = 'negative'
 	if sentiment == 1
 		strSentiment = 'positive'
-	console.log(message.imagesrc)
-	console.log(message.author)
-	console.log(message.symbol)
-	
-	name = 'Jonathan Cheseaux'
-	username = '@cheseaux'
-	tweetURL = 'example.com'
-	date = '22 December 1920'
-	
-	return '<blockquote class="twitter-tweet"><p>Currently testing: jQuery and CSS animations: fly-in - <a href="http://t.co/8sFm5wFM" title="http://jsfiddle.net/gabrieleromanato/km3TE/">jsfiddle.net/gabrieleromana…</a> for web apps</p>&mdash; Gabriele Romanato (@gabromanato) <a href="https://twitter.com/gabromanato/status/275673554408837120" data-datetime="2012-12-03T18:51:11+00:00">December 3, 2012</a></blockquote>'
+
+	formatted = '<div class="root standalone-tweet ltr twitter-tweet not-touch" id="'+strSentiment+'">' +
+	'<blockquote class="tweet subject expanded h-entry" >' +
+	'<div class="header" style="padding-top: 0px;>' +
+	'<div class="h-card p-author">'+
+	'<a class="u-url profile" href="https://twitter.com/'+message.author+'">'+
+	'<img class="u-photo avatar" src="'+message.imagesrc+'">'+
+	'<span class="full-name">'+
+	'<span class="p-name customisable-highlight">'+message.author+'</span>'+
+	'</span>'+
+	'<span class="p-nickname">'+message.content+'</span>'+
+	'</div></div></blockquote></div>'
+
+	$('#tweetList').prepend(formatted)
+
 
 clone = (obj) ->
   if not obj? or typeof obj isnt 'object'
