@@ -30,7 +30,14 @@
 	            
 	            <div class="panel panel-default" id ="chartholder">
 					<div class="panel-heading">
-						<h3 class="panel-title">Live stock exchanges</h3>
+						<h3 class="panel-title">Live stock exchanges
+							<div id = "plotOption">
+				Number of values in plot: <input type="text" name="textboxplotsize" value="1000" size="3">
+					<input id="submitplotsize" type="button" value="Update" onclick="updatePlotSize();">
+							</div>
+						
+						
+						</h3>
 					</div>
 					<div class="panel-body">
 						<div id="chart"></div>
@@ -113,12 +120,7 @@
 	</div>
 
 	
-	<div id = "plotOption">
-			<center>
-				Number of values in plot: <input type="text" name="textboxplotsize" value="1000" size="3">
-					<input id="submitplotsize" type="button" value="Update" onclick="updatePlotSize();">
-			</center>
-	</div>
+	
 
 
 	<div id="footer">
