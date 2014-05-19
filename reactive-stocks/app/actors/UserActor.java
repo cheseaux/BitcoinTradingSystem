@@ -56,7 +56,7 @@ public class UserActor extends UntypedActor {
 			stockUpdateMessage.put("type", "stockupdate");
 			stockUpdateMessage.put("symbol", stockUpdate.symbol());
 			stockUpdateMessage.put("price", stockUpdate.price().doubleValue());
-			// time field is number of seconds since 1.1.1970
+			// time field is number of milliseconds since 1.1.1970
 			stockUpdateMessage.put("time", stockUpdate.time());
 
 			out.write(stockUpdateMessage);
