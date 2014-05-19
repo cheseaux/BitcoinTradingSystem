@@ -14,39 +14,49 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   var values: List[Double] = Nil
   var time: List[Long] = Nil
-  var oldEMA: List[Double] = Nil
-  var first = true  
-  
-  def recompute() {
-    values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
-    time = ticks.map(_.date.getMillis()).toList
-  }
-  
-  def getResult() = Points(EMA, values zip time)
-  
+  var oldEMA: List[(Double, Long)] = Nil
+  var first = true
 
-  def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
+  def recompute() {
+    //values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
+    //time = ticks.map(_.date.getMillis()).toList
+   movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period, alpha)
+  }
+
+  def getResult() = Points(EMA, oldEMA.reverse)
+
+  /*def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
     Nil ::: (movingSumExponential(values, period, alpha))
   }
-  def movingSumExponential(values: List[Double], period: Int, alpha1: Double): List[Double] ={
-     var finalList: List[Double] = Nil
-     if(first){
-       oldEMA ::= values.last
-       first = false
-     }
-     
-    val alpha =  1.0/(2.0*period.toDouble +1.0)
-    var toAdd = values.last * alpha + (1.0-alpha) * oldEMA.head
-    finalList ::= toAdd
-    oldEMA::=toAdd
-    if(oldEMA.length > period)
-      oldEMA = oldEMA.take(period)
-    for (i <- 0 to values.length - period -1){
-        finalList ::= oldEMA.drop(i).head
+  * */
+  
+  def movingSumExponential(newValues: List[Double], newTime: List[Long],  period: Int, alpha1: Double){
+
+    if (first) {
+      oldEMA ::= (newValues.last, newTime.last)
+      first = false
     }
-    finalList.reverse
+
+    else {
+    	val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
+    	var toAdd = newValues.last * alpha + (1.0 - alpha) * oldEMA.head._1
+    
+    	oldEMA ::= (toAdd, newTime.last)
+    }
+    if (oldEMA.length > period)
+      oldEMA = oldEMA.take(period)
+      /*
+    for (i <- 0 to values.length - period - 1) {
+      if (oldEMA.length -1 > i) {
+        finalList ::= oldEMA.drop(i).head
+      }
+
+    }
+    values = finalList.reverse
+    * 
+    */
   }
- 
+
   /*def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {
     case 0 => throw new IllegalArgumentException
     case 1 => values
@@ -112,7 +122,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	 * In this case, a value of 1 would state that the price will go up, as
 	 * a value of -1 indicates that the price will go down.	 * 
 	 */
-  def tradeSignalEnv(values: List[Double], percent: Double): Int = {
+  def tradeSignalEnv( percent: Double): Int = {
     val envA = values.map(_ * (1 + percent))
     val envB = values.map(_ * (1 - percent))
 
@@ -124,26 +134,26 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
       0
   }
 
-  def trans(ma : List[Double], transactions : List [(Int, Double, Double)], signal : Int, 
-	    maxBTC : Double, actualPrice : Double):List[(Int, Double, Double)]={
-	  
-	  val actual = ma.last
-	  var newTrans = transactions
-	  val min = ma.min
-	  val max = ma.max
-	  var price= 0.0
-	  var btc = 0.0
+  def trans(signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
 
-	  if(signal == 1 && actual == min){
-	    
-		 btc = (1- min/max)*maxBTC
-	  }
-	  else if (signal == -1 && actual == max){
-	        
-		btc = (1- min/max)*maxBTC 
-	  }
-	  price = btc * actualPrice
-	 (signal, price, btc) :: newTrans
-	}
-	
+    val actual = values.last
+
+    val min = values.min
+    val max = values.max
+    
+    var btc=0.0
+    var money = 0.0
+
+    if (signal == 1 && actual == min) {
+
+      btc = (1 - (min+1) / (max+1)) * maxBTC
+      money = (-1)* actualPrice* btc
+    } else if (signal == -1 && actual == max) {
+
+      btc = (-1)*(1 - (min+1) / (max+1)) * maxBTC
+      money = (-1)*actualPrice*btc
+    }
+    (money, btc)
+  }
+
 }

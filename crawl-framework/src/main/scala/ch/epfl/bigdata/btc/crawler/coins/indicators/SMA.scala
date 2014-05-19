@@ -17,14 +17,14 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   def recompute() {
     println("SMA-recompute", DateTime.now())
-    println("Ticks " , ticks)
-    values = Nil ::: (movingSum(ticks.map(_.close).toList, period) map (_ / period))
-    
-    time = ticks.map(_.date.getMillis()).toList
+    println("Ticks ", ticks.map(_.close).toList zip ticks.map(_.date.getMillis()).toList)
+    values = Nil ::: (movingSum(ticks.map(_.close).toList, period))
+
+    time = ticks.iterator.filter(_.close > 0.0).toList.map(_.date.getMillis()).toList
   }
-  
+
   def getResult() = Points(SMA, values zip time)
-  
+
   def receiveOther(a: Any, ar: ActorRef) {
     a match {
       case _ => println("Class:SMA, received unknown data")
@@ -35,22 +35,20 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	 * the computation of the moving simple moving average was taken from an online forum :
 	 * http://stackoverflow.com/questions/1319891/calculating-the-moving-average-of-a-list
 	 */
- def simpleMovingAverage(values: List[Double], period: Int): List[Double] = {
-    Nil ::: (movingSum(values, period) map (_ / period))
+  def simpleMovingAverage(values: List[Double], period: Int): List[Double] = {
+    Nil ::: (movingSum(values, period))
   }
-
   def movingSum(values: List[Double], period: Int): List[Double] = period match {
     case 0 => throw new IllegalArgumentException
     case 1 => values
     case _ =>
       var finalList: List[Double] = Nil
-      for (i <- 0 to values.length - period)
-        finalList ::= (values.drop(i).take(period)).sum
-
+      for (i <- 0 to values.length - period) {
+        finalList ::= (values.drop(i).take(period).iterator.filter(_ > 0.0).toList).sum / (values.drop(i).take(period).iterator.filter(_ > 0.0).toList).length
+      }
       finalList.reverse
   }
 
-  
   def envellopAbove(values: List[Double], percent: Double): List[Double] = {
     values.map(_ * (1 + percent))
 
@@ -80,7 +78,7 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 	 * In this case, a value of 1 would state that the price will go up, as
 	 * a value of -1 indicates that the price will go down.	 * 
 	 */
-  def tradeSignalEnv(values: List[Double], percent: Double): Int = {
+  def tradeSignalEnv(percent: Double): Int = {
     val envA = values.map(_ * (1 + percent))
     val envB = values.map(_ * (1 - percent))
 
@@ -91,27 +89,26 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     } else
       0
   }
-  def trans(ma : List[Double], transactions : List [(Int, Double, Double)], signal : Int, 
-	    maxBTC : Double, actualPrice : Double):List[(Int, Double, Double)]={
-	  
-	  val actual = ma.last
-	  var newTrans = transactions
-	  val min = ma.min
-	  val max = ma.max
-	  var price= 0.0
-	  var btc = 0.0
+  def trans(signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
 
-	  if(signal == 1 && actual == min){
-	    
-		 btc = (1- min/max)*maxBTC
-	  }
-	  else if (signal == -1 && actual == max){
-	        
-		btc = (1- min/max)*maxBTC 
-	  }
-	  price = btc * actualPrice
-	 (signal, price, btc) :: newTrans
-	}
-	
+    val actual = values.last
+
+    val min = values.min
+    val max = values.max
+    
+    var btc=0.0
+    var money = 0.0
+
+    if (signal == 1 && actual == min) {
+
+      btc = (1 - (min+1) / (max+1)) * maxBTC
+      money = (-1)* actualPrice* btc
+    } else if (signal == -1 && actual == max) {
+
+      btc = (-1)*(1 - (min+1) / (max+1)) * maxBTC
+      money = (-1)*actualPrice*btc
+    }
+    (money, btc)
+  }
 
 }

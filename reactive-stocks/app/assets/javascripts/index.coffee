@@ -1,9 +1,13 @@
 plotData = []
 EMAValues = []
+SMAValues = []
+nDataInPlot = 1000;
 sumSentiment = 0
+
 blacklist = []
 modalID = 0
 fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
+
 
 $ ->
 
@@ -19,6 +23,8 @@ $ ->
         updatePrice(message)
       when "EMA"
         updateEMAData(message)
+      when "SMA"
+        updateSMAData(message)
       when "tweet"
       	if message.sentiment != 0
       	  if not isBlackListed(message.content)
@@ -69,14 +75,14 @@ getChartOptions = (data) ->
     max: 410
   xaxis:
     show: true
-    #mode: time
-    #timeformat: "%Y/%m/%d"
+    mode: "time"
+    timezone: "browser"
 
 
 getAxisMin = (data) ->
-  Math.min.apply(Math, data) * 0.999
+  Math.min.apply(Math, data) * 0.9999
 getAxisMax = (data) ->
-  Math.max.apply(Math, data) * 1.001
+  Math.max.apply(Math, data) * 1.0001
 
   
   
@@ -95,7 +101,7 @@ populateStockHistory = (message) ->
   #populates with history, we do not want
   #plot = chart.plot([getChartArray(message.history)], getChartOptions(message.history)).data("plot")
   chart = $("#chart").addClass("chart")
-  plot = chart.plot([plotData, EMAValues], getChartOptions(message.history)).data("plot")
+  plot = chart.plot([plotData, EMAValues, SMAValues], getChartOptions(message.history)).data("plot")
   
   #console.log("mesage history", message.history)
   #console.log("data", plot.getData()[0].data)
@@ -108,8 +114,7 @@ window.ps = 0
 
 root = exports ? this
 
-#global variable containing plot size
-nDataInPlot = 2000;
+
 
 #begin and end times for plot graph
 beginTime = 1400043400
@@ -127,22 +132,29 @@ endTime = 1500064800
 
 @updatePlotSize = updatePlotSize = () ->
 	inputNData = document.getElementsByName('textboxplotsize')[0].value
-	if (inputNData >= 1) and (inputNData <= 3000)
+	if (inputNData >= 1) and (inputNData <= plotData.length-1)
 	  nDataInPlot = inputNData
 	  
 	  #redraw graph
 	  drawLastValues(nDataInPlot)
 	else
-	  alert "invalid value, outside of : [1,3000]"
+	  alert "invalid value, max value is " + (plotData.length - 1)
 	window.ps = plotData.length
 
-  
+
+
 updateStockData = (message) ->
-	plotData.push([message.time*1000, message.price])
+	plotData.push([message.time, message.price])
 
 updateEMAData = (message) ->
-	console.log("EMA JSON Array", message.values)
+	#console.log("EMA JSON Array", message.values)
 	EMAValues = message.values
+	EMAValues.sort()
+	
+updateSMAData = (message) ->
+	#console.log("SMA JSON Array", message.values)
+	SMAValues = message.values
+	SMAValues.sort()
 
 #redraws the plot every second, regardless of data pushed (to prevent freezes)  
 setInterval ( ->
@@ -162,7 +174,7 @@ drawLastValues = (numberOfValues) ->
 	  
 	if ($("#chart").size() > 0)
       plot = $("#chart").data("plot")
-      plot.setData([lastPlotData, EMAValues])
+      plot.setData([lastPlotData, EMAValues, SMAValues])
       #data2 = plot.getData()[0].data
       data = getPricesFromArray(lastPlotData)
 	#setting the x axis
@@ -176,10 +188,8 @@ drawLastValues = (numberOfValues) ->
 	yaxes = plot.getOptions().yaxes[0]
 	#if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
     # reseting yaxes
-	yaxes.min = -10
-	yaxes.max = 500
-	#yaxes.min = getAxisMin(data)*1
-	#yaxes.max = getAxisMax(data)*1
+	yaxes.min = getAxisMin(data)*1
+	yaxes.max = getAxisMax(data)*1
 	plot.setupGrid()
 	# redraw the chart
 	plot.draw()
