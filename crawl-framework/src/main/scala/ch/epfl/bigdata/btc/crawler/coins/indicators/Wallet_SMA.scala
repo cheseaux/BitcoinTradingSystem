@@ -24,7 +24,10 @@ class Wallet_SMA (msu : Double, btcsu : Double, maxInv : Double, maxbtc : Double
     actualSentiment = sentiment
     
   }
-  
+  def smaUpdate(s: SMA){
+    
+    sma = s
+  }
   def gainUpdate (price : Double) {
     
 

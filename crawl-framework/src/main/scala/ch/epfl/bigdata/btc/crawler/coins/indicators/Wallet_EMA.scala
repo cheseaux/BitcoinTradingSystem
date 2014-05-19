@@ -24,7 +24,10 @@ class Wallet_EMA (msu : Double, btcsu : Double, maxInv : Double, maxbtc : Double
     actualSentiment = sentiment
     
   }
-  
+  def emaUpdate(e : EMA){
+    ema = e
+    
+  }
   def gainUpdate (price : Double) {
     
 
