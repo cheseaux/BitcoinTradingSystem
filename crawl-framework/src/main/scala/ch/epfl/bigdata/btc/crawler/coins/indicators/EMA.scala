@@ -41,7 +41,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     if (oldEMA.length > period)
       oldEMA = oldEMA.take(period)
     for (i <- 0 to values.length - period - 1) {
-      if (finalList.length > i) {
+      if (oldEMA.length -1 > i) {
         finalList ::= oldEMA.drop(i).head
       }
 
