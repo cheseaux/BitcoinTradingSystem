@@ -2,7 +2,7 @@ tweets = []
 plotData = []
 EMAValues = []
 SMAValues = []
-nDataInPlot = 2000;
+nDataInPlot = 1000;
 sumSentiment = 0
 blacklist = ["USA Government trying to shutdown Bitcoin network read more here:"]
 
@@ -58,13 +58,13 @@ getChartOptions = (data) ->
   xaxis:
     show: true
     mode: "time"
-    #timeformat: "%Y/%m/%d"
+    timezone: "browser"
 
 
 getAxisMin = (data) ->
-  Math.min.apply(Math, data) * 0.999
+  Math.min.apply(Math, data) * 0.9999
 getAxisMax = (data) ->
-  Math.max.apply(Math, data) * 1.001
+  Math.max.apply(Math, data) * 1.0001
 
   
   
@@ -123,17 +123,18 @@ endTime = 1500064800
 	  alert "invalid value, max value is " + (plotData.length - 1)
 	window.ps = plotData.length
 
-  
+
+
 updateStockData = (message) ->
 	plotData.push([message.time, message.price])
 
 updateEMAData = (message) ->
-	console.log("EMA JSON Array", message.values)
+	#console.log("EMA JSON Array", message.values)
 	EMAValues = message.values
 	EMAValues.sort()
 	
 updateSMAData = (message) ->
-	console.log("SMA JSON Array", message.values)
+	#console.log("SMA JSON Array", message.values)
 	SMAValues = message.values
 	SMAValues.sort()
 
