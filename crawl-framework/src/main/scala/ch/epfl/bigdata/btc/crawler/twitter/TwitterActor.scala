@@ -70,7 +70,7 @@ class TwitterActor(dataSource: ActorRef) extends Actor {
 	case "start" =>
 	val twitterStream = new TwitterStreamFactory(config).getInstance
 	twitterStream.addListener(simpleStatusListener)
-	twitterStream.filter(new FilterQuery().track(Array("bitcoin")))
+	twitterStream.filter(new FilterQuery().track(Array("bitcoin", "cryptocurrency", "btc", "bitcoins")))
 
 	}
 
