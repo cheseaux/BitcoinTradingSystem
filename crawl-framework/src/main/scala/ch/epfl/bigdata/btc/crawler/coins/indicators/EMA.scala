@@ -14,32 +14,35 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   var values: List[Double] = Nil
   var time: List[Long] = Nil
-  var oldEMA: List[(Double, Long)] = Nil
-  var first = true
+
+
 
   def recompute() {
     //values = Nil ::: (exponentialMovingAverage(ticks.map(_.close).toList, period, alpha))
     //time = ticks.map(_.date.getMillis()).toList
     println(ticks);
-   movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period, alpha)
+   movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period)
   }
 
-  def getResult() = Points(EMA, oldEMA.reverse)
-
-  /*def exponentialMovingAverage(values: List[Double], period: Int, alpha: Double): List[Double] = {
-    Nil ::: (movingSumExponential(values, period, alpha))
+  def getResult() = Points(EMA, movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period))
+/*
+  def exponentialMovingAverage(values: List[Double],  period: Int, alpha: Double): List[Double] = {
+    Nil ::: (movingSumExponential(values, period))
   }
-  * */
+  * 
+  */
   
-  def movingSumExponential(newValues: List[Double], newTime: List[Long],  period: Int, alpha1: Double){
+  
+  def movingSumExponential(newValues: List[Double], newTime: List[Long],  period: Int) :List[(Double, Long)]={
 
     var old =0.0
     var newv=0.0
     val alpha = 1.0 / (2.0 * period.toDouble + 1.0)
     var newt : Long =0
-    if (first) {
+    var oldEMA : List[(Double, Long)]= Nil
       for(i <- 0 to newValues.length - 2){
         newv = newValues.drop(i).head
+        println("EMA, new Values du cache", newv)
         newt = newTime.drop(i).head
         if( newv != 0){
          
@@ -48,11 +51,10 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
         }
  
       }
-        
-      oldEMA ::= (newValues.last, newTime.last)
-      first = false
-    }
-
+   
+    oldEMA.reverse
+  }
+    /*
     else {
     	
     	var toAdd = newValues.last * alpha + (1.0 - alpha) * oldEMA.head._1
@@ -61,6 +63,8 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     }
     if (oldEMA.length > period)
       oldEMA = oldEMA.take(period)
+      * 
+      */
       /*
     for (i <- 0 to values.length - period - 1) {
       if (oldEMA.length -1 > i) {
@@ -71,7 +75,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     values = finalList.reverse
     * 
     */
-  }
+  
 
   /*def movingSumExponential(values: List[Double], period: Int, alpha: Double): List[Double] = period match {
     case 0 => throw new IllegalArgumentException
