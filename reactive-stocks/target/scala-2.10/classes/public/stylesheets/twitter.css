@@ -543,12 +543,6 @@ margin-top:10px;
 border-width:1px 0 0;
 }
 
-.stats-wide,.stats-narrow,.brand {
-display:none;
-margin-left:.3em;
-border-width:0;
-}
-
 .expanded .stats-wide {
 display:inline-block;
 margin-top:-2px;
@@ -571,9 +565,7 @@ _display:none;
 _display:block;
 }
 
-.brand .ic-twitter-badge {
-margin:-4px 5px 0 0;
-}
+
 
 .cards-base {
 -webkit-transition:margin-top .3s ease-out;
@@ -780,7 +772,7 @@ margin-left:3px;
 padding-bottom:0;
 }
 
-.standalone-tweet .subject .stats-narrow,.standalone-tweet .subject .brand {
+.standalone-tweet .subject .stats-narrow,.standalone-tweet .subject {
 display:block;
 float:left;
 margin:0;
@@ -897,7 +889,7 @@ line-height:16px;
 font-size:11px;
 }
 
-.var-narrow .expanded .stats-narrow,.var-narrow .brand {
+.var-narrow .expanded .stats-narrow,.var-narrow {
 display:block;
 font-size:11px;
 margin:0 0 4px;
@@ -917,7 +909,7 @@ line-height:20px;
 padding-top:6px;
 }
 
-.var-narrow.standalone-tweet .stats-narrow,.var-narrow.standalone-tweet .brand {
+.var-narrow.standalone-tweet .stats-narrow,.var-narrow.standalone-tweet {
 display:block;
 float:none;
 padding-bottom:5px;
@@ -1362,7 +1354,7 @@ padding:0;
 margin-bottom:4px;
 }
 
-.brand span,.var-narrow.standalone-tweet .subject .header .profile .p-nickname,.var-narrow .withheld-title,.standalone-tweet.media-forward .source-user,.standalone-tweet.media-forward .subject .header .profile .p-name,.standalone-tweet.media-forward .subject .header .profile .p-nickname {
+.var-narrow.standalone-tweet .subject .header .profile .p-nickname,.var-narrow .withheld-title,.standalone-tweet.media-forward .source-user,.standalone-tweet.media-forward .subject .header .profile .p-name,.standalone-tweet.media-forward .subject .header .profile .p-nickname {
 font-size:12px;
 }
 
