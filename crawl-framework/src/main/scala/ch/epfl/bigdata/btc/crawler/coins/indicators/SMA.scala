@@ -17,7 +17,9 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   def recompute() {
     println("SMA-recompute", DateTime.now())
+    println("Ticks " , ticks)
     values = Nil ::: (movingSum(ticks.map(_.close).toList, period) map (_ / period))
+    
     time = ticks.map(_.date.getMillis()).toList
   }
   
