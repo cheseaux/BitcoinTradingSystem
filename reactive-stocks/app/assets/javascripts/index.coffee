@@ -169,10 +169,8 @@ drawLastValues = (numberOfValues) ->
 	yaxes = plot.getOptions().yaxes[0]
 	#if ((getAxisMin(data) < yaxes.min) || (getAxisMax(data) > yaxes.max))
     # reseting yaxes
-	yaxes.min = -10
-	yaxes.max = 500
-	#yaxes.min = getAxisMin(data)*1
-	#yaxes.max = getAxisMax(data)*1
+	yaxes.min = getAxisMin(data)*0.98
+	yaxes.max = getAxisMax(data)*1.02
 	plot.setupGrid()
 	# redraw the chart
 	plot.draw()
