@@ -2,6 +2,7 @@ tweets = []
 plotData = []
 EMAValues = []
 SMAValues = []
+nDataInPlot = 2000;
 sumSentiment = 0
 blacklist = ["USA Government trying to shutdown Bitcoin network read more here:"]
 
@@ -57,7 +58,7 @@ getChartOptions = (data) ->
     max: 410
   xaxis:
     show: true
-    #mode: time
+    mode: "time"
     #timeformat: "%Y/%m/%d"
 
 
@@ -96,8 +97,7 @@ window.ps = 0
 
 root = exports ? this
 
-#global variable containing plot size
-nDataInPlot = 2000;
+
 
 #begin and end times for plot graph
 beginTime = 1400043400
@@ -115,13 +115,13 @@ endTime = 1500064800
 
 @updatePlotSize = updatePlotSize = () ->
 	inputNData = document.getElementsByName('textboxplotsize')[0].value
-	if (inputNData >= 1) and (inputNData <= 3000)
+	if (inputNData >= 1) and (inputNData <= plotData.length-1)
 	  nDataInPlot = inputNData
 	  
 	  #redraw graph
 	  drawLastValues(nDataInPlot)
 	else
-	  alert "invalid value, outside of : [1,3000]"
+	  alert "invalid value, max value is " + (plotData.length - 1)
 	window.ps = plotData.length
 
   
@@ -133,6 +133,7 @@ updateEMAData = (message) ->
 	EMAValues = message.values
 	
 updateSMAData = (message) ->
+	console.log("SMAAAAAAA!!", 8)
 	console.log("SMA JSON Array", message.values)
 	SMAValues = message.values
 
