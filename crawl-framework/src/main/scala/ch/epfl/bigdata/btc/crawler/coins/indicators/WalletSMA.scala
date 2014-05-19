@@ -56,7 +56,7 @@ def receiveOther(a: Any, ar: ActorRef) {
    btcnumber = btcnumber + diff_bt
    
    gain = (money - msu) + (btcnumber - btcsu)*actualPrice
-    
+   println("GAINNNNNNNNNNN, SMA" , gain) 
     
     oldSentiment = actualSentiment
     actualSentiment =0.0
@@ -96,11 +96,11 @@ def receiveOther(a: Any, ar: ActorRef) {
 
     if (signal == 1 && actual == min) {
 
-      btc = (1 - (min) / (max)) * maxBTC
+      btc = (1 - (min) / (max) / 100) * maxBTC
       money = (-1)* actualPrice* btc
     } else if (signal == -1 && actual == max) {
 
-      btc = (-1)*(1 - (min) / (max)) * maxBTC
+      btc = (-1)*(1 - (min) / (max) / 100) * maxBTC
       money = (-1)*actualPrice*btc
     }
     (money, btc)

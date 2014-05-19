@@ -15,9 +15,9 @@ abstract class Wallet[T](dataSource: ActorRef, watched: T) extends Actor {
   var oldSentiment = 0.0
   var actualPrice = 0.0
   var oldPrice = 0.0
-  val msu = 10000.0
+  val msu = 100000.0
   var money = msu
-  val btcsu = 4.0
+  val btcsu = 100.0
   var btcnumber = btcsu
   val maxbtc = 0.1
 
