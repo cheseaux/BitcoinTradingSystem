@@ -43,13 +43,10 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     case 1 => values
     case _ =>
       var finalList: List[Double] = Nil
-      for (i <- 0 to values.length - period){
+      for (i <- 0 to values.length - period) {
         finalList ::= (values.drop(i).take(period).iterator.filter(_ > 0.0).toList).sum / (values.drop(i).take(period).iterator.filter(_ > 0.0).toList).length
-        		println("test inside sma" , (values.drop(i).take(period).iterator.filter(_ > 0.0).toList).sum)
-        println("test inside SMA 2", (values.drop(i).take(period).iterator.filter(_ > 0.0).toList).length)
-        println("test inside SMA 3", finalList)
       }
-        finalList.reverse
+      finalList.reverse
   }
 
   def envellopAbove(values: List[Double], percent: Double): List[Double] = {
