@@ -36,12 +36,12 @@ import java.util.Collection
 
 class StockActor(symbol: String) extends Actor {
 
-  // shit legacy stuff required to run, DO NOT REMOVE
-  lazy val stockQuote: StockQuote = new FakeStockQuote
   
   // parameters for EMA/SMA
-  val TICK_SIZE = 26
-  val TICK_COUNT = 10
+//  val TICK_SIZE = 26
+//  val TICK_COUNT = 10
+  val TICK_COUNT = 26
+  val TICK_SIZE = 10
   val PERCENTAGE = 0.6
 
   // remote dataSource address
@@ -62,7 +62,6 @@ class StockActor(symbol: String) extends Actor {
     // send the stock history to the user)
     case WatchStock(_) =>
 
-      // TODO: keep for beauty, remove if nice - remove this shit
       sender ! StockHistory(symbol, stockHistory.asJava)
 
       println("initiating connection to DataSource: " + dataSourceSelection)
@@ -128,6 +127,9 @@ class StockActor(symbol: String) extends Actor {
           jsonSMA.put("type", "SMA");
           
           println("SMA Json sent to GUI: " + jsonSMA)
+          
+          // send the stuff to userActor
+          watchers.foreach(_ ! SMAupdate(jsonSMA))
 
       }
 
@@ -145,7 +147,6 @@ class StockActor(symbol: String) extends Actor {
       watchers.foreach(_ ! StockUpdate(symbol, price, time))
 
     case tweet: Tweet =>
-      println("got a new tweet: " + tweet.content)
       watchers.foreach(_ ! tweet)
 
     // called when killing app
@@ -160,6 +161,9 @@ class StockActor(symbol: String) extends Actor {
 
   }
 
+  // shit legacy stuff required to run, DO NOT REMOVE
+  lazy val stockQuote: StockQuote = new FakeStockQuote
+  
   var stockHistory: Queue[java.lang.Double] = {
     lazy val initialPrices: Stream[java.lang.Double] = (0) #:: initialPrices.map(previous => stockQuote.newPrice(previous))
     initialPrices.take(5).to[Queue]
