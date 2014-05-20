@@ -13,6 +13,7 @@ import scala.collection.mutable.HashMap
 import akka.event.Logging
 import akka.actor.{ Actor, ActorRef, Props }
 import org.joda.time.DateTime
+import ch.epfl.bigdata.btc.crawler.btc.ActorPool
 
 class DataSource() extends Actor {
   import context._
@@ -49,8 +50,7 @@ class DataSource() extends Actor {
           ir match {
             case er: EMARegistration => {
               var mpr = MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount)
-              var indicator = context.actorOf(Props(classOf[EMA], self,
-                mpr, er.tickCount, er.percent),
+              var indicator = context.actorOf(Props(classOf[EMA], self, mpr, er.tickCount, er.percent),
                 "EMA" + er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount + "_" + er.tickCount + "-" + er.percent)
                 registrations.addIndicator(ir, indicator)
                 indicator ! observer
@@ -59,12 +59,15 @@ class DataSource() extends Actor {
                 println("EMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
             }
             case er: SMARegistration => {
-              var indicator = context.actorOf(Props(classOf[SMA], self,
-                MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount), er.tickCount),
+              var mpr = MarketPairRegistrationOHLC(er.market, er.c, er.tickSize, er.tickCount) 
+              var indicator = context.actorOf(Props(classOf[SMA], self, mpr, er.tickCount),
                 "SMA" + er.market.toString + "_" + er.c.c1 + "-" + er.c.c2 + "-" + er.tickSize + "-" + er.tickCount)
                 registrations.addIndicator(ir, indicator)
                 indicator ! observer
-                println("SMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
+                cache.getAllTransByMarketPair(new MarketPair(er.market,er.c)).map(e => cache.updateOhlcForMpro(mpr, e))
+                cache.getAllOhlc(mpr).map(e => indicator ! e)
+                println("EMARegistration already register indicator, oh non, c'est balot !!! :( ", er)
+                ActorPool.wallet ! observer
             }
             case _ => println("Could not register")
           }

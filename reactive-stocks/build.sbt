@@ -14,6 +14,7 @@ scalaVersion := "2.10.3"
 EclipseKeys.withSource := true
 
 libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-remote" % "2.2.1",
   "com.typesafe.akka" %% "akka-actor" % "2.2.1",
   "com.typesafe.akka" %% "akka-slf4j" % "2.2.1",
   "org.webjars" %% "webjars-play" % "2.2.1",
