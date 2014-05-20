@@ -88,9 +88,13 @@ def receiveOther(a: Any, ar: ActorRef) {
     val envB = values.map(_ * (1 - percent))
 
     println("WALLETSMA Enva", envA.last)
-    println("WALLETSMA Enva", envA.take(envA.length - 1).last)
-    println("WALLETSMA Envb", envB.last)
+    println("WALLETSMA Enva", envA.take(envA.length - 2).last)
+    println("WALLETSMA Enva", envB.last)
+    println("WALLETSMA Enva", envB.take(envA.length - 2).last)
     println("WALLETSMA values", values.last)
+    println("WALLETSMA values", values.take(values.length - 2).last)
+ 
+    
     if (envA.last < values.last && envA.take(envA.length - 2).last >= values.take(values.length - 2).last) {
       1
     } else if (envB.last >= values.last && envB.take(envB.length - 2).last < values.take(values.length - 2).last) {
@@ -114,7 +118,7 @@ def receiveOther(a: Any, ar: ActorRef) {
       * 
       */
       btc = 2.0
-      money = 2.0 * actualPrice
+      money = (-1.0) 2.0 * actualPrice
       
     } else if (signal == -1 ) {
 
@@ -124,7 +128,7 @@ def receiveOther(a: Any, ar: ActorRef) {
       * 
       */
        btc = (-2.0)
-      money = (-2.0) * actualPrice
+       money = (-2.0) * actualPrice
     }
     (money, btc)
   }

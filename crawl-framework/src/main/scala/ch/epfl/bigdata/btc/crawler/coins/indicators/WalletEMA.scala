@@ -61,7 +61,7 @@ def receiveOther(a: Any, ar: ActorRef) {
    btcnumber = btcnumber+ diff_bt
    
    gain = (money - msu) + (btcnumber - btcsu)*actualPrice
-    println("GAINNNNNNNNNNN, EMA" , gain) 
+   println("GAINNNNNNNNNNN, EMA" , gain) 
     
     oldSentiment = actualSentiment
     actualSentiment =0.0
