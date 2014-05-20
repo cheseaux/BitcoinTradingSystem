@@ -41,7 +41,12 @@ class DataSource() extends Actor {
     var ir = a;
 
     registrations.getIndicatorRegistrations().get(ir) match {
-      case Some(indicator) => indicator ! observer 
+      case Some(indicator) => {
+        indicator ! observer 
+        a match {
+          case er: SMARegistration => ActorPool.wallet ! observer
+        }
+      }
       case None => // create new, enreg
         {
           ir match {
