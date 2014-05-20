@@ -49,8 +49,12 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
         println("EMA, new Values du cache", newv)
         newt = newTime.drop(i).head
         if( newv != 0){
-         
+         if(old == 0.0){
+           oldEMA ::= (newv, newt) 
+         }
+         else{
           oldEMA ::= (newv * alpha + old*(1-alpha), newt)
+         }
           old = newv
         }
  
