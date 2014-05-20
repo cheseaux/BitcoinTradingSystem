@@ -100,7 +100,7 @@ public class UserActor extends UntypedActor {
 		} else if (message instanceof WalletGain) {
 			ObjectNode gainJSON = Json.newObject();
 			gainJSON.put("type", "gain");
-			gainJSON.put("content", WalletGain.gain().doubleValue());
+			gainJSON.put("content", ((WalletGain)message).gain().doubleValue());
 		}
 
 	}
