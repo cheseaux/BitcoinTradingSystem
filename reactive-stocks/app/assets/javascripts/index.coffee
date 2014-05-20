@@ -56,6 +56,9 @@ $ ->
               console.log("clicked spam " + message.content)
               blacklist.push(cleanTweet(message.content))
               console.log("added " + cleanTweet(message.content))
+      when "gain"
+		 totalGain = gain.content
+		 document.getElementById('gain').innerHTML =  '$ ' + totalGain
       else
         console.log(message)
 
