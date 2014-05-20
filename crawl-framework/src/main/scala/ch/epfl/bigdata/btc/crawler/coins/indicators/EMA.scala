@@ -28,7 +28,7 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
 
   }
 
-  def getResult() = Points(EMA, movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis()).toList, period))
+  def getResult() = Points(EMA, movingSumExponential(ticks.map(_.close).toList, ticks.map(_.date.getMillis() + watched.tickSize * 1000 ).toList, period))
 /*
   def exponentialMovingAverage(values: List[Double],  period: Int, alpha: Double): List[Double] = {
     Nil ::: (movingSumExponential(values, period))

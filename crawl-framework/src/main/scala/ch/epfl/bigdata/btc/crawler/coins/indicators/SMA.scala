@@ -23,7 +23,7 @@ class SMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     time = ticks.iterator.filter(_.close > 0.0).toList.map(_.date.getMillis()).toList
   }
 
-  def getResult() = Points(SMA, values zip time)
+  def getResult() = Points(SMA, values zip time.map(_ + watched.tickSize * 1000))
 
   def receiveOther(a: Any, ar: ActorRef) {
     a match {
