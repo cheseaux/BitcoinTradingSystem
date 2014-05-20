@@ -80,14 +80,14 @@ def receiveOther(a: Any, ar: ActorRef) {
     
   }
   
-   def tradeSignalEnv(percent: Double): Int = {
+    def tradeSignalEnv(percent: Double): Int = {
      
     val envA = values.map(_ * (1 + percent))
     val envB = values.map(_ * (1 - percent))
 
-    if (envA.last >= values.last && envA.take(envA.length - 1).last < values.take(values.length - 1).last) {
+    if (envA.last < values.last && envA.take(envA.length - 1).last >= values.take(values.length - 1).last) {
       1
-    } else if (envB.last <= values.last && envB.take(envB.length - 1).last > values.take(values.length - 1).last) {
+    } else if (envB.last >= values.last && envB.take(envB.length - 1).last < values.take(values.length - 1).last) {
       -1
     } else
       0
@@ -102,12 +102,23 @@ def receiveOther(a: Any, ar: ActorRef) {
 
     if (signal == 1) {
 
+      /*
       btc = (1 - (min) / (max) / 100) * maxBTC
       money = (-1)* actualPrice* btc
+      * 
+      */
+      btc = 2.0
+      money = 2.0 * actualPrice
+      
     } else if (signal == -1 ) {
 
+      /*
       btc = (-1)*(1 - (min) / (max) / 100) * maxBTC
       money = (-1)*actualPrice*btc
+      * 
+      */
+       btc = (-2.0)
+      money = (-2.0) * actualPrice
     }
     (money, btc)
   }
