@@ -118,7 +118,7 @@ def receiveOther(a: Any, ar: ActorRef) {
       * 
       */
       btc = 2.0
-      money = (-1.0) 2.0 * actualPrice
+      money = (-1.0) *2.0 * actualPrice
       
     } else if (signal == -1 ) {
 
