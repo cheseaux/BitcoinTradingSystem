@@ -36,7 +36,7 @@ def receiveOther(a: Any, ar: ActorRef) {
    var diff_money = 0.0
     println("WALLETSMA : signal ", signal)
     val x = trans(signal, actualPrice, maxBtc)
-    diff_money = x._1
+    diff_money = x._1 
     diff_bt = x._2 
    if (signal == 1){
  
@@ -60,7 +60,7 @@ def receiveOther(a: Any, ar: ActorRef) {
      }
       diff_money = (-1.0)* diff_bt *actualPrice
    }
-   
+
    money = money + diff_money - (Math.abs(diff_money)*0.02)
    btcnumber = btcnumber + diff_bt
    
@@ -112,23 +112,26 @@ def receiveOther(a: Any, ar: ActorRef) {
 
     if (signal == 1) {
 
-      /*
+      
       btc = (1 - (min) / (max) / 100) * maxBTC
       money = (-1)* actualPrice* btc
-      * 
-      */
+     
+      /*
       btc = 2.0
       money = (-1.0) *2.0 * actualPrice
+      * 
+      */
       
     } else if (signal == -1 ) {
 
-      /*
       btc = (-1)*(1 - (min) / (max) / 100) * maxBTC
       money = (-1)*actualPrice*btc
-      * 
-      */
+
+      /*
        btc = (-2.0)
        money = (-2.0) * actualPrice
+       * 
+       */
     }
     (money, btc)
   }

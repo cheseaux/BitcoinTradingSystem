@@ -90,7 +90,7 @@ def receiveOther(a: Any, ar: ActorRef) {
     } else
       0
   }
-   def trans(signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
+    def trans(signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
 
     val min = values.min
     val max = values.max
@@ -100,23 +100,25 @@ def receiveOther(a: Any, ar: ActorRef) {
 
     if (signal == 1) {
 
-      /*
+      
       btc = (1 - (min) / (max) / 100) * maxBTC
       money = (-1)* actualPrice* btc
-      * 
-      */
+     
+      /*
       btc = 2.0
-      money = 2.0 * actualPrice
+      money = (-1.0) *2.0 * actualPrice
+     */
       
     } else if (signal == -1 ) {
 
-      /*
       btc = (-1)*(1 - (min) / (max) / 100) * maxBTC
       money = (-1)*actualPrice*btc
-      * 
-      */
+
+      /*
        btc = (-2.0)
-      money = (-2.0) * actualPrice
+       money = (-2.0) * actualPrice
+       * 
+       */
     }
     (money, btc)
   }
