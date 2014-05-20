@@ -30,11 +30,19 @@ abstract class Wallet[T](dataSource: ActorRef, watched: T, m: Market, c: Currenc
   
   def receive = {
     case actor: ActorRef => observer += actor;
-    case t: Tweet => updateTweet(t)
-    case tr : Transaction => updatePrice(tr)
+    case t: Tweet => {
+      updateTweet(t)
+      earned = gainUpdate()
+      distribute()
+    }
+    case tr : Transaction => {
+      updatePrice(tr)
+      earned = gainUpdate()
+      distribute()
+    }
     case a: Any => {
       receiveOther(a, sender)
-      earned = gainUpdate();
+      
     }
   }
   
