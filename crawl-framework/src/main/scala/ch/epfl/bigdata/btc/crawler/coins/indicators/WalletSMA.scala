@@ -20,7 +20,9 @@ def receiveOther(a: Any, ar: ActorRef) {
   
    def gainUpdate() : Double = {
      
-     
+   if(this.values.length > 300){
+     values = values.drop(values.length -1 -300).take(300)
+   }  
    var gain = 0.0
    val signal = tradeSignalEnv(0.0) 
    var diff_bt = 0.0
@@ -74,6 +76,7 @@ def receiveOther(a: Any, ar: ActorRef) {
   }
   
    def tradeSignalEnv(percent: Double): Int = {
+     
     val envA = values.map(_ * (1 + percent))
     val envB = values.map(_ * (1 - percent))
 
@@ -86,19 +89,17 @@ def receiveOther(a: Any, ar: ActorRef) {
   }
    def trans(signal: Int, actualPrice: Double, maxBTC : Double): (Double, Double) = {
 
-    val actual = values.last
-
     val min = values.min
     val max = values.max
     
     var btc=0.0
     var money = 0.0
 
-    if (signal == 1 && actual == min) {
+    if (signal == 1) {
 
       btc = (1 - (min) / (max) / 100) * maxBTC
       money = (-1)* actualPrice* btc
-    } else if (signal == -1 && actual == max) {
+    } else if (signal == -1 ) {
 
       btc = (-1)*(1 - (min) / (max) / 100) * maxBTC
       money = (-1)*actualPrice*btc
