@@ -58,7 +58,7 @@ $ ->
       when "gain"
         console.log(message)
         totalGain = message.content
-        if totalGain > 0
+        if totalGain != 0
           transNumber += 1
         document.getElementById('gain').innerHTML =  '$ ' + totalGain.toFixed(2)
         document.getElementById('transact').innerHTML =  transNumber + ' Xacts'
