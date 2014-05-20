@@ -23,16 +23,18 @@ def receiveOther(a: Any, ar: ActorRef) {
      
   if(this.values.length < 20){
     return 0.0
+    println("WALLETSMA : length too small ")
   }
   if(this.values.length > 300){
      values = values.drop(values.length - 300).take(300)
    }  
   
+  println("WALLETSMA : values ", values)
    var gain = 0.0
    val signal = tradeSignalEnv(0.0) 
    var diff_bt = 0.0
    var diff_money = 0.0
-   
+    println("WALLETSMA : signal ", signal)
     val x = trans(signal, actualPrice, maxBtc)
     diff_money = x._1
     diff_bt = x._2 
@@ -85,6 +87,9 @@ def receiveOther(a: Any, ar: ActorRef) {
     val envA = values.map(_ * (1 + percent))
     val envB = values.map(_ * (1 - percent))
 
+    println("WALLETSMA Enva", envA.last)
+    println("WALLETSMA Envb", envB.last)
+    println("WALLETSMA values", values.last)
     if (envA.last < values.last && envA.take(envA.length - 1).last >= values.take(values.length - 1).last) {
       1
     } else if (envB.last >= values.last && envB.take(envB.length - 1).last < values.take(values.length - 1).last) {
