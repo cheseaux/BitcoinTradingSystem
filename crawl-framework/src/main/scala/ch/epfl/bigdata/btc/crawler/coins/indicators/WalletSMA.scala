@@ -88,11 +88,12 @@ def receiveOther(a: Any, ar: ActorRef) {
     val envB = values.map(_ * (1 - percent))
 
     println("WALLETSMA Enva", envA.last)
+    println("WALLETSMA Enva", envA.take(envA.length - 1).last)
     println("WALLETSMA Envb", envB.last)
     println("WALLETSMA values", values.last)
-    if (envA.last < values.last && envA.take(envA.length - 1).last >= values.take(values.length - 1).last) {
+    if (envA.last < values.last && envA.take(envA.length - 2).last >= values.take(values.length - 2).last) {
       1
-    } else if (envB.last >= values.last && envB.take(envB.length - 1).last < values.take(values.length - 1).last) {
+    } else if (envB.last >= values.last && envB.take(envB.length - 2).last < values.take(values.length - 2).last) {
       -1
     } else
       0
