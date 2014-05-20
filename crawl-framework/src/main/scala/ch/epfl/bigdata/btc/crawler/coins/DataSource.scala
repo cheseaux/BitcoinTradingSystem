@@ -41,10 +41,7 @@ class DataSource() extends Actor {
     var ir = a;
 
     registrations.getIndicatorRegistrations().get(ir) match {
-      case Some(indicator) => {
-        indicator ! observer
-        println("already register indicator, oh non, c'est balot !!! :( ", ir)
-      }
+      case Some(indicator) => indicator ! observer 
       case None => // create new, enreg
         {
           ir match {
@@ -73,8 +70,6 @@ class DataSource() extends Actor {
           }
         }
     }
-    println("sent");
-
   }
 
   def acceptRegistrationOHLC(r: MarketPairRegistrationOHLC) {
@@ -104,10 +99,6 @@ class DataSource() extends Actor {
    * update the cache and the distribute
    */
   def updateCacheAndNotify(t: Transaction) {
-    
-    println("transaction in", DateTime.now)
-
-    //println(t)
     val mprt = MarketPairRegistrationTransaction(t.market, new CurrencyPair(t.from, t.to))
     val mp = MarketPair(t.market, new CurrencyPair(t.from, t.to))
 
@@ -118,9 +109,7 @@ class DataSource() extends Actor {
     // distribution
     registrations.getTransRegByMarketPair(mp) match {
       case None =>
-      case Some(l) => { //println("getTransRegByMarketPair", mp)
-        l.map(a => a ! t)
-      }
+      case Some(l) => l.map(a => a ! t)
 
     }
 
@@ -133,7 +122,6 @@ class DataSource() extends Actor {
             case Some(mproList) => {
               mproList.map(e => {
                 if (e.market == mp.market && e.c == mp.c) {
-                  //println("send to ", a)
                   a ! cache.getLatestOhlc(e)
                 }
               })
@@ -144,12 +132,10 @@ class DataSource() extends Actor {
       }
 
     }
-    println("transaction out", DateTime.now + "\n\n")
   }
 
   def updateAndSendTweet(t: Tweet) {
     cache.addTweet(t)
     registrations.getTwitterRegistrations.map(f => f ! t)
-    println("sent tweet" + t)
   }
 }
