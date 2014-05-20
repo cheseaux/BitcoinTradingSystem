@@ -101,6 +101,7 @@ public class UserActor extends UntypedActor {
 			ObjectNode gainJSON = Json.newObject();
 			gainJSON.put("type", "gain");
 			gainJSON.put("content", ((WalletGain)message).gain().doubleValue());
+			out.write(gainJSON);
 		}
 
 	}

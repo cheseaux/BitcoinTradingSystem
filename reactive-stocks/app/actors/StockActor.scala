@@ -135,6 +135,7 @@ class StockActor(symbol: String) extends Actor {
       }
       
     case gain: Double =>
+      println("StockActor: received gain: " + gain)
       watchers.foreach(_ ! WalletGain(gain))
 
     case ohlc: OHLC =>
