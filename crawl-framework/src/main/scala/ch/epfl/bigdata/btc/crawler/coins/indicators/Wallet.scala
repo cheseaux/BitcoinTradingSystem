@@ -29,7 +29,7 @@ abstract class Wallet[T](dataSource: ActorRef, watched: T, m: Market, c: Currenc
   dataSource ! new MarketPairRegistrationTransaction(m, c)
   
   def receive = {
-    case actor: ActorRef => observer += actor;
+    case actor: ActorRef => if (!actor.equals(self)) observer += actor;
     case t: Tweet => {
       updateTweet(t)
       earned = gainUpdate()

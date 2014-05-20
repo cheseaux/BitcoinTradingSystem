@@ -15,6 +15,7 @@ class WalletSMA(dataSource: ActorRef, watched: SMARegistration)
 def receiveOther(a: Any, ar: ActorRef) {
   a match{
     case b : Points => this.values= b.values.map(_._1)
+    case _ =>
   }
   }
   
