@@ -7,7 +7,7 @@ totalSentiment = 0
 blacklist = []
 modalID = 0
 fakePlot = [[1400076000, 434.5],[1400076500, 434.0],[1400077000, 434.5],[1400077500, 434.0],[1400078000, 434.5]]
-
+transNumber = 0
 
 $ ->
 
@@ -56,9 +56,11 @@ $ ->
               blacklist.push(cleanTweet(message.content))
               console.log("added " + cleanTweet(message.content))
       when "gain"
+        transNumber += 1
         console.log(message)
-        totalGain = gain.content
+        totalGain = message.content
         document.getElementById('gain').innerHTML =  '$ ' + totalGain
+        document.getElementById('transact').innerHTML =  transnumber + ' transactions'
       else
         console.log(message)
 
