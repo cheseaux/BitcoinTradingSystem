@@ -133,6 +133,9 @@ class StockActor(symbol: String) extends Actor {
           watchers.foreach(_ ! SMAupdate(jsonSMA))
 
       }
+      
+    case gain: Double =>
+      watchers.foreach(_ ! WalletGain(gain))
 
     case ohlc: OHLC =>
       //
@@ -205,5 +208,7 @@ case class UnwatchStock(symbol: Option[String])
 
 case class EMAupdate(json: JsonNode)
 case class SMAupdate(json: JsonNode)
+
+case class WalletGain(gain: Number)
 
 

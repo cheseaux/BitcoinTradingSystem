@@ -97,6 +97,10 @@ public class UserActor extends UntypedActor {
 			// type: "SMA"
 			// array: "values", dedans: array: [timestamp,valeur]
 			out.write(((SMAupdate) message).json());
+		} else if (message instanceof WalletGain) {
+			ObjectNode gainJSON = Json.newObject();
+			gainJSON.put("type", "gain");
+			gainJSON.put("content", WalletGain.gain().doubleValue());
 		}
 
 	}
