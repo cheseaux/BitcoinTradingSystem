@@ -45,6 +45,7 @@ class DataSource() extends Actor {
         indicator ! observer 
         a match {
           case er: SMARegistration => ActorPool.wallet ! observer
+          case _ =>
         }
       }
       case None => // create new, enreg
