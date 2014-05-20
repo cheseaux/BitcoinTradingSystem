@@ -56,11 +56,12 @@ $ ->
               blacklist.push(cleanTweet(message.content))
               console.log("added " + cleanTweet(message.content))
       when "gain"
-        transNumber += 1
         console.log(message)
         totalGain = message.content
-        document.getElementById('gain').innerHTML =  '$ ' + totalGain
-        document.getElementById('transact').innerHTML =  transnumber + ' transactions'
+        if totalGain > 0
+          transNumber += 1
+        document.getElementById('gain').innerHTML =  '$ ' + totalGain.toFixed(2)
+        document.getElementById('transact').innerHTML =  transNumber + ' Xacts'
       else
         console.log(message)
 
