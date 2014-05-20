@@ -46,14 +46,13 @@ class EMA(dataSource: ActorRef, watched: MarketPairRegistrationOHLC, period: Int
     var oldEMA : List[(Double, Long)]= Nil
       for(i <- 0 to newValues.length - 2){
         newv = newValues.drop(i).head
-        println("EMA, new Values du cache", newv)
         newt = newTime.drop(i).head
         if( newv != 0){
          if(old == 0.0){
-           oldEMA ::= (newv, newt) 
+           oldEMA ::= (newv, newt+period * 1000) 
          }
          else{
-          oldEMA ::= (newv * alpha + old*(1-alpha), newt)
+          oldEMA ::= (newv * alpha + old*(1-alpha), newt + period * 1000)
          }
           old = newv
         }
