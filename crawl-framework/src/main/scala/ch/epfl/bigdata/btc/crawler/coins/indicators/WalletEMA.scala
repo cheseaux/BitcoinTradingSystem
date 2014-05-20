@@ -20,10 +20,13 @@ def receiveOther(a: Any, ar: ActorRef) {
   
    def gainUpdate() : Double = {
      
-      if(this.values.length > 300){
-     values = values.drop(values.length -1 -300).take(300)
+  if(this.values.length < 20){
+    return 0.0
+  }
+  if(this.values.length > 300){
+     values = values.drop(values.length - 300).take(300)
    }  
-      var gain = 0.0
+   var gain = 0.0
    val signal = tradeSignalEnv(0.0) 
    var diff_bt = 0.0
    var diff_money = 0.0
