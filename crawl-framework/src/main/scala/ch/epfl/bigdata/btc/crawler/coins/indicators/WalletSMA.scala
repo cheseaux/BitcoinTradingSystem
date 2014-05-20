@@ -91,13 +91,13 @@ def receiveOther(a: Any, ar: ActorRef) {
     println("WALLETSMA Enva", envA.take(envA.length - 2).last)
     println("WALLETSMA Enva", envB.last)
     println("WALLETSMA Enva", envB.take(envA.length - 2).last)
-    println("WALLETSMA values", values.last)
-    println("WALLETSMA values", values.take(values.length - 2).last)
+    println("WALLETSMA values", actualPrice)
+    println("WALLETSMA values", oldPrice)
  
     
-    if (envA.last < values.last && envA.take(envA.length - 2).last >= values.take(values.length - 2).last) {
+    if (envA.last < actualPrice && envA.take(envA.length - 2).last >= oldPrice) {
       1
-    } else if (envB.last >= values.last && envB.take(envB.length - 2).last < values.take(values.length - 2).last) {
+    } else if (envB.last >= actualPrice && envB.take(envB.length - 2).last < oldPrice) {
       -1
     } else
       0
